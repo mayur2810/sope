@@ -1,0 +1,15 @@
+sources: ["transactions", "product", "date"]
+transformations :
+    - alias: "product_filtered"
+      persist: true
+      source: "product"
+      transform:
+        - {type: filter, condition: "product_desc != 'N.A.'"}
+        - {type: rename, list: {product_desc: "product"}}
+        - {type: select, columns: ["product_id", "product"]}
+    - source: "transactions"
+      transform:
+        - {type: rename, list: {id: "trxn_id" , loc: "location"}}
+        - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)"}}
+        - {type: join, joinColumns: ["product"], joinType: inner, joinSource: "product_filtered"}
+        - {type: join, joinColumns: ["date"], joinType: inner, joinSource: "date"}

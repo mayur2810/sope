@@ -1,0 +1,8 @@
+.idea
+metastore_db
+pig
+target
+*.log
+*.iml
+dependency-reduced-pom.xml
+spark-warehouse
