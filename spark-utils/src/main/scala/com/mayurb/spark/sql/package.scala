@@ -261,20 +261,6 @@ package object sql {
     }
 
     /**
-      * Unstruct the fields in a given Struct as columns
-      *
-      * @param unstructCol  Column to unstruct
-      * @param structSchema Struct schema
-      * @return [[DataFrame]]
-      */
-    def unstruct(unstructCol: String, structSchema: StructType): DataFrame = {
-      structSchema.fields.map(field => (field.name, s"$unstructCol.${field.name}")).foldLeft(dataframe) {
-        case (df, column) => df.withColumn(column._1, col(column._2))
-      }.drop(unstructCol)
-    }
-
-
-    /**
       * Unstruct the fields in a given Struct as columns.
       * This is a no-op if struct column is not found
       *
