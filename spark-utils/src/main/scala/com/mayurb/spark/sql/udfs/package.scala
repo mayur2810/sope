@@ -4,7 +4,7 @@ import java.sql.Date
 import java.text.SimpleDateFormat
 
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
+import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction, UserDefinedFunction}
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.sql.types._
 
@@ -17,7 +17,7 @@ import scala.util.Try
 package object udfs {
 
   // Ordering for sql.Date
-  private implicit val dateOrdering: Ordering[Date] = new Ordering[Date] {
+  implicit val dateOrdering: Ordering[Date] = new Ordering[Date] {
     def compare(x: Date, y: Date): Int = x compareTo y
   }.reverse
 
@@ -77,7 +77,7 @@ package object udfs {
     val merged = sorted.map(_._2.toSeq).foldLeft(Seq[Any]()) { case (row1, row2) =>
       row1 match {
         case Nil => row2
-        case _ => (row1 zip row2).map { case (value1, value2) => if (value1 == null) value2 else value1 }
+        case _ => (row1 zip row2).map { case (value1, value2) => if (value1 == null || value1.toString.isEmpty) value2 else value1 }
       }
     }
     Row.fromSeq(merged)
@@ -126,20 +126,20 @@ package object udfs {
   ===================*/
 
   // Check if string column is empty
-  def checkEmptyUDF = udf(!isNotEmpty(_: Any))
+  def checkEmptyUDF: UserDefinedFunction = udf(!isNotEmpty(_: Any))
 
   // Check if string column is non-empty
-  def checkNotEmptyUDF = udf(isNotEmpty(_: Any))
+  def checkNotEmptyUDF: UserDefinedFunction = udf(isNotEmpty(_: Any))
 
   //converts string to long
-  def strToLongUDF = udf(strToLong(_: String))
+  def strToLongUDF: UserDefinedFunction = udf(strToLong(_: String))
 
-  def dateFormatCheckUdf = udf(checkDateFormat(_: String, _: String))
+  def dateFormatCheckUdf: UserDefinedFunction = udf(checkDateFormat(_: String, _: String))
 
-  //TODO: callUDF deprecated in version 2.0? How to handle with v1 adn v2 compilation?
-  /* def mergeUDF(orderingDateColumn: String, groupedSchema: StructType) = {
-     udf(mergeFunc(orderingDateColumn, _: Seq[Row]), groupedSchema, col(groupedColumn))
-   }*/
+  def mergeUDF[T](orderingDateColumn: String, orderingColumnType: Class[T], outputStructure: StructType): UserDefinedFunction = {
+     //udf(mergeFunc(orderingDateColumn, _: Seq[Row]), groupedSchema, col(groupedColumn))
+    null
+   }
 
 
 }
