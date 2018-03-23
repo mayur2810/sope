@@ -1,18 +1,28 @@
 package com.mayurb.spark
 
 import com.mayurb.spark.sql.udfs.CollectStruct
-import org.apache.spark.sql.{Column, ColumnName, DataFrame, Row}
+import com.mayurb.utils.Logging
+import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
 /**
+  * Implicit utility functions for [[DataFrame]]
   *
   * @author mbadgujar
   */
 package object sql {
 
 
-  implicit class DataFrameImplicits(dataframe: DataFrame) {
+  // Type Aliases
+  type DFFunc = (DataFrame) => DataFrame
+  type DFFunc2 = (SQLContext) => DataFrame
+  type ColFunc = (Column) => Column
+  type DFJoinFunc = (DataFrame, DataFrame, String) => DataFrame
+  type DFGroupFunc = (DataFrame, Seq[Column]) => DataFrame
+
+
+  implicit class DataFrameImplicits(dataframe: DataFrame) extends Logging {
 
     import dataframe.sqlContext.implicits._
 
@@ -141,6 +151,22 @@ package object sql {
         (df, key) => df.withColumn(key, exprMap(key))
       }
     }
+
+
+    /**
+      * Applies the provided transformation functions to [[DataFrame]]
+      *
+      * @param transformFunctionList Transformation functions
+      * @return Transformed [[DataFrame]]
+      */
+    def applyDFTransformation(transformFunctionList: List[DFFunc]): DataFrame = {
+      transformFunctionList.foldLeft(dataframe) {
+        (df, function) =>
+          logInfo("Applying function" + function.getClass.getName)
+          df.transform(function)
+      }
+    }
+
 
     /**
       * Cast given columns to provided [[DataType]]
