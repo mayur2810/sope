@@ -5,6 +5,7 @@ import com.mayurb.spark.sql._
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.expr
 
 /**
   *
@@ -30,43 +31,57 @@ package object action {
     def apply(dataframes: DataFrame*): DFFunc
   }
 
+
   case class RenameAction(@JsonProperty(required = true) list: Map[String, String]) extends TransformActionRoot("rename") {
     override def apply(dataframes: DataFrame*): DFFunc = Rename(list.toSeq: _*)
   }
+
 
   case class TransformAction(@JsonProperty(required = true) list: Map[String, String]) extends TransformActionRoot("transform") {
     override def apply(dataframes: DataFrame*): DFFunc = Transform(list.toSeq: _*)
   }
 
-  case class JoinAction(@JsonProperty(required = true) joinColumns: Seq[String],
-                        @JsonProperty(required = true) joinType: String,
-                        @JsonProperty(required = true) joinSource: String) extends TransformActionRoot("join") {
-    private val joinTypeFunc: (DFJFunc) => DataFrame => DFFunc = (joinFunc: DFJFunc) => joinType match {
+
+  case class JoinAction(@JsonProperty(value = "condition", required = false) joinCondition: String,
+                        @JsonProperty(value = "columns", required = false) joinColumns: Seq[String],
+                        @JsonProperty(value = "join_type", required = true) joinType: String,
+                        @JsonProperty(value = "with", required = true) joinSource: String) extends TransformActionRoot("join") {
+    private val joinTypeFunc: (DFJoinFunc) => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
       case "inner" => joinFunc >< _
       case "left" => joinFunc << _
       case "right" => joinFunc >> _
       case "full" => joinFunc <> _
     }
 
-    override def apply(dataframes: DataFrame*): DFFunc = joinTypeFunc(Join(joinColumns: _*))(dataframes.head)
+    override def apply(dataframes: DataFrame*): DFFunc = {
+      if (joinCondition == null && joinColumns == null) throw new Exception("Please provide either join 'condition' or join 'columns' option")
+      if (joinCondition != null)
+        joinTypeFunc(Join(expr(joinCondition)))(dataframes.head)
+      else
+        joinTypeFunc(Join(joinColumns: _*))(dataframes.head)
+    }
   }
+
 
   case class GroupAction(@JsonProperty(required = true) groupColumns: Seq[String],
                          @JsonProperty(required = true) groupExpr: String) extends TransformActionRoot("group") {
     override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns: _*) ^ groupExpr
   }
 
+
   case class FilterAction(@JsonProperty(required = true) condition: String) extends TransformActionRoot("filter") {
     override def apply(dataframes: DataFrame*): DFFunc = Filter(condition)
   }
+
 
   case class SelectAction(@JsonProperty(required = true) columns: Seq[String]) extends TransformActionRoot("select") {
     override def apply(dataframes: DataFrame*): DFFunc = Select(columns: _*)
   }
 
+
   case class SequenceAction(@JsonProperty(value = "sk_source", required = true) skSource: String,
                             @JsonProperty(value = "sk_column", required = true) skColumn: String) extends TransformActionRoot("sequence") {
-    override def apply(dataframes: DataFrame*): DFFunc = Sequence(dataframes.head.maxKeyValue(skColumn),  skColumn)
+    override def apply(dataframes: DataFrame*): DFFunc = Sequence(dataframes.head.maxKeyValue(skColumn), skColumn)
   }
 
 }

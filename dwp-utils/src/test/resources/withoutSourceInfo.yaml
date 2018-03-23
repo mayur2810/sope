@@ -11,5 +11,5 @@ transformations :
       transform:
         - {type: rename, list: {id: "trxn_id" , loc: "location"}}
         - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)"}}
-        - {type: join, joinColumns: ["product"], joinType: inner, joinSource: "product_filtered"}
-        - {type: join, joinColumns: ["date"], joinType: inner, joinSource: "date"}
+        - {type: join, columns: ["product"] , join_type: inner, with: "product_filtered"}
+        - {type: join, columns: ["date"], join_type: inner, with: "date"}
