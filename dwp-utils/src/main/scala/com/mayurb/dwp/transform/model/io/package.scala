@@ -20,7 +20,7 @@ package object io {
     new Type(value = classOf[HiveSource], name = "hive"),
     new Type(value = classOf[OrcSource], name = "orc"),
     new Type(value = classOf[ParquetSource], name = "parquet"),
-    //new Type(value = classOf[CSVSource], name = "csv"),
+    new Type(value = classOf[CSVSource], name = "csv"),
     new Type(value = classOf[TextSource], name = "text")
   ))
   abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String, alias: String) {
@@ -68,7 +68,7 @@ package object io {
     new Type(value = classOf[HiveTarget], name = "hive"),
     new Type(value = classOf[OrcTarget], name = "orc"),
     new Type(value = classOf[ParquetTarget], name = "parquet"),
-    //new Type(value = classOf[CSVTarget], name = "csv"),
+    new Type(value = classOf[CSVTarget], name = "csv"),
     new Type(value = classOf[TextTarget], name = "text")
   ))
   abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String, mode: String) {
