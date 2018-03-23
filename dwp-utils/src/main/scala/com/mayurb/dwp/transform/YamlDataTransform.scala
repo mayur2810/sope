@@ -53,16 +53,18 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
       logInfo(s"Applying transformation for source: ${dfTransform.source}")
       val persistTransformation = dfTransform.persist
       logInfo(s"Transformation will be persisted: $persistTransformation")
-      val df = sourceDFMap(dfTransform.source)
+      val df = sourceDFMap(dfTransform.source).alias(dfTransform.getAlias)
       val transformedDF = dfTransform.transform.foldLeft(NoOp()) {
         case (transformed, joinTransform: JoinAction) => transformed + joinTransform(sourceDFMap(joinTransform.joinSource))
         case (transformed, sequenceAction: SequenceAction) => transformed + sequenceAction(sourceDFMap(sequenceAction.skSource))
         case (transformed, transformAction) => transformed + transformAction()
       } --> df
+      // Add alias to dataframe
+      val transformedWithAliasDF = transformedDF.alias(dfTransform.getAlias)
       // Update Map
       sourceDFMap = sourceDFMap updated(dfTransform.getAlias,
-        if(dfTransform.persist) transformedDF.persist else transformedDF)
-      transformedDF
+        if(persistTransformation) transformedWithAliasDF.persist else transformedWithAliasDF)
+      transformedWithAliasDF
     })
   }
 
