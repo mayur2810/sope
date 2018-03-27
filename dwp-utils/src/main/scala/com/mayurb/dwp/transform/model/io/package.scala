@@ -1,6 +1,6 @@
 package com.mayurb.dwp.transform.model
 
-import com.mayurb.spark.sql.dsl.DFFunc2
+import com.mayurb.spark.sql.DFFunc2
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}

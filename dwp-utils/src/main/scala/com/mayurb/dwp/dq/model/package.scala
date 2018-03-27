@@ -1,5 +1,6 @@
 package com.mayurb.dwp.dq
 
+import com.mayurb.spark.sql._
 import com.mayurb.spark.sql.dsl._
 import com.mayurb.spark.sql.udfs._
 import org.apache.spark.sql.functions._
