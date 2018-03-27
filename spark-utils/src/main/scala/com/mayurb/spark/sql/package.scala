@@ -6,6 +6,8 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
+import scala.reflect.ClassTag
+
 /**
   * Implicit utility functions for [[DataFrame]]
   *
@@ -159,14 +161,23 @@ package object sql {
       * @param transformFunctionList Transformation functions
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformation(transformFunctionList: List[DFFunc]): DataFrame = {
+    def applyDFTransformation[_: ClassTag](transformFunctionList: Seq[DFFunc]): DataFrame = {
+      transformFunctionList.foldLeft(dataframe) { (df, function) => df.transform(function) }
+    }
+
+    /**
+      * Applies the provided transformation functions to [[DataFrame]]
+      *
+      * @param transformFunctionList Transformation functions with function type information
+      * @return Transformed [[DataFrame]]
+      */
+    def applyDFTransformation(transformFunctionList: Seq[(Class[_], DFFunc)]): DataFrame = {
       transformFunctionList.foldLeft(dataframe) {
-        (df, function) =>
-          logInfo("Applying function" + function.getClass.getName)
+        case (df, (fType, function)) =>
+          logInfo("Applying function :- " + fType.getName)
           df.transform(function)
       }
     }
-
 
     /**
       * Cast given columns to provided [[DataType]]
