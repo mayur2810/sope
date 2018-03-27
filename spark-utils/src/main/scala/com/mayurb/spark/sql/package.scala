@@ -161,7 +161,7 @@ package object sql {
       * @param transformFunctionList Transformation functions
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformation[_: ClassTag](transformFunctionList: Seq[DFFunc]): DataFrame = {
+    def applyDFTransformations[_: ClassTag](transformFunctionList: Seq[DFFunc]): DataFrame = {
       transformFunctionList.foldLeft(dataframe) { (df, function) => df.transform(function) }
     }
 
@@ -171,12 +171,45 @@ package object sql {
       * @param transformFunctionList Transformation functions with function type information
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformation(transformFunctionList: Seq[(Class[_], DFFunc)]): DataFrame = {
+    def applyDFTransformations(transformFunctionList: Seq[(Class[_], DFFunc)]): DataFrame = {
       transformFunctionList.foldLeft(dataframe) {
         case (df, (fType, function)) =>
           logInfo("Applying function :- " + fType.getName)
           df.transform(function)
       }
+    }
+
+
+    /**
+      * Applies the provided transformation functions to [[DataFrame]].
+      * The Intermediate transformation result can be stored at provided Temporary directory, to materialize the results
+      * for complex transformations. The fuseFactor decides the number of transformations to be fused together and saved to
+      * temporary directory
+      *
+      * @param transformFunctionList Transformation functions with function type information
+      * @param temporaryResultDir    Temporary Directory to store results
+      * @param format                Output format of output files. Default is parquet
+      * @param fuseFactor            Fuse factor for transformations. Defaults to 1.
+      * @return Transformed [[DataFrame]]
+      */
+    def applyDFTransformations(transformFunctionList: Seq[(Class[_], DFFunc)], temporaryResultDir: String,
+                              format: String = "parquet", fuseFactor: Int = 1):
+    DataFrame = {
+      transformFunctionList
+        .map { case (fType, function) => (fType.getName, function) }
+        .sliding(fuseFactor, fuseFactor)
+        .map(funcSeq => {
+          funcSeq.reduce { case ((fType1, function1), (fType2, function2)) => (fType1 + ", " + fType2, function1.andThen(function2)) }
+        })
+        .foldLeft(dataframe) {
+          case (df, (fType, function)) =>
+            logInfo("Applying function(s) :- " + fType)
+            val result = df.transform(function)
+            val tempOutputPath = temporaryResultDir + "/" + fType
+            logInfo(s"Saving transformation results $fType to temporary location :- $tempOutputPath")
+            result.write.format(format).mode(SaveMode.Overwrite).save(tempOutputPath)
+            result.sqlContext.read.format(format).load(tempOutputPath)
+        }
     }
 
     /**
