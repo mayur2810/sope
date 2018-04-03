@@ -47,7 +47,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     * @return Transformed Dataframes
     */
   private def applyTransformations(mapping: Map[String, DataFrame],
-                                   transformations: Seq[DFTransformation]): Seq[DataFrame] = {
+                                   transformations: Seq[DFTransformation]): Seq[(String, DataFrame)] = {
     var sourceDFMap = mapping
     transformations.map(dfTransform => {
       logInfo(s"Applying transformation for source: ${dfTransform.source}")
@@ -64,13 +64,13 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
       // Update Map
       sourceDFMap = sourceDFMap updated(dfTransform.getAlias,
         if(persistTransformation) transformedWithAliasDF.persist else transformedWithAliasDF)
-      transformedWithAliasDF
+      (dfTransform.getAlias, transformedWithAliasDF)
     })
   }
 
 
   /**
-    * Performs end to end transformations - Reading sources and writing transformation result to provided target
+    * Performs end to end transformations - Reading sources and writing transformation result to provided targets
     * The source yaml file should contains source and target information.
     *
     * @param sqlContext Spark [[SQLContext]]
@@ -78,8 +78,8 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
   def performTransformations(sqlContext: SQLContext): Unit = {
     val transformModel = parseYAML(true).asInstanceOf[TransformModelWithSourceTarget]
     val sourceDFMap = transformModel.sources.map(source => source.getSourceName -> source.apply(sqlContext)).toMap
-    val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations)
-    transformModel.target(transformationResult.last)
+    val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations).toMap
+    transformModel.targets.foreach(target => target(transformationResult(target.getInput)))
   }
 
 
@@ -89,10 +89,9 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     *
     * @return Transformed [[DataFrame]]
     */
-  def getTransformedDF: DataFrame = {
+  def getTransformedDFs: Seq[(String, DataFrame)] = {
     val transformModel = parseYAML(false).asInstanceOf[TransformModelWithoutSourceTarget]
     val sourceDFMap = transformModel.sources.zip(dataFrames).toMap
-    val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations)
-    transformationResult.last
+    applyTransformations(sourceDFMap, transformModel.transformations)
   }
 }

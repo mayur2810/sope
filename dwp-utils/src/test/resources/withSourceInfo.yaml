@@ -1,20 +1,20 @@
-sources:
+inputs:
     - {type: hive, alias: product, db: gold, table: product}
     - {type: hive, alias: date, db: gold, table: date}
     - {type: hive, alias: transactions, db: work, table: transactions}
-target: {type: hive, mode: append, db: work, table: output}
 transformations :
-    - source: "product"
+    - input: "product"
       alias: "product_filtered"
       persist: true
       transform:
         - {type: filter, condition: "product_desc != 'N.A.'"}
         - {type: rename, list: {product_desc: "product"}}
         - {type: select, columns: ["product_id", "product"]}
-    - source: "transactions"
+    - input: "transactions"
       transform:
         - {type: rename, list: {id: "trxn_id" , loc: "location"}}
         - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)"}}
         - {type: join, joinColumns: ["product"], joinType: inner, joinSource: "product_filtered"}
         - {type: join, joinColumns: ["date"], joinType: inner, joinSource: "date"}
-
+outputs:
+    - {type: hive, input: "transactions", mode: append, db: work, table: output}

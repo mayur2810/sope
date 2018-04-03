@@ -42,7 +42,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     val dateDF = dateData.toDF
     val yamlPath = this.getClass.getClassLoader.getResource("./withoutSourceInfo.yaml").getPath
     val ydt = new YamlDataTransform(yamlPath, transactionsDF, productDF, dateDF)
-    val transformedDF = ydt.getTransformedDF.persist
+    val transformedDF = ydt.getTransformedDFs.last._2.persist
     println("transactions ==>")
     transactionsDF.show(false)
     println("product ==>")
