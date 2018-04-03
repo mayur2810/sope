@@ -171,10 +171,10 @@ package object sql {
       * @param transformFunctionList Transformation functions with function type information
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformations(transformFunctionList: Seq[(Class[_], DFFunc)]): DataFrame = {
+    def applyDFTransformations(transformFunctionList: Seq[(String, DFFunc)]): DataFrame = {
       transformFunctionList.foldLeft(dataframe) {
         case (df, (fType, function)) =>
-          logInfo("Applying function :- " + fType.getName)
+          logInfo("Applying function :- " + fType)
           df.transform(function)
       }
     }
@@ -192,14 +192,14 @@ package object sql {
       * @param fuseFactor            Fuse factor for transformations. Defaults to 1.
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformations(transformFunctionList: Seq[(Class[_], DFFunc)], temporaryResultDir: String,
-                              format: String = "parquet", fuseFactor: Int = 1):
+    def applyDFTransformations(transformFunctionList: Seq[(String, DFFunc)], temporaryResultDir: String,
+                               format: String = "parquet", fuseFactor: Int = 1):
     DataFrame = {
       transformFunctionList
-        .map { case (fType, function) => (fType.getName, function) }
         .sliding(fuseFactor, fuseFactor)
         .map(funcSeq => {
-          funcSeq.reduce { case ((fType1, function1), (fType2, function2)) => (fType1 + ", " + fType2, function1.andThen(function2)) }
+          funcSeq.reduce [(String, DFFunc)]{
+            case ((fType1, function1), (fType2, function2)) => (fType1 + ", " + fType2, function1.andThen(function2)) }
         })
         .foldLeft(dataframe) {
           case (df, (fType, function)) =>
