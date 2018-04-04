@@ -1,4 +1,5 @@
 ##spark-utils
+
 This module contains library functions and an internal dsl library that helps with writing **Spark SQL** ETL transformations in concise manner.
 It will reduce the boiler-plate code for complex transformations using core Spark-SQL API and will assist in code readability and review.
 
@@ -54,6 +55,7 @@ It will reduce the boiler-plate code for complex transformations using core Spar
       ```
       
 2. Scala DSL:
+   
     A simple DSL for Transformations like : **t1 + t2 + t3 .... + tn --> df** is provided. 
     The DSL can be used to reduce the intermediate dataframe object references and create transformation references instead.
     These transformation references are reusable and concise in representation. You can also use the implicit functions and DSL together.
