@@ -1,7 +1,7 @@
 inputs:
-    - {type: hive, alias: product, db: gold, table: product}
-    - {type: hive, alias: date, db: gold, table: date}
-    - {type: hive, alias: transactions, db: work, table: transactions}
+    - {type: json, alias: product, path: "/tmp/yt/product.json"}
+    - {type: json, alias: date, path: "/tmp/yt/date.json"}
+    - {type: json, alias: transactions, path: "/tmp/yt/transactions.json"}
 transformations :
     - input: "product"
       alias: "product_filtered"
@@ -12,9 +12,10 @@ transformations :
         - {type: select, columns: ["product_id", "product"]}
     - input: "transactions"
       transform:
-        - {type: rename, list: {id: "trxn_id" , loc: "location"}}
-        - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)"}}
-        - {type: join, joinColumns: ["product"], joinType: inner, joinSource: "product_filtered"}
-        - {type: join, joinColumns: ["date"], joinType: inner, joinSource: "date"}
+         - {type: rename, list: {id: "trxn_id" , loc: "location"}}
+         - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER (PARTITION BY location order by date desc)"}}
+         - {type: join, columns: ["product"] , join_type: inner, with: "product_filtered"}
+         - {type: join, columns: ["date"], join_type: inner, with: "date"}
+         - {type: sequence, sk_source: "transactions", sk_column: "id"}
 outputs:
-    - {type: hive, input: "transactions", mode: append, db: work, table: output}
+    - {type: csv, input: "transactions", mode: overwrite, path: "/tmp/yt/result.csv"}
