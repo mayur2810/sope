@@ -20,7 +20,8 @@ package object output {
     new Type(value = classOf[OrcTarget], name = "orc"),
     new Type(value = classOf[ParquetTarget], name = "parquet"),
     new Type(value = classOf[CSVTarget], name = "csv"),
-    new Type(value = classOf[TextTarget], name = "text")
+    new Type(value = classOf[TextTarget], name = "text"),
+    new Type(value = classOf[JsonTarget], name = "text")
   ))
   abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String, input: String, mode: String) {
     def apply(df: DataFrame): Unit
@@ -33,6 +34,8 @@ package object output {
     }
 
     def getInput: String = input
+
+    def getOptions(options: Map[String, String]): Map[String, String] = Option(options).getOrElse(Map())
   }
 
   case class HiveTarget(@JsonProperty(required = true) input: String,
@@ -46,28 +49,35 @@ package object output {
                        @JsonProperty(required = true) mode: String,
                        @JsonProperty(required = true) path: String,
                        options: Map[String, String]) extends TargetTypeRoot("orc", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(options).orc(path)
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).orc(path)
   }
 
   case class ParquetTarget(@JsonProperty(required = true) input: String,
                            @JsonProperty(required = true) mode: String,
                            @JsonProperty(required = true) path: String,
                            options: Map[String, String]) extends TargetTypeRoot("parquet", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(options).parquet(path)
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).parquet(path)
   }
 
   case class CSVTarget(@JsonProperty(required = true) input: String,
                        @JsonProperty(required = true) mode: String,
                        @JsonProperty(required = true) path: String,
                        options: Map[String, String]) extends TargetTypeRoot("csv", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(options).csv(path)
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).csv(path)
   }
 
   case class TextTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) path: String,
                         options: Map[String, String]) extends TargetTypeRoot("text", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(options).text(path)
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).text(path)
+  }
+
+  case class JsonTarget(@JsonProperty(required = true) input: String,
+                        @JsonProperty(required = true) mode: String,
+                        @JsonProperty(required = true) path: String,
+                        options: Map[String, String]) extends TargetTypeRoot("json", input, mode) {
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).json(path)
   }
 
 }

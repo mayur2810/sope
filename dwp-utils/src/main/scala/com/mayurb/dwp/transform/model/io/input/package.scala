@@ -20,12 +20,15 @@ package object input {
     new Type(value = classOf[OrcSource], name = "orc"),
     new Type(value = classOf[ParquetSource], name = "parquet"),
     new Type(value = classOf[CSVSource], name = "csv"),
-    new Type(value = classOf[TextSource], name = "text")
+    new Type(value = classOf[TextSource], name = "text"),
+    new Type(value = classOf[JsonSource], name = "json")
   ))
   abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String, alias: String) {
     def apply: DFFunc2
 
     def getSourceName: String = alias
+
+    def getOptions(options: Map[String, String]): Map[String, String] = Option(options).getOrElse(Map())
   }
 
   case class HiveSource(@JsonProperty(required = true) alias: String,
@@ -37,26 +40,31 @@ package object input {
   case class OrcSource(@JsonProperty(required = true) alias: String,
                        @JsonProperty(required = true) path: String,
                        options: Map[String, String]) extends SourceTypeRoot("orc", alias) {
-    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(options).orc(path)
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).orc(path)
   }
 
   case class ParquetSource(@JsonProperty(required = true) alias: String,
                            @JsonProperty(required = true) path: String,
                            options: Map[String, String]) extends SourceTypeRoot("parquet", alias) {
-    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(options).parquet(path)
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).parquet(path)
   }
 
   case class CSVSource(@JsonProperty(required = true) name: String,
                        @JsonProperty(required = true) path: String,
                        options: Map[String, String]) extends SourceTypeRoot("csv", name) {
-    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(options).csv(path)
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).csv(path)
   }
 
   case class TextSource(@JsonProperty(required = true) alias: String,
                         @JsonProperty(required = true) path: String,
                         options: Map[String, String]) extends SourceTypeRoot("text", alias) {
-    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(options).text(path)
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).text(path)
   }
 
+  case class JsonSource(@JsonProperty(required = true) alias: String,
+                        @JsonProperty(required = true) path: String,
+                        options: Map[String, String]) extends SourceTypeRoot("json", alias) {
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).json(path)
+  }
 
 }
