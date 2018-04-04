@@ -1,4 +1,4 @@
-##spark-utils
+## spark-utils
 
 This module contains library functions and an internal dsl library that helps with writing **Spark SQL** ETL transformations in concise manner.
 It will reduce the boiler-plate code for complex transformations using core Spark-SQL API and will assist in code readability and review.
