@@ -24,7 +24,7 @@ package object model {
   case class TransformModelWithoutSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[String],
                                                @JsonProperty(required = true) transformations: Seq[DFTransformation]) extends TransformModel
 
-  case class TransformModelWithSourceTarget(@JsonProperty(required = true) sources: Seq[_ <: SourceTypeRoot],
+  case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[_ <: SourceTypeRoot],
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
                                             @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot]) extends TransformModel
 
