@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInf
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
+  * Package contains YAML Transformer Output construct mappings and definitions
   *
   * @author mbadgujar
   */

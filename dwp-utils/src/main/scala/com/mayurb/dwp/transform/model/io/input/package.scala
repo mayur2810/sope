@@ -6,6 +6,7 @@ import com.mayurb.spark.sql.DFFunc2
 import org.apache.spark.sql.SQLContext
 
 /**
+  * Package contains YAML Transformer Input construct mappings and definitions
   *
   * @author mbadgujar
   */
