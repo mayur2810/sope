@@ -46,7 +46,9 @@ package object action {
   case class JoinAction(@JsonProperty(value = "condition", required = false) joinCondition: String,
                         @JsonProperty(value = "columns", required = false) joinColumns: Seq[String],
                         @JsonProperty(value = "join_type", required = true) joinType: String,
-                        @JsonProperty(value = "with", required = true) joinSource: String) extends TransformActionRoot("join") {
+                        @JsonProperty(value = "with", required = true) joinSource: String,
+                        @JsonProperty(value = "broadcast_hint") broadcastHint: String) extends TransformActionRoot("join") {
+
     private val joinTypeFunc: (DFJoinFunc) => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
       case "inner" => joinFunc >< _
       case "left" => joinFunc << _
@@ -57,9 +59,9 @@ package object action {
     override def apply(dataframes: DataFrame*): DFFunc = {
       if (joinCondition == null && joinColumns == null) throw new Exception("Please provide either join 'condition' or join 'columns' option")
       if (joinCondition != null)
-        joinTypeFunc(Join(expr(joinCondition)))(dataframes.head)
+        joinTypeFunc(Join(Option(broadcastHint), expr(joinCondition)))(dataframes.head)
       else
-        joinTypeFunc(Join(joinColumns: _*))(dataframes.head)
+        joinTypeFunc(Join(Option(broadcastHint), joinColumns: _*))(dataframes.head)
     }
   }
 

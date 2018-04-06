@@ -34,7 +34,7 @@ class DSLTest extends FlatSpec with Matchers {
     val classDF = testCData.toDF()
     val rename = Rename("first_name" -> "firstname", "last_name" -> "lastname")
     val transform = Transform("firstname" -> upper($"firstname"), "lastname" -> upper($"lastname"))
-    val join = Join("cls") <> classDF
+    val join = Join(None, "cls") <> classDF
     val transformed = rename + transform + join + Sequence(0l, "id") --> studentDF
     println("transformed DF output =>")
     transformed.show(false)

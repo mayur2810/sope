@@ -1,6 +1,7 @@
 package com.mayurb.spark.sql
 
-import org.apache.spark.sql.functions.{col, expr}
+import com.mayurb.utils.Logging
+import org.apache.spark.sql.functions.{broadcast, col, expr}
 import org.apache.spark.sql.{Column, DataFrame}
 
 import scala.reflect.ClassTag
@@ -224,24 +225,48 @@ package object dsl {
   /*
     Join Transform
    */
-  object Join {
-    /**
-      * Apply Join Function
-      *
-      * @param conditions Join columns
-      * @return [[DFJoinFunc]]
-      */
-    def apply(conditions: String*): DFJoinFunc =
-      (ldf: DataFrame, rdf: DataFrame, jType: String) => ldf.join(rdf, conditions.toSeq, jType)
+  object Join extends Logging {
 
     /**
       * Apply Join Function
       *
-      * @param conditions Join Column Expression
+      * @param broadcastHint Hint for broadcasting, "left" for broadcast hint to left [[DataFrame]]
+      *                      or right for broadcast hint to "right" [[DataFrame]]
+      * @param conditions    Join columns
       * @return [[DFJoinFunc]]
       */
-    def apply(conditions: Column): DFJoinFunc =
-      (ldf: DataFrame, rdf: DataFrame, jType: String) => ldf.join(rdf, conditions, jType)
+    def apply(broadcastHint: Option[String], conditions: String*): DFJoinFunc =
+      (ldf: DataFrame, rdf: DataFrame, jType: String) =>
+        broadcastHint.map(_.toLowerCase) match {
+          case Some("left") =>
+            logInfo("Broadcast hint provided for left dataframe")
+            broadcast(ldf).join(rdf, conditions.toSeq, jType)
+          case Some("right") =>
+            logInfo("Broadcast hint provided for right dataframe")
+            ldf.join(broadcast(rdf), conditions.toSeq, jType)
+          case _ => ldf.join(rdf, conditions.toSeq, jType)
+        }
+
+
+    /**
+      * Apply Join Function
+      *
+      * @param broadcastHint Hint for broadcasting, "left" for broadcast hint to left [[DataFrame]]
+      *                      or right for broadcast hint to "right" [[DataFrame]]
+      * @param conditions    Join Column Expression
+      * @return [[DFJoinFunc]]
+      */
+    def apply(broadcastHint: Option[String], conditions: Column): DFJoinFunc =
+      (ldf: DataFrame, rdf: DataFrame, jType: String) =>
+        broadcastHint.map(_.toLowerCase) match {
+          case Some("left") =>
+            logInfo("Broadcast hint provided for left dataframe")
+            broadcast(ldf).join(rdf, conditions, jType)
+          case Some("right") =>
+            logInfo("Broadcast hint provided for right dataframe")
+            ldf.join(broadcast(rdf), conditions, jType)
+          case _ => ldf.join(rdf, conditions, jType)
+        }
   }
 
 
