@@ -74,21 +74,21 @@ package object dsl {
     /**
       * Select columns excepts passed columns
       *
-      * @param excludeColumn columns to exclude
+      * @param excludeColumns columns to exclude
       * @return [[DFFunc]]
       */
-    def apply(excludeColumn: String*): DFFunc = (df: DataFrame) => df.select(df.getColumns: _*)
+    def apply(excludeColumns: String*): DFFunc = (df: DataFrame) => df.select(df.getColumns(excludeColumns):_*)
 
     /**
       * Select columns excepts passed columns from a aliased dataframe
       *
       * @param joinedDF      [[DataFrame]] which has aliased columns
       * @param alias         DF alias
-      * @param excludeColumn columns to exclude
+      * @param excludeColumns columns to exclude
       * @return [[DFFunc]]
       */
-    def apply(joinedDF: DataFrame, alias: String, excludeColumn: Seq[String]): DFFunc =
-      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumn): _*)
+    def apply(joinedDF: DataFrame, alias: String, excludeColumns: Seq[String]): DFFunc =
+      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumns): _*)
   }
 
 
