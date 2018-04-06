@@ -53,6 +53,26 @@ text   | {type: text, alias: #dataframe_alias, path: #hdfs_file_path, options: {
 
 
 #### 3. transformations
+The 'transformations' section if defined as follows:
+
+```yaml
+transformations :
+    - input: #input_alias  // Input/Source alias from inputs/transformed sources alias
+      alias: #alias_for_this_transfomation (optional) // if not provided, input alias will be replaced with this transformation
+      persist: true  // Whether to persist this result of this transformation (optional)
+      transform: // define multiple transformations for this input
+        - {type: <transformation>, <transfomation_options>}
+        - {type: <transformation>, <transfomation_options>}
+        ....
+    - input: #input_alias // Input/Source alias from inputs/transformed sources alias
+      alias: #alias_for_this_transfomation (optional) // if not provided, input alias will be replaced with this transformation
+      persist: true  // Whether to persist this result of this transformation (optional)
+      transform:
+        - {type: <transformation>, <transfomation_options>}
+        - {type: <transformation>, <transfomation_options>}
+        ....
+    ....
+```
 
 Following transformations are supported:
 
@@ -65,4 +85,4 @@ Group |{type: group, columns: [col1, col2], expr: group_expression} |
 Filter | {type: filter, condition: filter_condition} |
 Select | {type: select, columns: [col1, col2]} |
 SelectNot | {type: select_not, columns: [col1, col2]} |
-Sequence | {type: sequence, sk_source: source_alias, sk_column: source_key_column | max 'sk_column' value plus 1 will used as start index for sequence generation}
+Sequence | {type: sequence, sk_source: source_alias, sk_column: source_key_column} | max 'sk_column' value plus 1 will used as start index for sequence generation
