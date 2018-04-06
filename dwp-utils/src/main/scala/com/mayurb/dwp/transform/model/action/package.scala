@@ -26,6 +26,7 @@ package object action {
     new Type(value = classOf[TransformAction], name = "transform"),
     new Type(value = classOf[RenameAction], name = "rename"),
     new Type(value = classOf[SelectAction], name = "select"),
+    new Type(value = classOf[SelectNotAction], name = "select_not"),
     new Type(value = classOf[SequenceAction], name = "sequence")
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
@@ -66,8 +67,8 @@ package object action {
   }
 
 
-  case class GroupAction(@JsonProperty(required = true) groupColumns: Seq[String],
-                         @JsonProperty(required = true) groupExpr: String) extends TransformActionRoot("group") {
+  case class GroupAction(@JsonProperty(value = "columns", required = true) groupColumns: Seq[String],
+                         @JsonProperty(value = "expr", required = true) groupExpr: String) extends TransformActionRoot("group") {
     override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns: _*) ^ groupExpr
   }
 
@@ -81,6 +82,9 @@ package object action {
     override def apply(dataframes: DataFrame*): DFFunc = Select(columns: _*)
   }
 
+  case class SelectNotAction(@JsonProperty(required = true) columns: Seq[String]) extends TransformActionRoot("select_not") {
+    override def apply(dataframes: DataFrame*): DFFunc = SelectNot(columns: _*)
+  }
 
   case class SequenceAction(@JsonProperty(value = "sk_source", required = true) skSource: String,
                             @JsonProperty(value = "sk_column", required = true) skColumn: String) extends TransformActionRoot("sequence") {
