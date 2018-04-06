@@ -16,3 +16,8 @@ The project contains following sub-modules
  - *DQ Framework*: A simplified and extensible yaml based Data Quality and Data Standardization framework
  
     [More information](dwp-utils/README.md)
+
+
+##### Building the project:
+ Currently the project supports Spark version 2.x onwards. Support for Spark version 1.x will be added later.
+ Use **mvn clean package** to build the project. Import the generated jars in your project.
