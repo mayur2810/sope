@@ -36,6 +36,11 @@ This module contains following frameworks :
             - {type: hive, input: "transactions", mode: append, db: work, table: "transformed_transaction"}
 
         ```
+        
+        The yaml file can be submitted for execution using spark-submit command as follows:
+        ```shell
+           spark-submit  --master yarn  --deploy-mode client --class  com.mayurb.dwp.transform.YamlRunner dwp-utils-1.0.jar --yaml_file test.yaml
+        ```
  
     -   Intermediate mode:
         This mode allows to use yaml file in Scala/Java code. Multiple dataframes can be provided as input and the final output will
@@ -52,7 +57,7 @@ This module contains following frameworks :
                 - {type: filter, condition: "product_desc != 'N.A.'"}
                 - {type: rename, list: {product_desc: "product"}}
                 - {type: select, columns: ["product_id", "product"]}
-            - input: "transactions"
+            - input: "transactions" // Providing alias is optional, if not provided the input alias will point to lastest transfomation
               transform:
                 - {type: rename, list: {id: "trxn_id" , loc: "location"}}
                 - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER (PARTITION BY location order by date desc)"}}
@@ -72,6 +77,8 @@ This module contains following frameworks :
         // Get last transformed dataframe
         val transfomedDF = transformationResult.last._2
         ```
+        
+        Refer this documentation for YAML Transformer Constructs: [YAML Constructs](yaml-transformer-constructs.md)
  
  2. *DQ Framework*: 
  
