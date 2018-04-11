@@ -19,16 +19,15 @@ import com.mayurb.utils.Logging
 class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Logging {
 
 
-  // Instantiate object mapper object
-  private val mapper = new ObjectMapper(new YAMLFactory())
-  mapper.registerModule(DefaultScalaModule)
-
   /**
     * Parses the YAML file to [[TransformModel]] object
     *
     * @return [[TransformModel]]
     */
-  def parseYAML(containsSourceInfo: Boolean): TransformModel =
+  def parseYAML(containsSourceInfo: Boolean): TransformModel = {
+    // Instantiate object mapper object
+    val mapper = new ObjectMapper(new YAMLFactory())
+    mapper.registerModule(DefaultScalaModule)
     if (containsSourceInfo)
       mapper.readValue(new FileReader(yamlFilePath), classOf[TransformModelWithSourceTarget])
     else {
@@ -37,6 +36,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
         throw new Exception("Invalid Dataframes provided or incorrect yaml config")
       model
     }
+  }
 
 
   /**
