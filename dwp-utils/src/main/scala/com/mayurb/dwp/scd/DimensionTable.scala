@@ -154,8 +154,8 @@ object DimensionTable {
   val Separator = ":"
 
   // SCD Update statuses
-  val Insert = "I"
-  val Update = "U"
+  val Insert = "INSERT"
+  val Update = "UPDATE"
   val NoChangeDelete = "NCD"
   val Invalid = "INVALID"
 
@@ -171,7 +171,23 @@ object DimensionTable {
   case class DimensionChangeSet(insertRecords: DataFrame,
                                 updateRecords: DataFrame,
                                 noChangeOrDeleteRecords: DataFrame,
-                                invalidRecords: DataFrame)
+                                invalidRecords: DataFrame) {
+
+    /**
+      * Get Map of Insert, Update and NoChange records
+      *
+      * @return Map[String, DataFrame]
+      */
+    def getMap: Map[String, DataFrame] = Map(Insert -> insertRecords, Update -> updateRecords,
+      NoChangeDelete -> noChangeOrDeleteRecords, Invalid -> invalidRecords)
+
+    /**
+      * Get Unioned [[DataFrame]] of Insert, Update, NoChange and Invalid records
+      *
+      * @return [[DataFrame]]
+      */
+    def getUnion: DataFrame = getMap.values.reduce(_ union _)
+  }
 
   /**
     * Identify SCD status
