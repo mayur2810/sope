@@ -3,6 +3,7 @@ package com.mayurb.dwp.transform.model
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.mayurb.dwp.scd.DimensionTable
+import com.mayurb.dwp.transform.exception.YamlDataTransformException
 import com.mayurb.spark.sql._
 import com.mayurb.spark.sql.dsl._
 import org.apache.spark.sql.DataFrame
@@ -99,7 +100,7 @@ package object action {
 
     override def apply(dataframes: DataFrame*): DFFunc = {
       if (joinCondition == null && joinColumns == null)
-        throw new Exception("Please provide either join 'condition' or join 'columns' option")
+        throw new YamlDataTransformException("Please provide either 'condition' or 'columns' option in join action definition")
 
       if (joinCondition != null)
         joinTypeFunc(Join(Option(broadcastHint), expr(joinCondition)))(dataframes.head)

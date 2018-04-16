@@ -5,6 +5,7 @@ import java.io.FileReader
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.mayurb.dwp.transform.exception.YamlDataTransformException
 import com.mayurb.dwp.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
 import com.mayurb.spark.sql.dsl._
 import com.mayurb.utils.Logging
@@ -32,7 +33,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     else {
       val model = mapper.readValue(new FileReader(yamlFilePath), classOf[TransformModelWithoutSourceTarget])
       if (model.sources.size != dataFrames.size)
-        throw new Exception("Invalid Dataframes provided or incorrect yaml config")
+        throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
       model
     }
   }
@@ -51,7 +52,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
 
     // gets dataframe from provided alias
     def getDF(alias: String): DataFrame = if (sourceDFMap.isDefinedAt(alias)) sourceDFMap(alias) else
-      throw new Exception(s"Alias: $alias not found")
+      throw new YamlDataTransformException(s"Alias: $alias not found")
 
     transformations.map(dfTransform => {
       logInfo(s"Applying transformation for source: ${dfTransform.source}")
