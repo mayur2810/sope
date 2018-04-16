@@ -49,6 +49,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
                                    transformations: Seq[DFTransformation]): Seq[(String, DataFrame)] = {
     var sourceDFMap = mapping
 
+    // gets dataframe from provided alias
     def getDF(alias: String): DataFrame = if (sourceDFMap.isDefinedAt(alias)) sourceDFMap(alias) else
       throw new Exception(s"Alias: $alias not found")
 
@@ -56,10 +57,18 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
       logInfo(s"Applying transformation for source: ${dfTransform.source}")
       val persistTransformation = dfTransform.persist
       logInfo(s"Transformation will be persisted: $persistTransformation")
-      val df = sourceDFMap(dfTransform.source).alias(dfTransform.getAlias)
-      val transformedDF = dfTransform.transform.foldLeft(NoOp()) {
-        case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
-      } --> df
+      val sourceDF = sourceDFMap(dfTransform.source)
+
+      // if sql transform apply sql or perform provided action transformation
+      val transformedDF = if (dfTransform.isSQLTransform) {
+        sourceDF.createOrReplaceTempView(dfTransform.source)
+        sourceDF.sqlContext.sql(dfTransform.sql.get)
+      } else {
+        dfTransform.actions.get.foldLeft(NoOp()) {
+          case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
+        } --> sourceDF
+      }
+
       // Add alias to dataframe
       val transformedWithAliasDF = {
         if (persistTransformation) transformedDF.persist else transformedDF
