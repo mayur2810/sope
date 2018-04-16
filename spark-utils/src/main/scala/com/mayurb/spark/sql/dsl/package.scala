@@ -352,7 +352,7 @@ package object dsl {
       * @param columns [[Column]] objects
       * @return [[DFFunc]]
       */
-    def apply(columns: Column*): DFFunc = (df: DataFrame) => df.orderBy(columns: _*)
+    def apply[_: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.orderBy(columns: _*)
   }
 
   /*
