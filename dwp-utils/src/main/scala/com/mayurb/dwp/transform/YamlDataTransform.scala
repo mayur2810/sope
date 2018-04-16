@@ -5,7 +5,6 @@ import java.io.FileReader
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.mayurb.dwp.transform.model.action.{JoinAction, SCDAction, SequenceAction}
 import com.mayurb.dwp.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
 import com.mayurb.spark.sql.dsl._
 import com.mayurb.utils.Logging
@@ -59,16 +58,14 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
       logInfo(s"Transformation will be persisted: $persistTransformation")
       val df = sourceDFMap(dfTransform.source).alias(dfTransform.getAlias)
       val transformedDF = dfTransform.transform.foldLeft(NoOp()) {
-        case (transformed, joinTransform: JoinAction) => transformed + joinTransform(getDF(joinTransform.joinSource))
-        case (transformed, sequenceAction: SequenceAction) => transformed + sequenceAction(getDF(sequenceAction.skSource))
-        case (transformed, scdAction: SCDAction) => transformed + scdAction(getDF(scdAction.dimTable))
-        case (transformed, transformAction) => transformed + transformAction()
+        case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
       } --> df
       // Add alias to dataframe
-      val transformedWithAliasDF = transformedDF.alias(dfTransform.getAlias)
+      val transformedWithAliasDF = {
+        if (persistTransformation) transformedDF.persist else transformedDF
+      }.alias(dfTransform.getAlias)
       // Update Map
-      sourceDFMap = sourceDFMap updated(dfTransform.getAlias,
-        if (persistTransformation) transformedWithAliasDF.persist else transformedWithAliasDF)
+      sourceDFMap = sourceDFMap updated(dfTransform.getAlias, transformedWithAliasDF)
       (dfTransform.getAlias, transformedWithAliasDF)
     })
   }
