@@ -1,7 +1,7 @@
 package com.mayurb.spark.sql
 
 import com.mayurb.utils.Logging
-import org.apache.spark.sql.functions.{broadcast, col, expr}
+import org.apache.spark.sql.functions.{broadcast, col, desc, expr}
 import org.apache.spark.sql.{Column, DataFrame}
 
 import scala.reflect.ClassTag
@@ -341,10 +341,16 @@ package object dsl {
     /**
       * Apply order by transform
       *
-      * @param columns Column names
+      * @param columns Column names followed by ':' and sort order, e.g. col1:desc, col2:asc
+      *                or just column name which will asc ordering by default
       * @return [[DFFunc]]
       */
-    def apply(columns: String*): DFFunc = (df: DataFrame) => df.orderBy(columns.head, columns.tail: _*)
+    def apply(columns: String*): DFFunc = (df: DataFrame) =>
+      df.orderBy(columns.map(exp =>
+        if (exp.toLowerCase.endsWith("desc"))
+          desc(exp.split(":").head)
+        else
+          col(exp.split(":").head)): _*)
 
     /**
       * Apply order by transform
