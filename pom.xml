@@ -10,42 +10,42 @@
     </modules>
     <packaging>pom</packaging>
 
-<!--    <profiles>
-        <profile>
-            <id>spark2</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <spark.version>2.2.0</spark.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>spark1</id>
-            <properties>
-                <spark.version>1.6.3</spark.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>scala2_10</id>
-            <properties>
-                <scala.version.tag>2.10</scala.version.tag>
-                <scala.version>2.10.6</scala.version>
-                <target.jvm>1.7</target.jvm>
-            </properties>
-        </profile>
-        <profile>
-            <id>scala2_11</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <scala.version.tag>2.11</scala.version.tag>
-                <scala.version>2.11.8</scala.version>
-                <target.jvm>1.8</target.jvm>
-            </properties>
-        </profile>
-    </profiles>-->
+    <!--    <profiles>
+            <profile>
+                <id>spark2</id>
+                <activation>
+                    <activeByDefault>true</activeByDefault>
+                </activation>
+                <properties>
+                    <spark.version>2.2.0</spark.version>
+                </properties>
+            </profile>
+            <profile>
+                <id>spark1</id>
+                <properties>
+                    <spark.version>1.6.3</spark.version>
+                </properties>
+            </profile>
+            <profile>
+                <id>scala2_10</id>
+                <properties>
+                    <scala.version.tag>2.10</scala.version.tag>
+                    <scala.version>2.10.6</scala.version>
+                    <target.jvm>1.7</target.jvm>
+                </properties>
+            </profile>
+            <profile>
+                <id>scala2_11</id>
+                <activation>
+                    <activeByDefault>true</activeByDefault>
+                </activation>
+                <properties>
+                    <scala.version.tag>2.11</scala.version.tag>
+                    <scala.version>2.11.8</scala.version>
+                    <target.jvm>1.8</target.jvm>
+                </properties>
+            </profile>
+        </profiles>-->
 
 
     <properties>
@@ -56,12 +56,13 @@
         <project.ver>${project.version}</project.ver>
         <maven.shade.version>3.0.0</maven.shade.version>
         <scalatest.plugin.version>2.0.0</scalatest.plugin.version>
-        <scala.plugin.version>2.15.2</scala.plugin.version>
+        <scala.plugin.version>3.3.2</scala.plugin.version>
         <surfire.plugin.version>2.7</surfire.plugin.version>
         <eclipse.plugin.version>2.10</eclipse.plugin.version>
         <spark.version>2.2.0</spark.version>
         <scala.version.tag>2.11</scala.version.tag>
         <scala.version>2.11.8</scala.version>
+        <scoverage.plugin.version>1.3.0</scoverage.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -111,8 +112,8 @@
         <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
                 <version>${scala.plugin.version}</version>
                 <executions>
                     <execution>
@@ -129,7 +130,7 @@
                     </args>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>${eclipse.plugin.version}</version>
@@ -146,7 +147,7 @@
                         <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
                     </classpathContainers>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <!-- disable surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -202,6 +203,15 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.scoverage</groupId>
+                    <artifactId>scoverage-maven-plugin</artifactId>
+                    <version>${scoverage.plugin.version}</version>
+                    <configuration>
+                        <scalaVersion>${scala.version}</scalaVersion>
+                        <aggregate>true</aggregate>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
