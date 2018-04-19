@@ -89,7 +89,8 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
     val transformModel = parseYAML(true).asInstanceOf[TransformModelWithSourceTarget]
-    val sourceDFMap = transformModel.sources.map(source => source.getSourceName -> source.apply(sqlContext)).toMap
+    val sourceDFMap = transformModel.sources.map(source => source.getSourceName
+      -> source.apply(sqlContext).alias(source.getSourceName)).toMap
     val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations).toMap
     transformModel.targets.foreach(target => target(transformationResult(target.getInput)))
   }
@@ -103,7 +104,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     */
   def getTransformedDFs: Seq[(String, DataFrame)] = {
     val transformModel = parseYAML(false).asInstanceOf[TransformModelWithoutSourceTarget]
-    val sourceDFMap = transformModel.sources.zip(dataFrames).toMap
-    applyTransformations(sourceDFMap, transformModel.transformations)
+    val sourceDFMap = transformModel.sources.zip(dataFrames).map{case (source, df) => (source, df.alias(source))}
+    applyTransformations(sourceDFMap.toMap, transformModel.transformations)
   }
 }
