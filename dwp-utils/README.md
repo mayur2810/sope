@@ -1,6 +1,6 @@
 ## dwp-utils
 
-This module contains following framestages :
+This module contains following frameworks :
  1. *YAML Transformer*: 
  
     A yaml based external transformer with easy to use ETL constructs. It is useful for creating simple and monotonous transformations
@@ -101,3 +101,4 @@ This module contains following framestages :
  2. *DQ Framework*:
  
     A simplified and extensible yaml based Data Quality and Data Standardization framework
+    *TBD*
