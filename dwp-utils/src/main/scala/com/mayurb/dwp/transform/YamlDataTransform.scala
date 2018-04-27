@@ -2,14 +2,14 @@ package com.mayurb.dwp.transform
 
 import java.io.FileReader
 
-import com.mayurb.dwp.transform.model.action.{JoinAction, SequenceAction}
-import com.mayurb.dwp.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
-import com.mayurb.spark.sql.dsl._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import com.mayurb.dwp.transform.exception.YamlDataTransformException
+import com.mayurb.dwp.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
+import com.mayurb.spark.sql.dsl._
 import com.mayurb.utils.Logging
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 /**
   * Reads YAML and performs Spark transformations provided in the YAML file
@@ -19,24 +19,24 @@ import com.mayurb.utils.Logging
 class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Logging {
 
 
-  // Instantiate object mapper object
-  private val mapper = new ObjectMapper(new YAMLFactory())
-  mapper.registerModule(DefaultScalaModule)
-
   /**
     * Parses the YAML file to [[TransformModel]] object
     *
     * @return [[TransformModel]]
     */
-  def parseYAML(containsSourceInfo: Boolean): TransformModel =
+  def parseYAML(containsSourceInfo: Boolean): TransformModel = {
+    // Instantiate object mapper object
+    val mapper = new ObjectMapper(new YAMLFactory())
+    mapper.registerModule(DefaultScalaModule)
     if (containsSourceInfo)
       mapper.readValue(new FileReader(yamlFilePath), classOf[TransformModelWithSourceTarget])
     else {
       val model = mapper.readValue(new FileReader(yamlFilePath), classOf[TransformModelWithoutSourceTarget])
       if (model.sources.size != dataFrames.size)
-        throw new Exception("Invalid Dataframes provided or incorrect yaml config")
+        throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
       model
     }
+  }
 
 
   /**
@@ -49,21 +49,33 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
   private def applyTransformations(mapping: Map[String, DataFrame],
                                    transformations: Seq[DFTransformation]): Seq[(String, DataFrame)] = {
     var sourceDFMap = mapping
+
+    // gets dataframe from provided alias
+    def getDF(alias: String): DataFrame = if (sourceDFMap.isDefinedAt(alias)) sourceDFMap(alias) else
+      throw new YamlDataTransformException(s"Alias: $alias not found")
+
     transformations.map(dfTransform => {
       logInfo(s"Applying transformation for source: ${dfTransform.source}")
       val persistTransformation = dfTransform.persist
       logInfo(s"Transformation will be persisted: $persistTransformation")
-      val df = sourceDFMap(dfTransform.source).alias(dfTransform.getAlias)
-      val transformedDF = dfTransform.transform.foldLeft(NoOp()) {
-        case (transformed, joinTransform: JoinAction) => transformed + joinTransform(sourceDFMap(joinTransform.joinSource))
-        case (transformed, sequenceAction: SequenceAction) => transformed + sequenceAction(sourceDFMap(sequenceAction.skSource))
-        case (transformed, transformAction) => transformed + transformAction()
-      } --> df
+      val sourceDF = sourceDFMap(dfTransform.source)
+
+      // if sql transform apply sql or perform provided action transformation
+      val transformedDF = if (dfTransform.isSQLTransform) {
+        sourceDF.createOrReplaceTempView(dfTransform.source)
+        sourceDF.sqlContext.sql(dfTransform.sql.get)
+      } else {
+        dfTransform.actions.get.foldLeft(NoOp()) {
+          case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
+        } --> sourceDF
+      }
+
       // Add alias to dataframe
-      val transformedWithAliasDF = transformedDF.alias(dfTransform.getAlias)
+      val transformedWithAliasDF = {
+        if (persistTransformation) transformedDF.persist else transformedDF
+      }.alias(dfTransform.getAlias)
       // Update Map
-      sourceDFMap = sourceDFMap updated(dfTransform.getAlias,
-        if(persistTransformation) transformedWithAliasDF.persist else transformedWithAliasDF)
+      sourceDFMap = sourceDFMap updated(dfTransform.getAlias, transformedWithAliasDF)
       (dfTransform.getAlias, transformedWithAliasDF)
     })
   }
@@ -77,7 +89,8 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
     val transformModel = parseYAML(true).asInstanceOf[TransformModelWithSourceTarget]
-    val sourceDFMap = transformModel.sources.map(source => source.getSourceName -> source.apply(sqlContext)).toMap
+    val sourceDFMap = transformModel.sources.map(source => source.getSourceName
+      -> source.apply(sqlContext).alias(source.getSourceName)).toMap
     val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations).toMap
     transformModel.targets.foreach(target => target(transformationResult(target.getInput)))
   }
@@ -91,7 +104,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     */
   def getTransformedDFs: Seq[(String, DataFrame)] = {
     val transformModel = parseYAML(false).asInstanceOf[TransformModelWithoutSourceTarget]
-    val sourceDFMap = transformModel.sources.zip(dataFrames).toMap
-    applyTransformations(sourceDFMap, transformModel.transformations)
+    val sourceDFMap = transformModel.sources.zip(dataFrames).map{case (source, df) => (source, df.alias(source))}
+    applyTransformations(sourceDFMap.toMap, transformModel.transformations)
   }
 }

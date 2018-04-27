@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dwp-spark</artifactId>
         <groupId>com.mayurb</groupId>
-        <version>1.0</version>
+        <version>1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -43,6 +43,10 @@
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.scoverage</groupId>
+                <artifactId>scoverage-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

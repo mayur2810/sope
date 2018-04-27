@@ -1,7 +1,7 @@
 package com.mayurb.spark.sql
 
 import com.mayurb.utils.Logging
-import org.apache.spark.sql.functions.{broadcast, col, expr}
+import org.apache.spark.sql.functions.{broadcast, col, desc, expr}
 import org.apache.spark.sql.{Column, DataFrame}
 
 import scala.reflect.ClassTag
@@ -74,21 +74,21 @@ package object dsl {
     /**
       * Select columns excepts passed columns
       *
-      * @param excludeColumn columns to exclude
+      * @param excludeColumns columns to exclude
       * @return [[DFFunc]]
       */
-    def apply(excludeColumn: String*): DFFunc = (df: DataFrame) => df.select(df.getColumns: _*)
+    def apply(excludeColumns: String*): DFFunc = (df: DataFrame) => df.select(df.getColumns(excludeColumns): _*)
 
     /**
       * Select columns excepts passed columns from a aliased dataframe
       *
-      * @param joinedDF      [[DataFrame]] which has aliased columns
-      * @param alias         DF alias
-      * @param excludeColumn columns to exclude
+      * @param joinedDF       [[DataFrame]] which has aliased columns
+      * @param alias          DF alias
+      * @param excludeColumns columns to exclude
       * @return [[DFFunc]]
       */
-    def apply(joinedDF: DataFrame, alias: String, excludeColumn: Seq[String]): DFFunc =
-      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumn): _*)
+    def apply(joinedDF: DataFrame, alias: String, excludeColumns: Seq[String]): DFFunc =
+      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumns): _*)
   }
 
 
@@ -218,7 +218,7 @@ package object dsl {
       * @param column     Column name for sequence column
       * @return [[DFFunc]]
       */
-    def apply(startIndex: Long, column: String): DFFunc = (df: DataFrame) => df.generateSequence(startIndex, Some(column))
+    def apply(startIndex: Long, column: String): DFFunc = (df: DataFrame) => df.drop(column).generateSequence(startIndex, Some(column))
   }
 
 
@@ -293,6 +293,110 @@ package object dsl {
     def apply[_: ClassTag](groupColumns: Column*): DFGroupFunc =
       (df: DataFrame, columns: Seq[Column]) =>
         df.groupBy(groupColumns: _*).agg(columns.head, columns.tail: _*)
+  }
+
+  /*
+     Union Transform
+    */
+  object Union {
+    /**
+      * Apply Union transform on provided dataframes
+      *
+      * @param dataframes [[DataFrame]]s to be unioned
+      * @return [[DFFunc]]
+      */
+    def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => dataframes.foldLeft(df)(_ union _)
+  }
+
+  /*
+   Intersect Transform
+  */
+  object Intersect {
+    /**
+      * Apply Intersect transform on provided dataframes
+      *
+      * @param dataframes [[DataFrame]]s to be intersected
+      * @return [[DFFunc]]
+      */
+    def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => dataframes.foldLeft(df)(_ intersect _)
+  }
+
+  /*
+   Except Transform
+  */
+  object Except {
+    /**
+      * Apply Except transform on provided dataframes
+      *
+      * @param dataframes [[DataFrame]]s for except transformation
+      * @return [[DFFunc]]
+      */
+    def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => dataframes.foldLeft(df)(_ except _)
+  }
+
+  /*
+   OrderBy Transform
+  */
+  object OrderBy {
+    /**
+      * Apply order by transform
+      *
+      * @param columns Column names followed by ':' and sort order, e.g. col1:desc, col2:asc
+      *                or just column name which will asc ordering by default
+      * @return [[DFFunc]]
+      */
+    def apply(columns: String*): DFFunc = (df: DataFrame) =>
+      df.orderBy(columns.map(exp =>
+        if (exp.toLowerCase.endsWith("desc"))
+          desc(exp.split(":").head)
+        else
+          col(exp.split(":").head)): _*)
+
+    /**
+      * Apply order by transform
+      *
+      * @param columns [[Column]] objects
+      * @return [[DFFunc]]
+      */
+    def apply[_: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.orderBy(columns: _*)
+  }
+
+  /*
+   DropDuplicates Transform
+  */
+  object DropDuplicates {
+    /**
+      * Apply drop duplicates transform
+      *
+      * @param columns Column names on which duplicates will be dropped
+      * @return [[DFFunc]]
+      */
+    def apply(columns: String*): DFFunc = (df: DataFrame) => df.dropDuplicates(columns.head, columns.tail: _*)
+  }
+
+  /*
+   Distinct Transform
+  */
+  object Distinct {
+    /**
+      * Apply Distinct duplicates transform
+      *
+      * @return [[DFFunc]]
+      */
+    def apply: DFFunc = (df: DataFrame) => df.distinct
+  }
+
+  /*
+   Limit Transform
+  */
+  object Limit {
+    /**
+      * Apply Limit transform
+      *
+      * @param n number of rows
+      * @return [[DFFunc]]
+      */
+    def apply(n: Int): DFFunc = (df: DataFrame) => df.limit(n)
   }
 
 
