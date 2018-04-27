@@ -86,6 +86,14 @@ It will reduce the boiler-plate code for complex transformations using core Spar
     - Transform
     - Sequence
     - Join
-    - Cube
     - Group
+    - Cube
+    - Union
+    - Intersect
+    - Except
+    - OrderBy
+    - Distinct
+    - Limit
+    - DropDuplicates
     - Unstruct
+    - UpdateKeys

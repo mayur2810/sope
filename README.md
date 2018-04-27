@@ -6,14 +6,14 @@ The project contains following sub-modules
 - *dwp-utils*
 
 1. **spark-utils**:
- This module contains library functions and an internal dsl library that assists with writing **Spark SQL** ETL transformations in concise manner
+ This module contains library functions and a Scala internal **dsl** library that assists with writing **Spark SQL** ETL transformations in concise manner
  
     [More information](spark-utils/README.md)
  
 2. **dwp-utils**:
  This module contains following utilities :
  - *YAML Transformer*: A yaml based external transformer with easy to use ETL constructs.
- - *DQ Framework*: A simplified and extensible yaml based Data Quality and Data Standardization framework
+ - *DQ Framework*: A simplified and extensible yaml based Data Quality and Data Standardization framework. **TBD**
  
     [More information](dwp-utils/README.md)
 
