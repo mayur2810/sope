@@ -98,7 +98,6 @@ This module contains following framestages :
         
         Refer this documentation for YAML Transformer Constructs: [YAML Constructs](yaml-transformer-constructs.md)
  
- 2. *DQ Framestage*: 
+ 2. *DQ Framework*:
  
-    A simplified and extensible yaml based Data Quality and Data Standardization framestage
-    *TBD*
+    A simplified and extensible yaml based Data Quality and Data Standardization framework
