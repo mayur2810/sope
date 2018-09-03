@@ -66,7 +66,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     }
 
     logDebug("Auto persist set: " + autoPersistSetting)
-    logDebug("Auto persist data list: " + autoPersistMapping.mkString(", "))
+    logDebug("Auto persist data list: " + autoPersistMapping.keys.mkString(", "))
 
     // gets dataframe from provided alias
     def getDF(alias: String): DataFrame = {
@@ -88,7 +88,8 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
       val persistTransformation = dfTransform.persist
       logInfo(s"Transformation will be persisted: $persistTransformation")
       val sourceDF = getDF(dfTransform.source)
-
+      // coalesce function
+      val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
       // if sql transform apply sql or perform provided action transformation
       val transformedDF = if (dfTransform.isSQLTransform) {
         sourceDF.createOrReplaceTempView(dfTransform.source)
@@ -97,7 +98,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
         dfTransform.actions.get.foldLeft(NoOp()) {
           case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
         } --> sourceDF
-      }
+      }.transform(coalesceFunc)
 
       // Add alias to dataframe
       val transformedWithAliasDF = {
