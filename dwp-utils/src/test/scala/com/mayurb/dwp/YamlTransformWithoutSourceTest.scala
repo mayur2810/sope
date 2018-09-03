@@ -106,4 +106,11 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.count should be(3)
   }
 
+  "aliasing_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("aliasing_test")
+    println("aliased_column_selection_test ==>")
+    transformedDF.show(false)
+    transformedDF.count should be(5)
+  }
+
 }

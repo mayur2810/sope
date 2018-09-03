@@ -23,12 +23,14 @@ transformations :
         - {type: "scd", dim_table: "dim_product", sk_column: "product_key", natural_keys: ["product_id"], derived_columns: ["derived_attr"], meta_columns: ["last_updated_date"]}
     - input: "scd_product"
       alias: "insert_update"
+      coalesce: 50
       actions:
         - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
         - {type: transform, list: {last_updated_date: "current_date"}}
         - {type: sequence, sk_source: "dim_product", sk_column: "product_key"}
     - input: "scd_product"
       alias: "final_dim_out"
+      coalesce: 50
       actions:
         - {type: filter, condition: "scd_status = 'NCD'"}
         - {type: union, with: ["insert_update"]}
@@ -41,3 +43,12 @@ transformations :
       alias: "drop_duplicate_test"
       actions:
          - {type: drop_duplicates, columns: ["product"]}
+    - input: "product_filtered"
+      alias: "product_filtered1" # Create new reference with new alias
+      actions:
+         - {type: select_not, columns: [] }
+    - input: "product_filtered"
+      alias: "aliasing_test"
+      actions:
+          - {type: join, with: "product_filtered1",  columns: ["product_id"] , join_type: inner}
+          - {type: select, columns: ["product_filtered1.product", "product_filtered.product"]}
