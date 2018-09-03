@@ -38,6 +38,7 @@ package object action {
     final val DropDuplicates = "drop_duplicates"
     final val DropColumn = "drop"
     final val Unstruct = "unstruct"
+    final val NA = "na"
   }
 
   /**
@@ -66,7 +67,8 @@ package object action {
     new Type(value = classOf[OrderByAction], name = Actions.OrderBy),
     new Type(value = classOf[DropDuplicateAction], name = Actions.DropDuplicates),
     new Type(value = classOf[DropColumnAction], name = Actions.DropColumn),
-    new Type(value = classOf[UnstructAction], name = Actions.Unstruct)
+    new Type(value = classOf[UnstructAction], name = Actions.Unstruct),
+    new Type(value = classOf[NAAction], name = Actions.NA)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
     def apply(dataframes: DataFrame*): DFFunc
@@ -204,6 +206,13 @@ package object action {
         .getDimensionChangeSet(scdInput, incrementalLoad.getOrElse(true)).getUnion
 
     override def inputAliases: Seq[String] = Seq(dimTable)
+  }
+
+  case class NAAction(@JsonProperty(value = "default_numeric", required = true) defaultNumericValue: Double,
+                      @JsonProperty(value = "default_string", required = true) defaultStringValue: String,
+                      columns: Option[Seq[String]])
+    extends TransformActionRoot(Actions.NA) {
+    override def apply(dataframes: DataFrame*): DFFunc = NA(defaultNumericValue, defaultStringValue, columns.getOrElse(Nil))
   }
 
 }

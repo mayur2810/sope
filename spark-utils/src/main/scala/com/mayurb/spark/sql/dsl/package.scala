@@ -463,6 +463,33 @@ package object dsl {
 
 
   /*
+      NA Functions
+   */
+  object NA {
+    /**
+      * Apply NA functions with default Numeric and String column values
+      *
+      * @param defaultNumeric Default Numeric value
+      * @param defaultString  Default String value
+      * @return [[DFFunc]]
+      */
+    def apply(defaultNumeric: Double, defaultString: String, columns: Seq[String] = Nil): DFFunc =
+      (df: DataFrame) => columns match {
+        case Nil => df.na.fill(defaultNumeric).na.fill(defaultString)
+        case _ => df.na.fill(defaultNumeric, columns).na.fill(defaultString, columns)
+      }
+
+    /**
+      * Apply NA functions with default values for porvided columns in map
+      *
+      * @param valueMap mapping of default null values for specified columns in map
+      * @return [[DFFunc]]
+      */
+    def apply(valueMap: Map[String, Any]): DFFunc = (df: DataFrame) => df.na.fill(valueMap)
+  }
+
+
+  /*
       Dataframe Implicit methods
    */
   implicit class DFImplicits(dataframe: DataFrame) {

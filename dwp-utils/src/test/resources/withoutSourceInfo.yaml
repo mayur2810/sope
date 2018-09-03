@@ -52,3 +52,11 @@ transformations :
       actions:
           - {type: join, with: "product_filtered1",  columns: ["product_id"] , join_type: inner}
           - {type: select, columns: ["product_filtered1.product", "product_filtered.product"]}
+    - input: "dim_product"
+      alias: "na_test"
+      actions:
+          - {type: filter, condition: "product_id != -1 or product_id != 0"}
+          - {type: select, columns: ["product_id"]}
+          - {type: transform, list: {product_id: "pow(product_id, 2)"}}
+          - {type: join, with: "dim_product", columns: ["product_id"], join_type: left}
+          - {type: na, default_numeric: -1, default_string: "N/A", columns:["product_key", "product_desc"]}
