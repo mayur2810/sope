@@ -18,7 +18,7 @@ transformations :
         - {type: "order_by", columns: ["p_cnt:desc"]}
     - input : "product"
       alias: "scd_product"
-      persist: true
+      persist: "memory_only"
       actions:
         - {type: "scd", dim_table: "dim_product", sk_column: "product_key", natural_keys: ["product_id"], derived_columns: ["derived_attr"], meta_columns: ["last_updated_date"]}
     - input: "scd_product"

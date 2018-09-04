@@ -10,8 +10,7 @@ import com.mayurb.dwp.transform.model.{DFTransformation, TransformModel, Transfo
 import com.mayurb.spark.sql.dsl._
 import com.mayurb.utils.Logging
 import org.apache.spark.sql.{DataFrame, SQLContext}
-
-import scala.collection.mutable
+import org.apache.spark.storage.StorageLevel
 
 /**
   * Reads YAML and performs Spark transformations provided in the YAML file
@@ -54,39 +53,36 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     val autoPersistSetting = Option(System.getProperty("dwp.auto.persist")).fold(true)(_.toBoolean)
 
     // Initialize the auto persist mapping for sources
-    val autoPersistMapping: mutable.Map[String, Boolean] = {
+    val autoPersistList: Seq[String] = {
       lazy val persistSeq = transformations
         .flatMap(transform => transform.source +: transform.actions.fold(Nil: Seq[String])(actions =>
           actions.foldLeft(Nil: Seq[String]) { case (a1, a2) => a1 ++ a2.inputAliases }))
         .map(_ -> 1)
         .groupBy(_._1).map { case (k, v) => (k, v.size) }
-        .filter(_._2 > 1)
-        .map(_._1 -> false).toSeq
-      if (autoPersistSetting) mutable.Map[String, Boolean](persistSeq: _*) else mutable.Map[String, Boolean]()
+        .filter(_._2 > 1).keys
+      if (autoPersistSetting) persistSeq.toSeq.distinct else Nil
     }
 
-    logDebug("Auto persist set: " + autoPersistSetting)
-    logDebug("Auto persist data list: " + autoPersistMapping.keys.mkString(", "))
+    logDebug("AUTO persist set: " + autoPersistSetting)
+    logDebug("AUTO persist data list: " + autoPersistList.mkString(", "))
 
     // gets dataframe from provided alias
     def getDF(alias: String): DataFrame = {
       if (sourceDFMap.isDefinedAt(alias)) {
-        if (autoPersistMapping.isDefinedAt(alias) && !autoPersistMapping.getOrElse(alias, false)) {
-          logWarning(s"AUTO persisting $alias, since it is used multiple times")
-          autoPersistMapping.update(alias, true)
-          sourceDFMap(alias).persist()
+        val autoPersist = autoPersistList.contains(alias)
+        sourceDFMap(alias).storageLevel match {
+          case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
+            logWarning(s"AUTO persisting (Memory only) transformation: $alias, since it is used multiple times")
+            sourceDFMap(alias).persist(StorageLevel.MEMORY_ONLY)
+          case _ => sourceDFMap(alias)
         }
-        else sourceDFMap(alias)
       }
       else
         throw new YamlDataTransformException(s"Alias: $alias not found")
     }
 
-
     transformations.map(dfTransform => {
       logInfo(s"Applying transformation for source: ${dfTransform.source}")
-      val persistTransformation = dfTransform.persist
-      logInfo(s"Transformation will be persisted: $persistTransformation")
       val sourceDF = getDF(dfTransform.source)
       // coalesce function
       val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
@@ -102,7 +98,10 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
 
       // Add alias to dataframe
       val transformedWithAliasDF = {
-        if (persistTransformation) transformedDF.persist else transformedDF
+        dfTransform.persistLevel.fold(transformedDF)(level => {
+          logInfo(s"Transformation ${dfTransform.getAlias} is configured to be persisted at level: $level")
+          transformedDF.persist(StorageLevel.fromString(level.toUpperCase))
+        })
       }.alias(dfTransform.getAlias)
       // Update Map
       sourceDFMap = sourceDFMap updated(dfTransform.getAlias, transformedWithAliasDF)
