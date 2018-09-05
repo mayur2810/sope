@@ -6,8 +6,6 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
-import scala.reflect.ClassTag
-
 /**
   * Implicit utility functions for [[DataFrame]]
   *
@@ -103,8 +101,9 @@ package object sql {
 
 
     /**
-      * @deprecated Note: Supported for Spark 1.x version, Spark 2.x has this version
-      *             Drop Columns from Dataframe
+      * Drop Columns from Dataframe
+      * Note: Supported for Spark 1.x version, Spark 2.x has this version
+      *
       * @param columns [[Seq]] of column [[String]]
       * @return [[DataFrame]]
       */
@@ -157,26 +156,25 @@ package object sql {
 
     /**
       * Applies the provided transformation functions to [[DataFrame]]
+      * Use if the function return different type and some selection function is to be used
       *
       * @param transformFunctionList Transformation functions
+      * @param selectorFunc Selection function that will generate the dataframe for next function
+      * @tparam A The return type of transformation function
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformations[_: ClassTag](transformFunctionList: Seq[DFFunc]): DataFrame = {
-      transformFunctionList.foldLeft(dataframe) { (df, function) => df.transform(function) }
+    def applyDFTransformations[A](transformFunctionList: Seq[DataFrame => A])(selectorFunc: A => DataFrame): DataFrame = {
+      transformFunctionList.foldLeft(dataframe) { (df, function) => selectorFunc(function(df)) }
     }
 
     /**
       * Applies the provided transformation functions to [[DataFrame]]
       *
-      * @param transformFunctionList Transformation functions with function type information
+      * @param transformFunctionList Transformation functions
       * @return Transformed [[DataFrame]]
       */
-    def applyDFTransformations(transformFunctionList: Seq[(String, DFFunc)]): DataFrame = {
-      transformFunctionList.foldLeft(dataframe) {
-        case (df, (fType, function)) =>
-          logInfo("Applying function :- " + fType)
-          df.transform(function)
-      }
+    def applyDFTransformations(transformFunctionList: Seq[DFFunc]): DataFrame = {
+      applyDFTransformations[DataFrame](transformFunctionList)((df: DataFrame) => df)
     }
 
 
@@ -195,21 +193,24 @@ package object sql {
     def applyDFTransformations(transformFunctionList: Seq[(String, DFFunc)], temporaryResultDir: String,
                                format: String = "parquet", fuseFactor: Int = 1):
     DataFrame = {
-      transformFunctionList
+      val functionList = transformFunctionList
         .sliding(fuseFactor, fuseFactor)
         .map(funcSeq => {
-          funcSeq.reduce [(String, DFFunc)]{
-            case ((fType1, function1), (fType2, function2)) => (fType1 + ", " + fType2, function1.andThen(function2)) }
+          funcSeq.reduce[(String, DFFunc)] {
+            case ((fType1, function1), (fType2, function2)) => (fType1 + ", " + fType2, function1.andThen(function2))
+          }
         })
-        .foldLeft(dataframe) {
-          case (df, (fType, function)) =>
-            logInfo("Applying function(s) :- " + fType)
+        .map { case (fType, function) =>
+          (df: DataFrame) => {
+            logInfo("Applying function :- " + fType)
             val result = df.transform(function)
             val tempOutputPath = temporaryResultDir + "/" + fType
             logInfo(s"Saving transformation results $fType to temporary location :- $tempOutputPath")
             result.write.format(format).mode(SaveMode.Overwrite).save(tempOutputPath)
             result.sqlContext.read.format(format).load(tempOutputPath)
-        }
+          }
+        }.toSeq
+      applyDFTransformations[DataFrame](functionList)((df: DataFrame) => df)
     }
 
     /**
@@ -298,7 +299,7 @@ package object sql {
 
 
     /**
-      * @deprecated Note: Supported for Spark 1.x version, Spark 2.x has this version (function collect_list)
+      * Note: Supported for Spark 1.x version, Spark 2.x has this version (function collect_list)
       *
       *             Group by on Columns and return dataframe as grouped list of row structure of remaining columns
       *             The returned dataframe has two columns 'grouped_data' which has the grouped data
