@@ -82,7 +82,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     }
 
     transformations.map(dfTransform => {
-      logInfo(s"Applying transformation for source: ${dfTransform.source}")
+      logInfo(s"Applying transformation: ${dfTransform.getAlias}")
       val sourceDF = getDF(dfTransform.source)
       // coalesce function
       val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
