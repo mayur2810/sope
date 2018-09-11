@@ -62,6 +62,7 @@ package object action {
     new Type(value = classOf[LimitAction], name = Actions.Limit),
     new Type(value = classOf[UnionAction], name = Actions.Union),
     new Type(value = classOf[IntersectAction], name = Actions.Intersect),
+    new Type(value = classOf[ExceptAction], name = Actions.Except),
     new Type(value = classOf[SequenceAction], name = Actions.Sequence),
     new Type(value = classOf[SCDAction], name = Actions.SCD),
     new Type(value = classOf[OrderByAction], name = Actions.OrderBy),
@@ -168,7 +169,7 @@ package object action {
   }
 
   case class DistinctAction() extends TransformActionRoot(Actions.Distinct) {
-    override def apply(dataframes: DataFrame*): DFFunc = Distinct.apply
+    override def apply(dataframes: DataFrame*): DFFunc = Distinct.apply()
   }
 
   case class DropDuplicateAction(@JsonProperty(required = true) columns: Seq[String])

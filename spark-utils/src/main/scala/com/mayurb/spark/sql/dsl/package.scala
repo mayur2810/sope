@@ -38,7 +38,7 @@ package object dsl {
       * @param columns column names
       * @return [[DFFunc]]
       */
-    def apply(columns: String*): DFFunc = (df: DataFrame) => df.select(columns.head, columns.tail: _*)
+    def apply(columns: String*): DFFunc = (df: DataFrame) => df.selectExpr(columns: _*)
 
     /**
       * Select columns
@@ -383,7 +383,7 @@ package object dsl {
       *
       * @return [[DFFunc]]
       */
-    def apply: DFFunc = (df: DataFrame) => df.distinct
+    def apply(): DFFunc = (df: DataFrame) => df.distinct
   }
 
   /*
