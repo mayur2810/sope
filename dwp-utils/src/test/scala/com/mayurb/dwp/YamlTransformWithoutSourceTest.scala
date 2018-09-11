@@ -120,4 +120,33 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.show(false)
     transformedDF.filter("product_key = -1").count should be(3)
   }
+
+  "limit_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("limit_test")
+    println("limit_test ==>")
+    transformedDF.show(false)
+    transformedDF.count should be(2)
+  }
+
+  "unstruct_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("unstruct_test")
+    println("unstruct_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns.length should be(5)
+  }
+
+  "intersect_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("intersect_test")
+    println("intersect_test ==>")
+    transformedDF.show(false)
+    transformedDF.count should be(2)
+  }
+
+  "except_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("except_test")
+    println("except_test ==>")
+    transformedDF.show(false)
+    transformedDF.count should be(0)
+  }
+
 }

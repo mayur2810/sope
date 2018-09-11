@@ -1,9 +1,9 @@
 package com.mayurb
 
+import com.mayurb.TestContext.getSQlContext
 import com.mayurb.model.{Class, Student}
 import com.mayurb.spark.sql.dsl._
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.{SparkConf, SparkContext}
+import com.mayurb.spark.sql._
 import org.apache.spark.sql.functions._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -13,32 +13,78 @@ import org.scalatest.{FlatSpec, Matchers}
   */
 class DSLTest extends FlatSpec with Matchers {
 
-  val testSData = Seq(
-    Student("Sherlock", "Holmes", 5, 10),
-    Student("John", "Watson", 5, 10)
-  )
+  private val sqlContext = getSQlContext
 
-  val testCData = Seq(
-    Class(10, "Tenth"),
-    Class(9, "Ninth"),
-    Class(8, "Ninth")
-  )
+  import sqlContext.implicits._
 
-  "DSL transformations" should "generate the transformations correctly" in {
+  private val studentDF = Seq(
+    Student("Sherlock", "Holmes", 1, 10),
+    Student("John", "Watson", 2, 10),
+    Student("N.A.", "N.A.", -1, -1)
+  ).toDF
 
-    val sparkConf = new SparkConf().setMaster("local[*]").setAppName("DSLTest")
-    val sc = new SparkContext(sparkConf)
-    val sqlc = new SQLContext(sc)
-    import sqlc.implicits._
-    val studentDF = testSData.toDF()
-    val classDF = testCData.toDF()
-    val rename = Rename("first_name" -> "firstname", "last_name" -> "lastname")
-    val transform = Transform("firstname" -> upper($"firstname"), "lastname" -> upper($"lastname"))
-    val join = Join(None, "cls") <> classDF
-    val transformed = rename + transform + join + Sequence(0l, "id") --> studentDF
-    println("transformed DF output =>")
+  private val classDF = Seq(
+    Class(1, 10, "Tenth"),
+    Class(2, 9, "Ninth"),
+    Class(3, 8, "Ninth")
+  ).toDF
+
+  // Fields
+  val FirstName = "first_name"
+  val LastName = "last_name"
+  val RollNo = "roll_no"
+  val Cls = "cls"
+
+  "Select DSL" should "generate the transformations correctly" in {
+    val selectStr = Select(FirstName, LastName)
+    val selectCol = Select($"$LastName", $"$FirstName")
+    val transformed = selectStr + selectCol --> studentDF
+    println("Select Test DF output =>")
     transformed.show(false)
-    transformed.count should be(4)
+    transformed.schema.fields.map(_.name) should contain allOf(FirstName, LastName)
+    val transformed1 = SelectNot(Cls) --> studentDF
+    transformed1.show(false)
+    transformed1.schema.fields.map(_.name) should contain allOf(FirstName, LastName, RollNo)
+  }
+
+  "Filter and Rename DSL" should "generate the transformations correctly" in {
+    val filterCol = Filter(col(FirstName) =!= "N.A.")
+    val filterStr = Filter(s"$LastName != 'Watson'")
+    val rename = Rename((FirstName, "name"))
+    val transformed = filterCol + filterStr + rename --> studentDF
+    println("Filter, Rename Test DF output =>")
+    transformed.show(false)
+    transformed.count should be(1)
+    transformed.schema.fields.map(_.name) should contain("name")
+    // Rename All test
+    val transformed1 = Rename("tmp_") + Rename("_column", prefix = false) --> studentDF
+    transformed1.show(false)
+    assert(transformed1.schema.fields.map(_.name).forall(_.startsWith("tmp_")))
+  }
+
+
+  "Transform & Sequence DSL" should "generate the transformations correctly" in {
+    val transformStr = Transform(FirstName -> upper($"$FirstName"))
+    val transformCol = Transform(LastName -> s"upper($LastName)")
+    val transformed = transformStr + transformCol + Distinct() + Sequence(0l, "id") --> studentDF
+    println("Transform & Sequence DF output =>")
+    transformed.show(false)
+    transformed.filter("roll_no = 1").select(FirstName).head.getString(0) should be("SHERLOCK")
+    transformed.maxKeyValue("id") should be(3)
+  }
+
+  "Join DSL" should "generate the transformations correctly" in {
+    val innerJoin =  Transform(upper _, FirstName, LastName) + (Join(Some("left") , Cls) inner classDF)
+    (innerJoin --> studentDF).count should be(2)
+
+    val leftJoin = Transform(upper _) + (Join(None, Cls) left classDF)
+    (leftJoin --> studentDF).count should be(3)
+
+    val rightJoin = Join(Some("left"), $"$Cls" === $"class") right (Rename((Cls, "class")) --> classDF)
+    (rightJoin --> studentDF).count should be(4)
+
+    val fullJoin = Join(None, $"$Cls" === $"class") full (Rename((Cls, "class")) --> classDF)
+    (fullJoin --> studentDF).count should be(5)
   }
 
 }
