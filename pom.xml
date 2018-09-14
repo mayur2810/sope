@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mayurb</groupId>
-    <artifactId>dwp-spark</artifactId>
+    <artifactId>sope</artifactId>
     <version>1.1</version>
     <modules>
-        <module>spark-utils</module>
-        <module>dwp-utils</module>
+        <module>sope-spark</module>
+        <module>sope-etl</module>
     </modules>
     <packaging>pom</packaging>
 
