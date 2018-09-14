@@ -1,8 +1,8 @@
-package com.mayurb.dwp
+package com.sope.etl
 
-import com.mayurb.dwp.TestContext.getSQlContext
-import com.mayurb.dwp.dq.DQTransform
-import com.mayurb.dwp.model.Transactions
+import com.sope.etl.TestContext.getSQlContext
+import com.sope.etl.dq.DQTransform
+import com.sope.etl.model.Transactions
 import org.scalatest.{FlatSpec, Matchers}
 
 /**

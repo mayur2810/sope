@@ -1,14 +1,14 @@
-package com.mayurb.dwp.transform
+package com.sope.etl.transform
 
 import java.io.FileReader
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.mayurb.dwp.transform.exception.YamlDataTransformException
-import com.mayurb.dwp.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
-import com.mayurb.spark.sql.dsl._
-import com.mayurb.utils.Logging
+import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.etl.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
+import com.sope.spark.sql.dsl._
+import com.sope.utils.Logging
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.storage.StorageLevel
 

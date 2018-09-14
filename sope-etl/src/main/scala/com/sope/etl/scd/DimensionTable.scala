@@ -1,6 +1,6 @@
-package com.mayurb.dwp.scd
+package com.sope.etl.scd
 
-import com.mayurb.utils.Logging
+import com.sope.utils.Logging
 import org.apache.spark.SparkException
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Column, DataFrame}

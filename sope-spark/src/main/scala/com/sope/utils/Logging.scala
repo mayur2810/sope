@@ -1,4 +1,4 @@
-package com.mayurb.utils
+package com.sope.utils
 
 import org.slf4j.{Logger, LoggerFactory}
 

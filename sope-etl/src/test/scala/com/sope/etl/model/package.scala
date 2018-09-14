@@ -1,4 +1,4 @@
-package com.mayurb.dwp
+package com.sope.etl
 
 /**
   * Test Model Classes

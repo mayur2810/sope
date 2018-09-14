@@ -1,8 +1,8 @@
-package com.mayurb.dwp
+package com.sope.etl
 
-import com.mayurb.dwp.TestContext._
-import com.mayurb.dwp.model.{Date, Product, ProductDim, Transactions}
-import com.mayurb.dwp.transform.YamlDataTransform
+import com.sope.etl.TestContext._
+import com.sope.etl.model.{Date, Product, ProductDim, Transactions}
+import com.sope.etl.transform.YamlDataTransform
 import org.scalatest.{FlatSpec, Matchers}
 import java.sql.{Date => SDate}
 

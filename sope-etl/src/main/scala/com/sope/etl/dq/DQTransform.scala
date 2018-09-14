@@ -1,9 +1,9 @@
-package com.mayurb.dwp.dq
+package com.sope.etl.dq
 
 import java.io.FileReader
 
-import com.mayurb.dwp.dq.model.DataQuality
-import com.mayurb.spark.sql.dsl._
+import com.sope.etl.dq.model.DataQuality
+import com.sope.spark.sql.dsl._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule

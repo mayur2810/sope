@@ -1,6 +1,6 @@
-package com.mayurb.spark.sql
+package com.sope.spark.sql
 
-import com.mayurb.utils.Logging
+import com.sope.utils.Logging
 import org.apache.spark.sql.functions.{broadcast, col, desc, expr}
 import org.apache.spark.sql.{Column, DataFrame}
 
@@ -8,7 +8,7 @@ import scala.reflect.ClassTag
 
 /**
   * This package consists of Spark SQL DSLs.
-  * import to use: "com.mayurb.spark.sql.dsl._"
+  * import to use: "com.sope.spark.sql.dsl._"
   *
   * @author mbadgujar
   */

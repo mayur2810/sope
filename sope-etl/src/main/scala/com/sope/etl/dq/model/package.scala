@@ -1,8 +1,8 @@
-package com.mayurb.dwp.dq
+package com.sope.etl.dq
 
-import com.mayurb.spark.sql._
-import com.mayurb.spark.sql.dsl._
-import com.mayurb.spark.sql.udfs._
+import com.sope.spark.sql._
+import com.sope.spark.sql.dsl._
+import com.sope.spark.sql.udfs._
 import org.apache.spark.sql.functions._
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
