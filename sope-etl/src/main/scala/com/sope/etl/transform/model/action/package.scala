@@ -3,6 +3,7 @@ package com.sope.etl.transform.model
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.etl.scd.DimensionTable
+import com.sope.etl.transform.YamlDataTransform
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
@@ -39,6 +40,7 @@ package object action {
     final val DropColumn = "drop"
     final val Unstruct = "unstruct"
     final val NA = "na"
+    final val Yaml = "yaml"
   }
 
   /**
@@ -69,7 +71,8 @@ package object action {
     new Type(value = classOf[DropDuplicateAction], name = Actions.DropDuplicates),
     new Type(value = classOf[DropColumnAction], name = Actions.DropColumn),
     new Type(value = classOf[UnstructAction], name = Actions.Unstruct),
-    new Type(value = classOf[NAAction], name = Actions.NA)
+    new Type(value = classOf[NAAction], name = Actions.NA),
+    new Type(value = classOf[YamlAction], name = Actions.Yaml)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
     def apply(dataframes: DataFrame*): DFFunc
@@ -215,5 +218,20 @@ package object action {
     extends TransformActionRoot(Actions.NA) {
     override def apply(dataframes: DataFrame*): DFFunc = NA(defaultNumericValue, defaultStringValue, columns.getOrElse(Nil))
   }
+
+  case class YamlAction(@JsonProperty(value = "yaml_file", required = true) yamlFile: String,
+                        @JsonProperty(value = "input_aliases", required = false) inputs: Option[Seq[String]],
+                        @JsonProperty(value = "output_alias", required = true) outputAlias: String)
+    extends TransformActionRoot(Actions.Yaml) {
+    private val yamlFilePath = this.getClass.getClassLoader.getResource(s"./$yamlFile").getPath
+    override def apply(dataframes: DataFrame*): DFFunc =
+      (df: DataFrame) => {
+        val transformed = new YamlDataTransform(yamlFilePath, df +: dataframes: _*).getTransformedDFs.toMap
+        transformed.getOrElse(outputAlias, throw new YamlDataTransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
+      }
+
+    override def inputAliases: Seq[String] = inputs.getOrElse(Nil)
+  }
+
 
 }
