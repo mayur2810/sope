@@ -1,17 +1,17 @@
-inputs: ["product_scd_input", "dim_product"]
+inputs: ["scd_input", "dimension"]
 transformations :
-    - input : "product_scd_input"
+    - input : "scd_input"
       alias: "scd_product"
       persist: "memory_only"
       actions:
-        - {type: "scd", dim_table: "dim_product", sk_column: "product_key", natural_keys: ["product_id"], derived_columns: ["derived_attr"], meta_columns: ["last_updated_date"]}
+        - {type: "scd", dim_table: "dimension", sk_column: $1 , natural_keys: $2 , derived_columns: $3 , meta_columns: ["last_updated_date"]}
     - input: "scd_product"
       alias: "insert_update"
       coalesce: 50
       actions:
         - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
         - {type: transform, list: {last_updated_date: "current_date"}}
-        - {type: sequence, sk_source: "dim_product", sk_column: "product_key"}
+        - {type: sequence, sk_source: "dimension", sk_column: $1}
     - input: "scd_product"
       alias: "final_dim_out"
       coalesce: 50

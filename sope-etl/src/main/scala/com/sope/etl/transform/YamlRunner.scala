@@ -19,7 +19,7 @@ object YamlRunner extends Logging {
     val cmdLine = new BasicParser().parse(options, args, true)
     val optionMap = cmdLine.getOptions.map(option => option.getOpt.trim -> option.getValue.trim).toMap
     val yamlPath =  optionMap(YamlPathOpt)
-    val yamlTransformer = new YamlDataTransform(yamlPath)
+    val yamlTransformer = new YamlDataTransform(YamlParserUtil.readYamlFile(yamlPath))
     logInfo("Successfully parsed YAML File, executing the Flow")
     val sparkConf = new SparkConf().setAppName("Spark: YAML Transformer")
     val session = SparkSession.builder()

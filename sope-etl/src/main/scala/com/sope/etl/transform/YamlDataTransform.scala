@@ -1,12 +1,7 @@
 package com.sope.etl.transform
 
-import java.io.FileReader
-
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.transform.model.{DFTransformation, TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
+import com.sope.etl.transform.model.{DFTransformation, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
 import com.sope.spark.sql.dsl._
 import com.sope.utils.Logging
 import org.apache.spark.sql.{DataFrame, SQLContext}
@@ -17,27 +12,7 @@ import org.apache.spark.storage.StorageLevel
   *
   * @author mbadgujar
   */
-class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Logging {
-
-
-  /**
-    * Parses the YAML file to [[TransformModel]] object
-    *
-    * @return [[TransformModel]]
-    */
-  def parseYAML(containsSourceInfo: Boolean): TransformModel = {
-    // Instantiate object mapper object
-    val mapper = new ObjectMapper(new YAMLFactory())
-    mapper.registerModule(DefaultScalaModule)
-    if (containsSourceInfo)
-      mapper.readValue(new FileReader(yamlFilePath), classOf[TransformModelWithSourceTarget])
-    else {
-      val model = mapper.readValue(new FileReader(yamlFilePath), classOf[TransformModelWithoutSourceTarget])
-      if (model.sources.size != dataFrames.size)
-        throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
-      model
-    }
-  }
+class YamlDataTransform(yaml: String, dataFrames: DataFrame*) extends Logging {
 
 
   /**
@@ -117,7 +92,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     * @param sqlContext Spark [[SQLContext]]
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
-    val transformModel = parseYAML(true).asInstanceOf[TransformModelWithSourceTarget]
+    val transformModel = YamlParserUtil.parseYAML(yaml, classOf[TransformModelWithSourceTarget])
     val sourceDFMap = transformModel.sources.map(source => source.getSourceName
       -> source.apply(sqlContext).alias(source.getSourceName)).toMap
     val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations).toMap
@@ -132,7 +107,9 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
     * @return Transformed [[DataFrame]]
     */
   def getTransformedDFs: Seq[(String, DataFrame)] = {
-    val transformModel = parseYAML(false).asInstanceOf[TransformModelWithoutSourceTarget]
+    val transformModel = YamlParserUtil.parseYAML(yaml, classOf[TransformModelWithoutSourceTarget])
+    if (transformModel.sources.size != dataFrames.size)
+      throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
     val sourceDFMap = transformModel.sources.zip(dataFrames).map { case (source, df) => (source, df.alias(source)) }
     applyTransformations(sourceDFMap.toMap, transformModel.transformations)
   }

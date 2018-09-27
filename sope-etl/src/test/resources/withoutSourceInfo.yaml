@@ -19,7 +19,7 @@ transformations :
     - input : "product"
       alias: "final_dim_out"
       actions:
-        - {type: yaml, yaml_file: "product_scd.yaml", input_aliases: ["dim_product"], output_alias: "final_dim_out"}
+        - {type: yaml, yaml_file: "product_scd.yaml", substitutions: ["product_key", ["product_id"], ["derived_attr"]], input_aliases: ["dim_product"], output_alias: "final_dim_out"}
     - input: "final_dim_out"
       alias: "distinct_test"
       actions:

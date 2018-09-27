@@ -3,8 +3,8 @@ package com.sope.etl.transform.model
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.etl.scd.DimensionTable
-import com.sope.etl.transform.YamlDataTransform
 import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.etl.transform.{YamlDataTransform, YamlParserUtil}
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
 import org.apache.spark.sql.DataFrame
@@ -219,14 +219,30 @@ package object action {
     override def apply(dataframes: DataFrame*): DFFunc = NA(defaultNumericValue, defaultStringValue, columns.getOrElse(Nil))
   }
 
+
   case class YamlAction(@JsonProperty(value = "yaml_file", required = true) yamlFile: String,
                         @JsonProperty(value = "input_aliases", required = false) inputs: Option[Seq[String]],
-                        @JsonProperty(value = "output_alias", required = true) outputAlias: String)
+                        @JsonProperty(value = "output_alias", required = true) outputAlias: String,
+                        @JsonProperty(value = "substitutions", required = false) substitutions: Option[Seq[Any]])
     extends TransformActionRoot(Actions.Yaml) {
-    private val yamlFilePath = this.getClass.getClassLoader.getResource(s"./$yamlFile").getPath
+
+    private val yaml = YamlParserUtil.readYamlFile(yamlFile)
+
+    /*
+       Update placeholders with provided substitutions
+     */
+    private def updatePlaceHolders(): String = {
+      substitutions.get
+        .zipWithIndex
+        .map { case (value, index) => "$" + (index + 1) -> YamlParserUtil.convertToYaml(value) }
+        .foldLeft(yaml) { case (yamlStr, (key, value)) => yamlStr.replace(key, value) }
+    }
+
     override def apply(dataframes: DataFrame*): DFFunc =
       (df: DataFrame) => {
-        val transformed = new YamlDataTransform(yamlFilePath, df +: dataframes: _*).getTransformedDFs.toMap
+        val substitutedYaml = substitutions.fold(yaml)(_ => updatePlaceHolders())
+        println(substitutedYaml)
+        val transformed = new YamlDataTransform(substitutedYaml, df +: dataframes: _*).getTransformedDFs.toMap
         transformed.getOrElse(outputAlias, throw new YamlDataTransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
       }
 
