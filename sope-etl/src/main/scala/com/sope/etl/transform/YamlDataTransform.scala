@@ -1,18 +1,20 @@
 package com.sope.etl.transform
 
 import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.transform.model.{DFTransformation, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
+import com.sope.etl.transform.model.{DFTransformation, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget, YamlFile}
 import com.sope.spark.sql.dsl._
 import com.sope.utils.Logging
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.storage.StorageLevel
+
+import scala.util.{Failure, Success, Try}
 
 /**
   * Reads YAML and performs Spark transformations provided in the YAML file
   *
   * @author mbadgujar
   */
-class YamlDataTransform(yaml: String, dataFrames: DataFrame*) extends Logging {
+class YamlDataTransform(yaml: YamlFile, dataFrames: DataFrame*) extends Logging {
 
 
   /**
@@ -66,9 +68,16 @@ class YamlDataTransform(yaml: String, dataFrames: DataFrame*) extends Logging {
         sourceDF.createOrReplaceTempView(dfTransform.source)
         sourceDF.sqlContext.sql(dfTransform.sql.get)
       } else {
-        dfTransform.actions.get.foldLeft(NoOp()) {
-          case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
-        } --> sourceDF
+        Try {
+          dfTransform.actions.get.foldLeft(NoOp()) {
+            case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*)
+          } --> sourceDF
+        } match {
+          case Success(df) => df
+          case Failure(e) =>
+            logError(s"Transformation failed for alias: ${dfTransform.getAlias} in ${yaml.getYamlFileName} file")
+            throw e
+        }
       }.transform(coalesceFunc)
 
       // Add alias to dataframe
@@ -92,7 +101,7 @@ class YamlDataTransform(yaml: String, dataFrames: DataFrame*) extends Logging {
     * @param sqlContext Spark [[SQLContext]]
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
-    val transformModel = YamlParserUtil.parseYAML(yaml, classOf[TransformModelWithSourceTarget])
+    val transformModel = yaml.serialize(classOf[TransformModelWithSourceTarget])
     val sourceDFMap = transformModel.sources.map(source => source.getSourceName
       -> source.apply(sqlContext).alias(source.getSourceName)).toMap
     val transformationResult = applyTransformations(sourceDFMap, transformModel.transformations).toMap
@@ -107,7 +116,7 @@ class YamlDataTransform(yaml: String, dataFrames: DataFrame*) extends Logging {
     * @return Transformed [[DataFrame]]
     */
   def getTransformedDFs: Seq[(String, DataFrame)] = {
-    val transformModel = YamlParserUtil.parseYAML(yaml, classOf[TransformModelWithoutSourceTarget])
+    val transformModel = yaml.serialize(classOf[TransformModelWithoutSourceTarget])
     if (transformModel.sources.size != dataFrames.size)
       throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
     val sourceDFMap = transformModel.sources.zip(dataFrames).map { case (source, df) => (source, df.alias(source)) }

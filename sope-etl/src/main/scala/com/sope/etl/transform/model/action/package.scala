@@ -226,23 +226,9 @@ package object action {
                         @JsonProperty(value = "substitutions", required = false) substitutions: Option[Seq[Any]])
     extends TransformActionRoot(Actions.Yaml) {
 
-    private val yaml = YamlParserUtil.readYamlFile(yamlFile)
-
-    /*
-       Update placeholders with provided substitutions
-     */
-    private def updatePlaceHolders(): String = {
-      substitutions.get
-        .zipWithIndex
-        .map { case (value, index) => "$" + (index + 1) -> YamlParserUtil.convertToYaml(value) }
-        .foldLeft(yaml) { case (yamlStr, (key, value)) => yamlStr.replace(key, value) }
-    }
-
     override def apply(dataframes: DataFrame*): DFFunc =
       (df: DataFrame) => {
-        val substitutedYaml = substitutions.fold(yaml)(_ => updatePlaceHolders())
-        println(substitutedYaml)
-        val transformed = new YamlDataTransform(substitutedYaml, df +: dataframes: _*).getTransformedDFs.toMap
+        val transformed = new YamlDataTransform(YamlFile(yamlFile, substitutions), df +: dataframes: _*).getTransformedDFs.toMap
         transformed.getOrElse(outputAlias, throw new YamlDataTransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
       }
 

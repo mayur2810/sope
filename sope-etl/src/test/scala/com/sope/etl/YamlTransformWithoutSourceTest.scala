@@ -1,10 +1,12 @@
 package com.sope.etl
 
+import java.sql.{Date => SDate}
+
 import com.sope.etl.TestContext._
 import com.sope.etl.model.{Date, Product, ProductDim, Transactions}
-import com.sope.etl.transform.{YamlDataTransform, YamlParserUtil}
+import com.sope.etl.transform.YamlDataTransform
+import com.sope.etl.transform.model.YamlFile
 import org.scalatest.{FlatSpec, Matchers}
-import java.sql.{Date => SDate}
 
 /**
   * Yaml Transformer Unit tests
@@ -54,8 +56,8 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     val productDF = productData.toDF
     val dateDF = dateData.toDF
     val productDimDF = productDimData.toDF
-    val yamlPath = YamlParserUtil.readYamlFile("withoutSourceInfo.yaml")
-    val ydt = new YamlDataTransform(yamlPath, transactionsDF, productDF, dateDF, productDimDF)
+    val yamlFile = YamlFile("withoutSourceInfo.yaml")
+    val ydt = new YamlDataTransform(yamlFile, transactionsDF, productDF, dateDF, productDimDF)
     ydt.getTransformedDFs.toMap
   }
 
