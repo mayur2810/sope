@@ -11,7 +11,7 @@ It will reduce the boiler-plate code for complex transformations using core Spar
    ```
    
    This will make available useful implicit methods on the DataFrame object. 
-   Following is the list of some methods available:
+   Following is the list of some useful methods available:
  
       ```scala
     df // a dataframe object reference 
@@ -97,3 +97,4 @@ It will reduce the boiler-plate code for complex transformations using core Spar
     - DropDuplicates
     - Unstruct
     - UpdateKeys
+    - NA

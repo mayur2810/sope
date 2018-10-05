@@ -59,7 +59,7 @@ The 'transformations' section if defined as follows:
 transformations :
     - input: input_alias  // Input alias on which transformations will performed. Can be from 'inputs' sections or previous transformation
       alias: alias_for_this_transformation  //  (optional) if not provided, input alias will be replaced with this transformation
-      persist: true  // Whether to persist this result of this transformation (optional)
+      persist: true  // Persistence level if transformation is to be persisted. e.g. MEMORY_ONLY, MEMORY_AND_DISK (optional)
       actions: // define multiple transformation actions for this input
         - {type: <transformation>, <transformation_options>}
         - {type: <transformation>, <transformation_options>}

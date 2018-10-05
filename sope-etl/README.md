@@ -1,6 +1,5 @@
-## dwp-utils
+## sope-etl
 
-This module contains following frameworks :
  1. *YAML Transformer*: 
  
     A yaml based external transformer with easy to use ETL constructs. It is useful for creating simple and monotonous transformations
@@ -39,7 +38,7 @@ This module contains following frameworks :
         
         The yaml file can be submitted for execution using spark-submit command as follows:
         ```shell
-           spark-submit  --master yarn  --deploy-mode client --class  com.mayurb.dwp.transform.YamlRunner dwp-utils-x.x.jar --yaml_file test.yaml
+           spark-submit  --master yarn  --deploy-mode client --class  com.sope.etl.transform.YamlRunner sope-etl-x.x.jar --yaml_file test.yaml
         ```
  
     -   Intermediate mode:
@@ -89,7 +88,7 @@ This module contains following frameworks :
         val transactionsDF = ...
         val productDF = ...
         val dateDF = ...
-        val ydt = new YamlDataTransform("withoutSourceInfo.yaml", transactionsDF, productDF, dateDF, productDimDF)
+        val ydt = new YamlDataTransform("withoutSourceInfo.yaml", transactionsDF, productDF, dateDF)
         // returns list of Tuple of alias and transformed dataframe
         val transformationResult = ydt.getTransformedDFs
         // Get last transformed dataframe
@@ -97,8 +96,3 @@ This module contains following frameworks :
         ```
         
         Refer this documentation for YAML Transformer Constructs: [YAML Constructs](yaml-transformer-constructs.md)
- 
- 2. *DQ Framework*:
- 
-    A simplified and extensible yaml based Data Quality and Data Standardization framework
-    *TBD*
