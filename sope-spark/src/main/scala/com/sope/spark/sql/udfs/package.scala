@@ -1,4 +1,4 @@
-package com.mayurb.spark.sql
+package com.sope.spark.sql
 
 import java.sql.Date
 import java.text.SimpleDateFormat

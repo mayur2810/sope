@@ -1,4 +1,4 @@
-package com.mayurb.dwp.transform.exception
+package com.sope.etl.transform.exception
 
 /**
   * Yaml Data Transformer Custom Exception

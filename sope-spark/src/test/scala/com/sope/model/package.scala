@@ -1,4 +1,4 @@
-package com.mayurb
+package com.sope
 
 /**
   * Test model classes

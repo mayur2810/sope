@@ -1,7 +1,7 @@
-package com.mayurb.spark
+package com.sope.spark
 
-import com.mayurb.spark.sql.udfs.CollectStruct
-import com.mayurb.utils.Logging
+import com.sope.spark.sql.udfs.CollectStruct
+import com.sope.utils.Logging
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._

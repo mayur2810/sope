@@ -1,10 +1,10 @@
-package com.mayurb.dwp.transform
+package com.sope.etl.transform
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.mayurb.dwp.transform.exception.YamlDataTransformException
-import com.mayurb.dwp.transform.model.action._
-import com.mayurb.dwp.transform.model.io.input.SourceTypeRoot
-import com.mayurb.dwp.transform.model.io.output.TargetTypeRoot
+import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.etl.transform.model.action._
+import com.sope.etl.transform.model.io.input.SourceTypeRoot
+import com.sope.etl.transform.model.io.output.TargetTypeRoot
 
 
 /**

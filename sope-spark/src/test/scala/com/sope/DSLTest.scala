@@ -1,9 +1,9 @@
-package com.mayurb
+package com.sope
 
-import com.mayurb.TestContext.getSQlContext
-import com.mayurb.model.{Class, Student}
-import com.mayurb.spark.sql.dsl._
-import com.mayurb.spark.sql._
+import com.sope.TestContext.getSQlContext
+import com.sope.model.{Class, Student}
+import com.sope.spark.sql.dsl._
+import com.sope.spark.sql._
 import org.apache.spark.sql.functions._
 import org.scalatest.{FlatSpec, Matchers}
 

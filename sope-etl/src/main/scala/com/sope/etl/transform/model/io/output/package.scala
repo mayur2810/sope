@@ -1,4 +1,4 @@
-package com.mayurb.dwp.transform.model.io
+package com.sope.etl.transform.model.io
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}

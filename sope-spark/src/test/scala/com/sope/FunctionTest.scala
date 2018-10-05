@@ -1,10 +1,10 @@
-package com.mayurb
+package com.sope
 
-import com.mayurb.model.{Class, Person, Student}
+import com.sope.model.{Class, Person, Student}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
-import com.mayurb.spark.sql._
-import com.mayurb.TestContext.getSQlContext
+import com.sope.spark.sql._
+import com.sope.TestContext.getSQlContext
 import org.apache.spark.sql.types.{StringType, IntegerType}
 import org.scalatest.{FlatSpec, Matchers}
 

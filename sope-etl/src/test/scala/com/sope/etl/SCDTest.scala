@@ -1,10 +1,10 @@
-package com.mayurb.dwp
+package com.sope.etl
 
 import java.sql.Date
 
-import com.mayurb.dwp.TestContext.getSQlContext
-import com.mayurb.dwp.model.{Product, ProductDim}
-import com.mayurb.dwp.scd.DimensionTable
+import com.sope.etl.TestContext.getSQlContext
+import com.sope.etl.model.{Product, ProductDim}
+import com.sope.etl.scd.DimensionTable
 import org.apache.spark.SparkException
 import org.scalatest.{FlatSpec, Matchers}
 

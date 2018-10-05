@@ -1,11 +1,11 @@
-package com.mayurb.dwp.transform.model
+package com.sope.etl.transform.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
-import com.mayurb.dwp.scd.DimensionTable
-import com.mayurb.dwp.transform.exception.YamlDataTransformException
-import com.mayurb.spark.sql._
-import com.mayurb.spark.sql.dsl._
+import com.sope.etl.scd.DimensionTable
+import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.spark.sql._
+import com.sope.spark.sql.dsl._
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.expr
 

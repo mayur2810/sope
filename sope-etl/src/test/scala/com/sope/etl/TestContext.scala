@@ -1,4 +1,4 @@
-package com.mayurb.dwp
+package com.sope.etl
 
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}

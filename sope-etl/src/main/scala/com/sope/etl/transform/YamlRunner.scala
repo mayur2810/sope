@@ -1,6 +1,6 @@
-package com.mayurb.dwp.transform
+package com.sope.etl.transform
 
-import com.mayurb.utils.Logging
+import com.sope.utils.Logging
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession

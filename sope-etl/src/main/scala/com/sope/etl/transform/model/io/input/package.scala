@@ -1,8 +1,8 @@
-package com.mayurb.dwp.transform.model.io
+package com.sope.etl.transform.model.io
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
-import com.mayurb.spark.sql.DFFunc2
+import com.sope.spark.sql.DFFunc2
 import org.apache.spark.sql.SQLContext
 
 /**
