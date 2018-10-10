@@ -1,0 +1,82 @@
+inputs: ["transactions", "product", "date", "dim_product"]
+transformations :
+    - input: "product"
+      alias: "product_filtered"
+      sql: "select product_id, product_desc as product from product where product_desc != 'N.A.'"
+    - input: "transactions"
+      alias: "trxn_transformed"
+      actions:
+        - {type: rename, list: {id: "trxn_id" , loc: "location"}}
+        - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER (PARTITION BY location order by date desc)"}}
+        - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
+        - {type: join, with: "date", columns: ["date"], join_type: inner}
+        - {type: select_not, columns: ["location"]}
+    - input: "transactions"
+      alias: "grp_by"
+      actions:
+        - {type: "group_by", columns: ["product"], expr: "count(product) as p_cnt"}
+        - {type: "order_by", columns: ["p_cnt:desc"]}
+    - input : "product"
+      alias: "scd_product"
+      persist: "memory_only"
+      actions:
+        - {type: "scd", dim_table: "dim_product", sk_column: "product_key", natural_keys: ["product_id"], derived_columns: ["derived_attr"], meta_columns: ["last_updated_date"]}
+    - input: "scd_product"
+      alias: "insert_update"
+      coalesce: 50
+      actions:
+        - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
+        - {type: transform, list: {last_updated_date: "current_date"}}
+        - {type: sequence, sk_source: "dim_product", sk_column: "product_key"}
+    - input: "scd_product"
+      alias: "final_dim_out"
+      coalesce: 50
+      actions:
+        - {type: filter, condition: "scd_status = 'NCD'"}
+        - {type: union, with: ["insert_update"]}
+    - input: "final_dim_out"
+      alias: "distinct_test"
+      actions:
+         - {type: union, with: ["final_dim_out"]}
+         - {type: distinct}
+    - input: "transactions"
+      alias: "drop_duplicate_test"
+      actions:
+         - {type: drop, columns: ["id"]}
+         - {type: drop_duplicates, columns: ["product"]}
+    - input: "product_filtered"
+      alias: "product_filtered1" # Create new reference with new alias
+      actions:
+         - {type: select_not, columns: [] }
+    - input: "product_filtered"
+      alias: "aliasing_test"
+      actions:
+          - {type: join, with: "product_filtered1",  columns: ["product_id"] , join_type: inner, broadcast_hint: "right"}
+          - {type: select, columns: ["product_filtered1.product", "product_filtered.product"]}
+    - input: "dim_product"
+      alias: "na_test"
+      actions:
+          - {type: select, columns: ["product_id as pid"]}
+          - {type: transform, list: {pid: "pow(pid, 2)"}}
+          - {type: join, with: "dim_product", condition: "product_id = pid", join_type: left, broadcast_hint: "left"}
+          - {type: na, default_numeric: -1, default_string: "N/A", columns:["product_key", "product_desc"]}
+    - input: "dim_product"
+      alias: "limit_test"
+      actions:
+          - {type: limit, size: 2}
+    - input: "transactions"
+      alias: "unstruct_test"
+      actions:
+          - {type: transform, list: {"struct" : "struct(id, loc, product, date)"}}
+          - {type: select, columns: ["struct"]}
+          - {type: unstruct, column: "struct"}
+    - input: "dim_product"
+      alias: "intersect_test"
+      actions:
+          - {type: filter, condition: "product_id = -1 or product_id = 0"}
+          - {type: intersect, with: ["dim_product"]}
+    - input: "dim_product"
+      alias: "except_test"
+      actions:
+          - {type: filter, condition: "product_id = -1 or product_id = 0"}
+          - {type: except, with: ["dim_product"]}
