@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mayurb</groupId>
     <artifactId>sope</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <modules>
         <module>sope-spark</module>
         <module>sope-etl</module>
