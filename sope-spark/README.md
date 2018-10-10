@@ -1,4 +1,5 @@
-## spark-utils
+sope-spark
+==========
 
 This module contains library functions and an internal dsl library that helps with writing **Spark SQL** ETL transformations in concise manner.
 It will reduce the boiler-plate code for complex transformations using core Spark-SQL API and will assist in code readability and review.
@@ -7,7 +8,7 @@ It will reduce the boiler-plate code for complex transformations using core Spar
    
    Just use following import statement and you are all set. 
    ```scala
-    import com.mayurb.spark.sql._
+    import com.sope.spark.sql._
    ```
    
    This will make available useful implicit methods on the DataFrame object. 
@@ -41,8 +42,8 @@ It will reduce the boiler-plate code for complex transformations using core Spar
     val maxMemberId = df.maxKeyValue("member_id")
  
     // Generate Sequence Number from the provided start index
-    df.generateSequence(maxMemberId) // If already has first column as member_id
-    df.generateSequence(maxMemberId, Some("member_id")) // will create new column 'member_id' as sequence column
+    df.generateSequence(maxMemberId, Some("member_id"))  // will create new column 'member_id' as sequence column
+    df.generateSequence(maxMemberId)  // If already has first column as member_id
  
     // Flattens the columns in a struct type column to normal columns
     df.unstruct("column")

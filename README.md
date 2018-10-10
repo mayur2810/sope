@@ -4,7 +4,7 @@ Sope
 
 > Marathi, IPA: /sə/ /o/ /pə/ /e/ (Adjective: Achieved without great effort)
 
-**sope** is set of utilities and library functions that helps with ETL development using **Apache Spark**.
+**Sope** is set of utilities and library functions that helps with ETL development using **Apache Spark**.
 The project contains following sub-modules
 - *sope-spark*
 - *sope-etl*

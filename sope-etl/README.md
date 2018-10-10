@@ -1,4 +1,5 @@
-## sope-etl
+sope-etl
+========
 
  1. *YAML Transformer*: 
  
@@ -7,7 +8,7 @@
     
     -   End-to-End mode:
         The YAML files has input sources and output targets information along with the transformation that will happen on the inputs.
-        Supported input/output formats: hive, orc, parquet, text.
+        Supported input/output formats: hive, orc, parquet, text, csv, json
         
         Following is a sample yaml file which reads and writes to hive:
         ```yaml
@@ -38,8 +39,9 @@
         
         The yaml file can be submitted for execution using spark-submit command as follows:
         ```shell
-           spark-submit  --master yarn  --deploy-mode client --class  com.sope.etl.transform.YamlRunner sope-etl-x.x.jar --yaml_file test.yaml
+           spark-submit  --master yarn  --deploy-mode cluster  --class  com.sope.etl.transform.YamlRunner  --files="entry.yaml, scd.yaml" sope-etl-x.x.jar --main_yaml_file entry.yaml
         ```
+		*NOTE*: It is mandatory that all the yaml files are in the spark driver classpath. The main_yaml_file argument only specifies the enrty point yaml file.
  
     -   Intermediate mode:
         This mode allows to use yaml file in Scala/Java code. Multiple dataframes can be provided as input and the final output will
@@ -84,15 +86,21 @@
         ```
         The above yaml file can be called in code as follows:
         ```scala
-        import com.mayurb.dwp.transform.YamlDataTransform
+        import com.sope.etl.transform.YamlDataTransform
         val transactionsDF = ...
         val productDF = ...
         val dateDF = ...
+		// The YAML files should be added in spark's driver classpath
         val ydt = new YamlDataTransform("withoutSourceInfo.yaml", transactionsDF, productDF, dateDF)
         // returns list of Tuple of alias and transformed dataframe
         val transformationResult = ydt.getTransformedDFs
         // Get last transformed dataframe
         val transformedDF = transformationResult.last._2
         ```
+        
+     - Auto Persist
+     
+        The Yaml Transformer will try to figure out if there are any transformations that are being reused and persist them using MEMORY_ONLY mode.
+        This feature is enabled by default. To deactivate auto-persist set *sope.auto.persist=false* using --driver-java-options. 
         
         Refer this documentation for YAML Transformer Constructs: [YAML Constructs](yaml-transformer-constructs.md)
