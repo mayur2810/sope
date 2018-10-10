@@ -50,7 +50,7 @@ class YamlDataTransform(yamlFilePath: String, dataFrames: DataFrame*) extends Lo
   private def applyTransformations(mapping: Map[String, DataFrame],
                                    transformations: Seq[DFTransformation]): Seq[(String, DataFrame)] = {
     var sourceDFMap = mapping
-    val autoPersistSetting = Option(System.getProperty("dwp.auto.persist")).fold(true)(_.toBoolean)
+    val autoPersistSetting = Option(System.getProperty("sope.auto.persist")).fold(true)(_.toBoolean)
 
     // Initialize the auto persist mapping for sources
     val autoPersistList: Seq[String] = {
