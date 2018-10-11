@@ -1,23 +1,25 @@
-# dwp-spark: Data Warehouse Processing utilities for Spark.
 
-**dwp-spark** is set of utilities and library functions that helps with ETL development using **Apache Spark**.
+Sope
+====
+
+> Marathi, IPA: /sə/ /o/ /pə/ /e/ (Adjective: Achieved without great effort)
+
+**Sope** is set of utilities and library functions that helps with ETL development using **Apache Spark**.
 The project contains following sub-modules
-- *spark-utils*
-- *dwp-utils*
+- *sope-spark*
+- *sope-etl*
 
-1. **spark-utils**:
+1. **sope-spark**:
  This module contains library functions and a Scala internal **dsl** library that assists with writing **Spark SQL** ETL transformations in concise manner
  
-    [More information](spark-utils/README.md)
+    [More information](sope-spark/README.md)
  
-2. **dwp-utils**:
- This module contains following utilities :
- - *YAML Transformer*: A yaml based external transformer with easy to use ETL constructs.
- - *DQ Framework*: A simplified and extensible yaml based Data Quality and Data Standardization framework. **TBD**
+2. **sope-etl**:
+ This module contains a **YAML** based external transformer with easy to use ETL constructs.
  
-    [More information](dwp-utils/README.md)
+    [More information](sope-etl/README.md)
 
 
 ##### Building the project:
- Currently the project supports Spark version 2.x onwards. Support for Spark version 1.x will be added later.
- Use **mvn clean package** to build the project. Import the generated jars in your project.
+The project only supports Spark versions 2.x onwards.
+Use **mvn clean package** to build the project. Import the generated jars in your project.

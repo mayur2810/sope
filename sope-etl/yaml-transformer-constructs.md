@@ -59,7 +59,7 @@ The 'transformations' section if defined as follows:
 transformations :
     - input: input_alias  // Input alias on which transformations will performed. Can be from 'inputs' sections or previous transformation
       alias: alias_for_this_transformation  //  (optional) if not provided, input alias will be replaced with this transformation
-      persist: true  // Whether to persist this result of this transformation (optional)
+      persist: memory_only  // Persistence level if transformation is to be persisted. e.g. MEMORY_ONLY, MEMORY_AND_DISK (optional)
       actions: // define multiple transformation actions for this input
         - {type: <transformation>, <transformation_options>}
         - {type: <transformation>, <transformation_options>}
@@ -89,11 +89,12 @@ Drop Columns |  {type: drop, columns: ["col1", "col2", ...]} |
 Drop Duplicates |  {type: drop_duplicates, columns: ["col1", "col2", ...]} |
 Unstruct | {type: unstruct, column: "col1", "col2"} |
 Join | {type: join, columns: [col1, col2, ..] , condition: "x.col1 = y.col2", join_type: #join_type, with: #join_dataframe, broadcast_hint: left/right} | Either columns or condition should be provided; join_types: inner, left, right, full; broadcast_hint: left/right (optional)
-Group |{type: group_by, columns: [col1, col2, ..], expr: group_expression} |
+Group By |{type: group_by, columns: [col1, col2, ..], expr: group_expression} |
 Order By |{type: order_by, columns: [col1:desc, col2, ..]} | to sort in descending order, append column by ':desc'
 Union | {type: union, with: ["dataset1", "dataset2", ..]} |
 Intersect | {type: intersect, with: ["dataset1", "dataset2", ..]} |
 Except | {type: except, with: ["dataset1", "dataset2", ..]} |
 Sequence | {type: sequence, sk_source: source_alias, sk_column: source_key_column} | max 'sk_column' value plus 1 will used as start index for sequence generation
-SCD | {type: "scd", dim_table: "table_name", sk_column: "sk_key", natural_keys: ["nk1", "nk2", ..], derived_columns: ["derived_col1", ..], meta_columns: ["update_date", ..], incremental_load: true(default)/false } | Perform SCD on the dimension table, the output will be fused input & dimension records with 'INSERT', 'UPDATE', 'NCD' or 'INVALID' scd_status. Users can update this dataset according to required SCD type.
+SCD | {type: scd, dim_table: "table_name", sk_column: "sk_key", natural_keys: ["nk1", "nk2", ..], derived_columns: ["derived_col1", ..], meta_columns: ["update_date", ..], incremental_load: true(default)/false } | Perform SCD on the dimension table, the output will be fused input & dimension records with 'INSERT', 'UPDATE', 'NCD' or 'INVALID' scd_status. Users can update this dataset according to required SCD type.
+NA  | {type: na, default_numeric: <default_numeric_value_for_nulls>, default_string: <default_string_value_for_nulls>, columns: [col1, col2, ..]} | Assigns default numeric/string values to NULLs VALUES for provided columns
 

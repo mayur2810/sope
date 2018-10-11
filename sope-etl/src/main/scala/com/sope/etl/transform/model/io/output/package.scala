@@ -2,6 +2,7 @@ package com.sope.etl.transform.model.io
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.spark.sql._
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
@@ -43,7 +44,11 @@ package object output {
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) db: String,
                         @JsonProperty(required = true) table: String) extends TargetTypeRoot("hive", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).saveAsTable(s"$db.$table")
+    def apply(df: DataFrame): Unit = {
+      val targetTable = s"$db.$table"
+      val targetTableDF = df.sqlContext.table(targetTable)
+      df.select(targetTableDF.getColumns: _*).write.mode(getSaveMode).insertInto(targetTable)
+    }
   }
 
   case class OrcTarget(@JsonProperty(required = true) input: String,

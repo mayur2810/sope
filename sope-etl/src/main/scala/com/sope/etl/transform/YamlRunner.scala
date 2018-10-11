@@ -13,14 +13,14 @@ import org.apache.spark.sql.SparkSession
   */
 object YamlRunner extends Logging {
 
-  private val YamlPathOpt = "yaml_file"
-  private val options = new Options().addOption(YamlPathOpt, true, "yaml file path")
+  private val MainYamlFileOpt = "main_yaml_file"
+  private val options = new Options().addOption(MainYamlFileOpt, true, "Main yaml file name")
 
   def main(args: Array[String]): Unit = {
     val cmdLine = new BasicParser().parse(options, args, true)
     val optionMap = cmdLine.getOptions.map(option => option.getOpt.trim -> option.getValue.trim).toMap
-    val yamlPath =  optionMap(YamlPathOpt)
-    val yamlTransformer = new YamlDataTransform(YamlFile(yamlPath))
+    val mainYamlFile =  optionMap(MainYamlFileOpt)
+    val yamlTransformer = new YamlDataTransform(YamlFile(mainYamlFile))
     logInfo("Successfully parsed YAML File, executing the Flow")
     val sparkConf = new SparkConf().setAppName("Spark: YAML Transformer")
     val session = SparkSession.builder()
