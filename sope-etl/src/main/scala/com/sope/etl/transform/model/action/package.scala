@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.etl.scd.DimensionTable
 import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.transform.{YamlDataTransform, YamlParserUtil}
+import com.sope.etl.transform.model.YamlFile.IntermediateYaml
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
 import org.apache.spark.sql.DataFrame
@@ -228,7 +228,7 @@ package object action {
 
     override def apply(dataframes: DataFrame*): DFFunc =
       (df: DataFrame) => {
-        val transformed = new YamlDataTransform(YamlFile(yamlFile, substitutions), df +: dataframes: _*).getTransformedDFs.toMap
+        val transformed = IntermediateYaml(yamlFile, substitutions).getTransformedDFs(df +: dataframes: _*).toMap
         transformed.getOrElse(outputAlias, throw new YamlDataTransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
       }
 
