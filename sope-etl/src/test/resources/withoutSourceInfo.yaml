@@ -66,3 +66,11 @@ transformations :
       actions:
           - {type: filter, condition: "product_id = -1 or product_id = 0"}
           - {type: except, with: ["dim_product"]}
+    - alias: "transform_all_test"
+      input: "transactions"
+      actions:
+          - {type: transform_all, function: "upper", suffix: "_new", columns: ["loc", "product"]}
+    - alias: "transform_whole_table_test"
+      input: "transactions"
+      actions:
+          - {type: transform_all, suffix: "_new", function: "upper"}

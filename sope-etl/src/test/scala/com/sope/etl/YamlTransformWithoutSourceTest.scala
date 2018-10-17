@@ -148,4 +148,18 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.count should be(0)
   }
 
+  "transform_all_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("transform_all_test")
+    println("transform_all_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns.length should be(6)
+  }
+
+  "transform_whole_table_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("transform_whole_table_test")
+    println("transform_whole_table_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns.length should be(8)
+  }
+
 }

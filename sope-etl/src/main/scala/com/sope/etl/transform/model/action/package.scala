@@ -7,8 +7,9 @@ import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.YamlFile.IntermediateYaml
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.catalyst.analysis.FunctionRegistry
 import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.{Column, DataFrame}
 
 /**
   * Package contains YAML Transformer Action (transform) construct mappings and definitions
@@ -26,6 +27,7 @@ package object action {
     final val Join = "join"
     final val GroupBy = "group_by"
     final val Transform = "transform"
+    final val TransformAll = "transform_all"
     final val Select = "select"
     final val SelectNot = "select_not"
     final val Distinct = "distinct"
@@ -58,6 +60,7 @@ package object action {
     new Type(value = classOf[JoinAction], name = Actions.Join),
     new Type(value = classOf[GroupAction], name = Actions.GroupBy),
     new Type(value = classOf[TransformAction], name = Actions.Transform),
+    new Type(value = classOf[TransformAllAction], name = Actions.TransformAll),
     new Type(value = classOf[SelectAction], name = Actions.Select),
     new Type(value = classOf[SelectNotAction], name = Actions.SelectNot),
     new Type(value = classOf[DistinctAction], name = Actions.Distinct),
@@ -75,9 +78,34 @@ package object action {
     new Type(value = classOf[YamlAction], name = Actions.Yaml)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
+
     def apply(dataframes: DataFrame*): DFFunc
 
     def inputAliases: Seq[String] = Nil
+
+    private def functionNotFoundException(function: String) =
+      throw new YamlDataTransformException(s"$function not found in Registry. Might not be registered")
+
+    /**
+      * Get the Multi arg function that is registered in Spark Function registry
+      *
+      * @param name Function name
+      * @return [[MultiColFunc]]
+      */
+    protected def getMultiArgFunction(name: String): MultiColFunc = (columns: Seq[Column]) =>
+      new Column(FunctionRegistry.builtin.lookupFunctionBuilder(name).getOrElse(functionNotFoundException(name))
+        .apply(columns.map(_.expr)))
+
+    /**
+      * Get the Single Arg Function that is registered in Spark Function registry
+      *
+      * @param name Function name
+      * @return [[ColFunc]]
+      */
+    protected def getSingleArgFunction(name: String): ColFunc = (column: Column) =>
+      new Column(FunctionRegistry.builtin.lookupFunctionBuilder(name).getOrElse(functionNotFoundException(name))
+        .apply(Seq(column.expr)))
+
   }
 
 
@@ -90,6 +118,17 @@ package object action {
     override def apply(dataframes: DataFrame*): DFFunc = Transform(list.toSeq: _*)
   }
 
+
+  case class TransformAllAction(@JsonProperty(value = "function", required = true) transformExpr: String,
+                                @JsonProperty(required = false) suffix: Option[String],
+                                @JsonProperty(required = false) columns: Option[List[String]]) extends TransformActionRoot(Actions.TransformAll) {
+    override def apply(dataframes: DataFrame*): DFFunc = (columns, suffix) match {
+      case (None, None) => Transform(getSingleArgFunction(transformExpr))
+      case (None, Some(colSuffix)) => (df: DataFrame) => df.transform(Transform(colSuffix, getSingleArgFunction(transformExpr), df.columns: _*))
+      case (Some(cols), None) => Transform(getSingleArgFunction(transformExpr), cols: _*)
+      case (Some(cols), Some(colSuffix)) => Transform(colSuffix, getSingleArgFunction(transformExpr), cols: _*)
+    }
+  }
 
   case class JoinAction(@JsonProperty(value = "condition", required = false) joinCondition: String,
                         @JsonProperty(value = "columns", required = false) joinColumns: Seq[String],

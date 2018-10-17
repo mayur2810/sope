@@ -82,7 +82,8 @@ Select | {type: select, columns: [col1, col2, ..]} |
 SelectNot | {type: select_not, columns: [col1, col2, ..]} |
 Filter | {type: filter, condition: filter_condition} |
 Rename  | {type: rename, list: {col1: new_col1, col2: new_col2, ..}} | list: list of existing name and new name
-Column Transform |{type: transform, list: {col1: func(<any_col>), col2: func(<any_col>), ..} }| list of column name and functions applied to column
+Column Transform |{type: transform, list: {col1: func(<any_col>), col2: func(<any_col1>, <any_expr>), ..} }| list of column name and functions applied to column
+Column Transform(Bulk)| {type: transform-all, function: <single-arg-function> suffix: <suffix_to_append>, columns: [col1, col2, expr1, expr2] } | **suffix** is optional, if not provided the columns will be replaced by transformed column else new column with appended suffix will be generated. **columns** is optional, if not provided the function will be applied on all the columns of the input 
 Limit | {type: "limit", size: <int> } |
 Distinct | {type: distinct} |
 Drop Columns |  {type: drop, columns: ["col1", "col2", ...]} |
