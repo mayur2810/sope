@@ -185,16 +185,38 @@ package object dsl {
       * @return [[DFFunc]]
       */
     def apply(columnFunc: ColFunc, columns: String*): DFFunc = (df: DataFrame) =>
-      df.applyColumnExpressions(columns.map(column => column -> columnFunc(col(column))).toMap)
+      df.applyColumnExpressions(columns.map(column => column -> columnFunc(expr(column))).toMap)
+
 
     /**
-      * Apply column expressions to all columns in dataframe
+      * Apply a single argument column expression to provided columns. Use if a new column is to be derived for each for transformation
+      *
+      * @param suffix     suffix to append to for the new columns
+      * @param columnFunc column expression
+      * @param columns    List of resultant column and target column names to which function is to be applied
+      * @return [[DFFunc]]
+      */
+    def apply(suffix: String, columnFunc: ColFunc, columns: String*): DFFunc = (df: DataFrame) =>
+      df.applyColumnExpressions(columns.map(column => s"$column$suffix" -> columnFunc(expr(column))).toMap)
+
+    /**
+      * Applies single argument column expression to all columns in dataframe
       *
       * @param columnFunc column expression
       * @return [[DFFunc]]
       */
     def apply(columnFunc: ColFunc): DFFunc = (df: DataFrame) =>
-      df.applyColumnExpressions(df.columns.map(column => column -> columnFunc(col(column))).toMap)
+      df.applyColumnExpressions(df.columns.map(column => column -> columnFunc(expr(column))).toMap)
+
+    /**
+      * Apply a multi argument column expression to provided columns.
+      *
+      * @param columnFunc column expression
+      * @param columns    List of resultant column name and source column names/expressions to which the function is to be applied
+      * @return [[DFFunc]]
+      */
+    def apply[_: ClassTag](columnFunc: MultiColFunc, columns: (String, Seq[String])*): DFFunc = (df: DataFrame) =>
+      df.applyColumnExpressions(columns.map { case (colName, column) => colName -> columnFunc(column.map(expr)) }.toMap)
   }
 
 

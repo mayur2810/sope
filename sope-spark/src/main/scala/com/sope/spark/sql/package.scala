@@ -17,7 +17,8 @@ package object sql {
   // Type Aliases
   type DFFunc = (DataFrame) => DataFrame
   type DFFunc2 = (SQLContext) => DataFrame
-  type ColFunc = (Column) => Column
+  type ColFunc = Column => Column
+  type MultiColFunc = Seq[Column] => Column
   type DFJoinFunc = (DataFrame, DataFrame, String) => DataFrame
   type DFGroupFunc = (DataFrame, Seq[Column]) => DataFrame
 
