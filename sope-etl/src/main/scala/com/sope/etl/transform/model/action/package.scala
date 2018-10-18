@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.etl.scd.DimensionTable
 import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.transform.model.YamlFile.IntermediateYaml
+import com.sope.etl.yaml.YamlFile.IntermediateYaml
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
-import org.apache.spark.sql.catalyst.analysis.FunctionRegistry
-import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.functions.{callUDF, expr}
 import org.apache.spark.sql.{Column, DataFrame}
 
 /**
@@ -83,18 +82,13 @@ package object action {
 
     def inputAliases: Seq[String] = Nil
 
-    private def functionNotFoundException(function: String) =
-      throw new YamlDataTransformException(s"$function not found in Registry. Might not be registered")
-
     /**
       * Get the Multi arg function that is registered in Spark Function registry
       *
       * @param name Function name
       * @return [[MultiColFunc]]
       */
-    protected def getMultiArgFunction(name: String): MultiColFunc = (columns: Seq[Column]) =>
-      new Column(FunctionRegistry.builtin.lookupFunctionBuilder(name).getOrElse(functionNotFoundException(name))
-        .apply(columns.map(_.expr)))
+    protected def getMultiArgFunction(name: String): MultiColFunc = (columns: Seq[Column]) => callUDF(name, columns: _*)
 
     /**
       * Get the Single Arg Function that is registered in Spark Function registry
@@ -102,9 +96,7 @@ package object action {
       * @param name Function name
       * @return [[ColFunc]]
       */
-    protected def getSingleArgFunction(name: String): ColFunc = (column: Column) =>
-      new Column(FunctionRegistry.builtin.lookupFunctionBuilder(name).getOrElse(functionNotFoundException(name))
-        .apply(Seq(column.expr)))
+    protected def getSingleArgFunction(name: String): ColFunc = callUDF(name, _)
 
   }
 
