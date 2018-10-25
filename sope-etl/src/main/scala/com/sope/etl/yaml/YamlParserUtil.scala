@@ -1,4 +1,4 @@
-package com.sope.etl.transform
+package com.sope.etl.yaml
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory

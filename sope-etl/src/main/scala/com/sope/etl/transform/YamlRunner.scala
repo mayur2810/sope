@@ -1,6 +1,6 @@
 package com.sope.etl.transform
 
-import com.sope.etl.transform.model.YamlFile.End2EndYaml
+import com.sope.etl.yaml.YamlFile.End2EndYaml
 import com.sope.utils.Logging
 import org.apache.commons.cli.{BasicParser, Options}
 import org.apache.spark.SparkConf
