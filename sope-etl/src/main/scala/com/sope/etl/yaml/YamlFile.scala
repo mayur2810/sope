@@ -1,6 +1,7 @@
 package com.sope.etl.yaml
 
 import com.sope.etl.transform.Transformer
+import com.sope.spark.sql.udfs._
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.{TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
 import com.sope.etl.yaml.YamlParserUtil._
@@ -11,7 +12,7 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
   *
   * @author mbadgujar
   */
-abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Option[Seq[Any]] = None, modelClass : Class[T]) {
+abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Option[Seq[Any]] = None, modelClass: Class[T]) {
 
   protected val model: T = serialize
 
@@ -48,7 +49,7 @@ abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Op
 object YamlFile {
 
   case class IntermediateYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
-    extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutSourceTarget]){
+    extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutSourceTarget]) {
 
     /**
       * Perform transformation on provided dataframes.
@@ -59,12 +60,13 @@ object YamlFile {
     def getTransformedDFs(dataFrames: DataFrame*): Seq[(String, DataFrame)] = {
       if (model.sources.size != dataFrames.size)
         throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
+      registerUDFs(dataFrames.head.sqlContext) // Register utility udfs
       val sourceDFMap = model.sources.zip(dataFrames).map { case (source, df) => (source, df.alias(source)) }
       new Transformer(getYamlFileName, sourceDFMap.toMap, model.transformations).transform
     }
   }
 
-  case class End2EndYaml(yamlPath: String) extends YamlFile(yamlPath, None, classOf[TransformModelWithSourceTarget]){
+  case class End2EndYaml(yamlPath: String) extends YamlFile(yamlPath, None, classOf[TransformModelWithSourceTarget]) {
 
     /**
       * Performs end to end transformations - Reading sources and writing transformation result to provided targets
@@ -73,6 +75,7 @@ object YamlFile {
       * @param sqlContext Spark [[SQLContext]]
       */
     def performTransformations(sqlContext: SQLContext): Unit = {
+      registerUDFs(sqlContext) // Register utility udfs
       val sourceDFMap = model.sources.map(source => source.getSourceName
         -> source.apply(sqlContext).alias(source.getSourceName)).toMap
       val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model.transformations).transform.toMap
