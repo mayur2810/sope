@@ -4,7 +4,7 @@ import java.sql.{Date => SDate}
 
 import com.sope.etl.TestContext._
 import com.sope.etl.model.{Date, Product, ProductDim, Transactions}
-import com.sope.etl.transform.model.YamlFile.IntermediateYaml
+import com.sope.etl.yaml.YamlFile.IntermediateYaml
 import org.scalatest.{FlatSpec, Matchers}
 
 /**

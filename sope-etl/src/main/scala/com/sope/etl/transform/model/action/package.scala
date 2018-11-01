@@ -7,7 +7,7 @@ import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.yaml.YamlFile.IntermediateYaml
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
-import org.apache.spark.sql.functions.{callUDF, expr}
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Column, DataFrame}
 
 /**
@@ -42,6 +42,7 @@ package object action {
     final val Unstruct = "unstruct"
     final val NA = "na"
     final val Yaml = "yaml"
+    final val DQCheck = "dq_check"
   }
 
   /**
@@ -74,7 +75,8 @@ package object action {
     new Type(value = classOf[DropColumnAction], name = Actions.DropColumn),
     new Type(value = classOf[UnstructAction], name = Actions.Unstruct),
     new Type(value = classOf[NAAction], name = Actions.NA),
-    new Type(value = classOf[YamlAction], name = Actions.Yaml)
+    new Type(value = classOf[YamlAction], name = Actions.Yaml),
+    new Type(value = classOf[DQCheckAction], name = Actions.DQCheck)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
 
@@ -266,5 +268,24 @@ package object action {
     override def inputAliases: Seq[String] = inputs.getOrElse(Nil)
   }
 
+
+  case class DQCheckAction(@JsonProperty(required = true) id: String,
+                           @JsonProperty(value = "dq_function", required = true) dqFunction: String,
+                           @JsonProperty(value = "options") functionOptions: Option[Seq[Any]],
+                           @JsonProperty(required = true) columns: Seq[String])
+    extends TransformActionRoot(Actions.DQCheck) {
+
+    private val DQStatusSuffix = "dq_failed"
+    private val DQColumnListSuffix = "dq_failed_columns"
+
+    override def apply(dataframes: DataFrame*): DFFunc = {
+      Transform(columns.map(column => s"${column}_${id}_$DQStatusSuffix" -> getMultiArgFunction(dqFunction)(col(column) +:
+        functionOptions.fold(Nil: Seq[Column])(_.map(lit)))): _*) +
+        Transform {
+          val dqColumns = columns.map(column => when(col(s"${column}_${id}_$DQStatusSuffix") === true, lit(column)).otherwise(lit(null)))
+          s"${id}_$DQColumnListSuffix" -> concat_ws(",", dqColumns: _*)
+        }
+    }
+  }
 
 }
