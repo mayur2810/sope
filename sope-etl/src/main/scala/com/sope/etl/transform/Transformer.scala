@@ -2,9 +2,11 @@ package com.sope.etl.transform
 
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model._
+import com.sope.etl.transform.model.action.JoinAction
 import com.sope.spark.sql.dsl._
 import com.sope.utils.Logging
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.col
 import org.apache.spark.storage.StorageLevel
 
 import scala.util.{Failure, Success, Try}
@@ -17,28 +19,68 @@ import scala.util.{Failure, Success, Try}
 class Transformer(file: String, inputMap: Map[String, DataFrame], transformations: Seq[DFTransformation]) extends Logging {
 
 
+  private case class InputSource(name: String, isUsedForJoin: Boolean, joinColumns: Option[Seq[String]])
+
   private val autoPersistSetting = Option(System.getProperty("sope.auto.persist")).fold(true)(_.toBoolean)
+  private var sourceDFMap: Map[String, DataFrame] = inputMap
+
+  // Generate the input sources for the transformation
+  private lazy val inputSources = transformations
+    .flatMap(transform => transform.actions.fold(Nil: Seq[InputSource])(actions =>
+      actions.foldLeft(Nil: Seq[InputSource]) {
+        case (inputs, action) =>
+          val (isJoinAction, joinColumns) =
+            action match {
+              case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
+              case _ => (false, None)
+            }
+          inputs ++
+            (InputSource(transform.source, isJoinAction, joinColumns) +:
+              action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns)))
+      }))
+
+  /**
+    * Check if the alias that is to be persisted can be
+    * pre sorted if used in multiple joins using same columns
+    *
+    * @param alias Transformation alias
+    * @return Sort columns
+    */
+  private def preSort(alias: String): Option[Seq[String]] = {
+    val joinSources = inputSources
+      .filter(source => source.name == alias && source.isUsedForJoin)
+      .map(source => source.joinColumns.get.sorted)
+    if (joinSources.nonEmpty) Some(joinSources.maxBy(_.mkString(","))) else None
+  }
 
   // Initialize the auto persist mapping for sources
   val autoPersistList: Seq[String] = {
-    lazy val persistSeq = transformations
-      .flatMap(transform => transform.source +: transform.actions.fold(Nil: Seq[String])(actions =>
-        actions.foldLeft(Nil: Seq[String]) { case (a1, a2) => a1 ++ a2.inputAliases }))
-      .map(_ -> 1)
-      .groupBy(_._1).map { case (k, v) => (k, v.size) }
+    val persistList = inputSources
+      .map(_.name -> 1)
+      .groupBy(_._1)
+      .map { case (k, v) => (k, v.size) }
       .filter(_._2 > 1).keys
-    if (autoPersistSetting) persistSeq.toSeq.distinct else Nil
+      .toSeq
+    if (autoPersistSetting) persistList.distinct else Nil
   }
 
 
   // gets dataframe from provided alias
-  private def getDF(alias: String) (implicit sourceDFMap: Map[String, DataFrame]): DataFrame = {
+  private def getDF(alias: String): DataFrame = {
     if (sourceDFMap.isDefinedAt(alias)) {
       val autoPersist = autoPersistList.contains(alias)
       sourceDFMap(alias).storageLevel match {
         case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
-          logWarning(s"AUTO persisting (Memory only) transformation: $alias, since it is used multiple times")
-          sourceDFMap(alias).persist(StorageLevel.MEMORY_ONLY)
+          logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
+          val persisted = (preSort(alias) match {
+            case Some(sortCols) =>
+              logWarning(s"Persisted transformation: '$alias' will be pre-sorted on columns: ${sortCols.mkString(", ")}")
+              sourceDFMap(alias).sort(sortCols.map(col): _*)
+            case None =>
+              sourceDFMap(alias)
+          }).persist(StorageLevel.MEMORY_ONLY)
+          sourceDFMap = sourceDFMap updated(alias, persisted)
+          persisted
         case _ => sourceDFMap(alias)
       }
     }
@@ -51,8 +93,8 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
     *
     * @return Transformed Dataframes
     */
-  def transform : Seq[(String, DataFrame)] = {
-    implicit var sourceDFMap: Map[String, DataFrame] = inputMap
+  def transform: Seq[(String, DataFrame)] = {
+
     logDebug("AUTO persist set: " + autoPersistSetting)
     logDebug("AUTO persist data list: " + autoPersistList.mkString(", "))
 

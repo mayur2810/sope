@@ -130,18 +130,21 @@ package object action {
                         @JsonProperty(value = "with", required = true) joinSource: String,
                         @JsonProperty(value = "broadcast_hint") broadcastHint: String) extends TransformActionRoot(Actions.Join) {
 
-    private val joinTypeFunc: (DFJoinFunc) => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
+    private val joinTypeFunc: DFJoinFunc => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
       case "inner" => joinFunc >< _
       case "left" => joinFunc << _
       case "right" => joinFunc >> _
       case "full" => joinFunc <> _
     }
 
-    override def apply(dataframes: DataFrame*): DFFunc = {
+    def isExpressionBased: Boolean = {
       if (joinCondition == null && joinColumns == null)
         throw new YamlDataTransformException("Please provide either 'condition' or 'columns' option in join action definition")
+      joinCondition != null
+    }
 
-      if (joinCondition != null)
+    override def apply(dataframes: DataFrame*): DFFunc = {
+      if (isExpressionBased)
         joinTypeFunc(Join(Option(broadcastHint), expr(joinCondition)))(dataframes.head)
       else
         joinTypeFunc(Join(Option(broadcastHint), joinColumns: _*))(dataframes.head)
