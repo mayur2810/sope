@@ -74,3 +74,7 @@ transformations :
       input: "transactions"
       actions:
           - {type: transform_all, suffix: "_new", function: "upper"}
+    - alias: "rename_all_test"
+      input: "transactions"
+      actions:
+          - {type: rename_all, append: "_renamed"}

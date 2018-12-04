@@ -22,6 +22,7 @@ package object action {
    */
   object Actions {
     final val Rename = "rename"
+    final val RenameAll = "rename_all"
     final val Filter = "filter"
     final val Join = "join"
     final val GroupBy = "group_by"
@@ -56,6 +57,7 @@ package object action {
     property = "type")
   @JsonSubTypes(Array(
     new Type(value = classOf[RenameAction], name = Actions.Rename),
+    new Type(value = classOf[RenameAllAction], name = Actions.RenameAll),
     new Type(value = classOf[FilterAction], name = Actions.Filter),
     new Type(value = classOf[JoinAction], name = Actions.Join),
     new Type(value = classOf[GroupAction], name = Actions.GroupBy),
@@ -105,6 +107,12 @@ package object action {
 
   case class RenameAction(@JsonProperty(required = true) list: Map[String, String]) extends TransformActionRoot(Actions.Rename) {
     override def apply(dataframes: DataFrame*): DFFunc = Rename(list.toSeq: _*)
+  }
+
+
+  case class RenameAllAction(@JsonProperty(required = true) append: String,
+                             @JsonProperty(required = false) prefix: Option[Boolean]) extends TransformActionRoot(Actions.RenameAll) {
+    override def apply(dataframes: DataFrame*): DFFunc = Rename(append, prefix.getOrElse(false))
   }
 
 
