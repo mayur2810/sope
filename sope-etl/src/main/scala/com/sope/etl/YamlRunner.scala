@@ -1,4 +1,4 @@
-package com.sope.etl.transform
+package com.sope.etl
 
 import com.sope.etl.yaml.YamlFile.End2EndYaml
 import com.sope.utils.Logging
