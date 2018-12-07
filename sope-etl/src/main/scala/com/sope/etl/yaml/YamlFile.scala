@@ -1,11 +1,12 @@
 package com.sope.etl.yaml
 
 import com.fasterxml.jackson.databind.JsonMappingException
+import com.sope.etl.UDFRegistrationClassProperty
 import com.sope.etl.transform.Transformer
-import com.sope.spark.sql.udfs._
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.{TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
 import com.sope.etl.yaml.YamlParserUtil._
+import com.sope.spark.sql.udfs._
 import com.sope.utils.Logging
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
@@ -92,6 +93,20 @@ object YamlFile {
 
   case class End2EndYaml(yamlPath: String) extends YamlFile(yamlPath, None, classOf[TransformModelWithSourceTarget]) {
 
+    private def registerCustomUDFs(sqlContext: SQLContext) : Unit = {
+      Option(System.getProperty(UDFRegistrationClassProperty)) match {
+        case Some(classStr) =>
+          Try {
+            val clazz = this.getClass.getClassLoader.loadClass(classStr)
+            clazz.newInstance().asInstanceOf[CustomUDFRegistration].performRegistration(sqlContext)
+          } match {
+            case Success(_) => logInfo("Successfully registered UDF")
+            case Failure(e) => logError(s"UDF Registration failed  : $e")
+          }
+        case None =>
+      }
+    }
+
     /**
       * Performs end to end transformations - Reading sources and writing transformation result to provided targets
       * The source yaml file should contains source and target information.
@@ -99,7 +114,8 @@ object YamlFile {
       * @param sqlContext Spark [[SQLContext]]
       */
     def performTransformations(sqlContext: SQLContext): Unit = {
-      registerUDFs(sqlContext) // Register utility udfs
+      registerUDFs(sqlContext) // Register in-built utility udfs
+      registerCustomUDFs(sqlContext) // Register custom udfs if provided
       val sourceDFMap = model.sources.map(source => source.getSourceName
         -> source.apply(sqlContext).alias(source.getSourceName)).toMap
       val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model.transformations).transform.toMap
