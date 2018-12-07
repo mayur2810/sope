@@ -3,6 +3,7 @@ package com.sope.etl.transform.model.io
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.spark.sql._
+import com.sope.utils.Logging
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
@@ -23,9 +24,12 @@ package object output {
     new Type(value = classOf[ParquetTarget], name = "parquet"),
     new Type(value = classOf[CSVTarget], name = "csv"),
     new Type(value = classOf[TextTarget], name = "text"),
-    new Type(value = classOf[JsonTarget], name = "text")
+    new Type(value = classOf[JsonTarget], name = "json"),
+    new Type(value = classOf[CountOutput], name = "count"),
+    new Type(value = classOf[ShowOutput], name = "show")
   ))
-  abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String, input: String, mode: String) {
+  abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String, input: String, mode: String)
+    extends Logging {
     def apply(df: DataFrame): Unit
 
     def getSaveMode: SaveMode = mode match {
@@ -86,4 +90,15 @@ package object output {
     def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).json(path)
   }
 
+  case class CountOutput(@JsonProperty(required = true) input: String) extends TargetTypeRoot("count", input, "") {
+    def apply(df: DataFrame): Unit = logInfo(s"Count for transformation alias: $input :- ${df.count}")
+  }
+
+  case class ShowOutput(@JsonProperty(required = true) input: String,
+                        @JsonProperty(required = true) num_records: Int) extends TargetTypeRoot("show", input, "") {
+    def apply(df: DataFrame): Unit = {
+      logInfo(s"Showing sample rows for transformation alias: $input")
+      df.show(num_records)
+    }
+  }
 }
