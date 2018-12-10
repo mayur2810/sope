@@ -114,8 +114,12 @@ abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Op
     case Success(t) => t
     case Failure(e) => e match {
       case e: JsonMappingException =>
-        val errorMessage = getParseErrorMessage(e.getLocation.getLineNr, e.getLocation.getColumnNr)
-        logError(errorMessage + s"\n${e.getMessage}")
+        Option(e.getLocation) match {
+          case Some(location) =>
+            val errorMessage = getParseErrorMessage(location.getLineNr, location.getColumnNr)
+            logError(errorMessage + s"\n${e.getMessage}")
+          case None =>
+        }
         throw e
       case _ => throw e
     }
