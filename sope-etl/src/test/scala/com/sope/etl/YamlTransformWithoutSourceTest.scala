@@ -51,6 +51,8 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
   )
 
   private val transformedResult = {
+    System.setProperty(UDFRegistrationClassProperty, "com.sope.etl.custom.CustomUDF")
+    System.setProperty(TransformationRegistrationClassProperty, "com.sope.etl.custom.CustomTransformation")
     val transactionsDF = TransactionData.toDF
     val productDF = productData.toDF
     val dateDF = dateData.toDF
@@ -155,7 +157,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.columns.length should be(6)
   }
 
-   "transform_whole_table_test" should "generate the transformation Dataframe correctly" in {
+  "transform_whole_table_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("transform_whole_table_test")
     println("transform_whole_table_test ==>")
     transformedDF.show(false)
@@ -169,5 +171,18 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.columns.forall(_.contains("_renamed"))
   }
 
+  "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("custom_udf_call_test")
+    println("custom_udf_call_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns should contain("upper_loc")
+  }
+
+  "custom_transform_call_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("custom_transform_call_test")
+    println("custom_transform_call_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns should contain("new_column")
+  }
 
 }

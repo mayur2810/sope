@@ -2,6 +2,7 @@ package com.sope.etl.transform.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.etl.register.TransformationRegistration
 import com.sope.etl.scd.DimensionTable
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.yaml.YamlFile.IntermediateYaml
@@ -43,6 +44,7 @@ package object action {
     final val Unstruct = "unstruct"
     final val NA = "na"
     final val Yaml = "yaml"
+    final val Named = "named_transform"
     final val DQCheck = "dq_check"
   }
 
@@ -78,6 +80,7 @@ package object action {
     new Type(value = classOf[UnstructAction], name = Actions.Unstruct),
     new Type(value = classOf[NAAction], name = Actions.NA),
     new Type(value = classOf[YamlAction], name = Actions.Yaml),
+    new Type(value = classOf[NamedAction], name = Actions.Named),
     new Type(value = classOf[DQCheckAction], name = Actions.DQCheck)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
@@ -279,6 +282,18 @@ package object action {
     override def inputAliases: Seq[String] = inputs.getOrElse(Nil)
   }
 
+  case class NamedAction(@JsonProperty(value = "name", required = true) transformationName: String,
+                         @JsonProperty(value = "input_aliases", required = false) inputs: Option[Seq[String]])
+    extends TransformActionRoot(Actions.Named) {
+
+    override def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => TransformationRegistration
+      .getTransformation(transformationName)
+      .fold(throw new YamlDataTransformException(s"Named transformation: '$transformationName' is not registered")) {
+        transformation => transformation.apply(df +: dataframes)
+      }
+
+    override def inputAliases: Seq[String] = inputs.getOrElse(Nil)
+  }
 
   case class DQCheckAction(@JsonProperty(required = true) id: String,
                            @JsonProperty(value = "dq_function", required = true) dqFunction: String,

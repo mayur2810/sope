@@ -78,3 +78,11 @@ transformations :
       input: "transactions"
       actions:
           - {type: rename_all, append: "_renamed"}
+    - alias: "custom_udf_call_test"
+      input: "transactions"
+      actions:
+      - {type: transform, list: {upper_loc : "custom_upper(loc)"}}
+    - alias: "custom_transform_call_test"
+      input: "transactions"
+      actions:
+      - {type: named_transform , name: "custom_transform"}
