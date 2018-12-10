@@ -1,6 +1,6 @@
 package com.sope.etl.transform
 
-import com.sope.etl.AutoPersistProperty
+import com.sope.etl.SopeETLConfig
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model._
 import com.sope.etl.transform.model.action.JoinAction
@@ -22,7 +22,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
 
   private case class InputSource(name: String, isUsedForJoin: Boolean, joinColumns: Option[Seq[String]])
 
-  private val autoPersistSetting = Option(System.getProperty(AutoPersistProperty)).fold(true)(_.toBoolean)
+  private val autoPersistSetting = SopeETLConfig.AutoPersistConfig
   private var sourceDFMap: Map[String, DataFrame] = inputMap
 
   // Generate the input sources for the transformation

@@ -47,7 +47,7 @@ abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Op
      Registers custom udf from provided class
   */
   private def registerCustomUDFs(sqlContext: SQLContext): Unit = {
-    Option(System.getProperty(UDFRegistrationClassProperty)) match {
+    SopeETLConfig.UDFRegistrationConfig match {
       case Some(classStr) =>
         logInfo(s"Registering custom UDFs from $classStr")
         getClassInstance[UDFRegistration](classStr) match {
@@ -64,7 +64,7 @@ abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Op
     Registers Custom Transformation from provided class
   */
   private def registerTransformations(): Unit = {
-    Option(System.getProperty(TransformationRegistrationClassProperty)) match {
+    SopeETLConfig.UDFRegistrationConfig match {
       case Some(classStr) =>
         logInfo(s"Registering custom Transformations from $classStr")
         getClassInstance[TransformationRegistration](classStr) match {
@@ -158,8 +158,16 @@ object YamlFile {
       */
     def performTransformations(sqlContext: SQLContext): Unit = {
       performRegistrations(sqlContext)
-      val sourceDFMap = model.sources.map(source => source.getSourceName
-        -> source.apply(sqlContext).alias(source.getSourceName)).toMap
+      val sourceDFMap = model.sources
+        .map(source => {
+          val sourceDF = source.apply(sqlContext)
+          if (SopeETLConfig.TestingModeConfig)
+            source.getSourceName -> sourceDF
+              .sample(withReplacement = true, SopeETLConfig.TestingDataFraction)
+              .alias(source.getSourceName)
+          else
+            source.getSourceName -> sourceDF.alias(source.getSourceName)
+        }).toMap
       val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model.transformations).transform.toMap
       model.targets.foreach(target => target(transformationResult(target.getInput)))
     }

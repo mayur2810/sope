@@ -6,7 +6,7 @@ import scala.reflect.runtime.universe._
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Constants & Utility Methods
+  * Constants, Utility methods and objects
   *
   * @author mbadgujar
   */
@@ -16,7 +16,11 @@ package object etl extends Logging {
 
   val TransformationRegistrationClassProperty = "sope.etl.transformation.class"
 
-  val AutoPersistProperty = "sope.auto.persist"
+  val AutoPersistProperty = "sope.auto.persist.enabled"
+
+  val TestingModeProperty = "sope.testing.mode.enabled"
+
+  val TestingDataFractionProperty = "sope.testing.data.fraction"
 
   /**
     * Get Scala 'Object' instance from class name
@@ -49,5 +53,18 @@ package object etl extends Logging {
         logError(s"Failed to load class  : $clsName")
         None
     }
+  }
+
+  /**
+    * Initializes Sope Configurations
+    */
+  object SopeETLConfig {
+    private def getProperty(property: String) = Option(System.getProperty(property))
+
+    val AutoPersistConfig: Boolean = getProperty(AutoPersistProperty).fold(true)(_.toBoolean)
+    val TestingModeConfig: Boolean = getProperty(TestingModeProperty).fold(false)(_.toBoolean)
+    val TestingDataFraction: Double = getProperty(TestingDataFractionProperty).fold(0.10)(_.toDouble)
+    val UDFRegistrationConfig: Option[String] = getProperty(UDFRegistrationClassProperty)
+    val TransformationRegistrationConfig: Option[String] = getProperty(TransformationRegistrationClassProperty)
   }
 }
