@@ -64,7 +64,7 @@ abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Op
     Registers Custom Transformation from provided class
   */
   private def registerTransformations(): Unit = {
-    SopeETLConfig.UDFRegistrationConfig match {
+    SopeETLConfig.TransformationRegistrationConfig match {
       case Some(classStr) =>
         logInfo(s"Registering custom Transformations from $classStr")
         getClassInstance[TransformationRegistration](classStr) match {
