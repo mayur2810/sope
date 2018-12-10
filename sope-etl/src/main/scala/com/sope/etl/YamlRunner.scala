@@ -3,7 +3,6 @@ package com.sope.etl
 import com.sope.etl.yaml.YamlFile.End2EndYaml
 import com.sope.utils.Logging
 import org.apache.commons.cli.{BasicParser, Options}
-import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -24,9 +23,7 @@ object YamlRunner extends Logging {
     val end2endYaml = End2EndYaml(mainYamlFile)
     logInfo("Successfully parsed YAML File")
     logInfo("Initializing Spark context & executing the flow..")
-    val sparkConf = new SparkConf().setAppName("Spark: YAML Transformer")
     val session = SparkSession.builder()
-      .config(sparkConf)
       .enableHiveSupport()
       .getOrCreate()
     end2endYaml.performTransformations(session.sqlContext)
