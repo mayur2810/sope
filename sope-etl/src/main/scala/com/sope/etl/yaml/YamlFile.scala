@@ -161,10 +161,14 @@ object YamlFile {
       val sourceDFMap = model.sources
         .map(source => {
           val sourceDF = source.apply(sqlContext)
-          if (SopeETLConfig.TestingModeConfig)
+          if (SopeETLConfig.TestingModeConfig) {
+            logWarning("TESTING MODE IS ENABLED!")
+            val fraction = SopeETLConfig.TestingDataFraction
+            logInfo(s"Data fraction for sampling: $fraction")
             source.getSourceName -> sourceDF
               .sample(withReplacement = true, SopeETLConfig.TestingDataFraction)
               .alias(source.getSourceName)
+          }
           else
             source.getSourceName -> sourceDF.alias(source.getSourceName)
         }).toMap
