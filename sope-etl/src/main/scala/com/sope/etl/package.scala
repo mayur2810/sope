@@ -1,6 +1,8 @@
 package com.sope
 
 import com.sope.utils.Logging
+import org.apache.commons.cli
+import org.apache.commons.cli.OptionBuilder
 
 import scala.reflect.runtime.universe._
 import scala.util.{Failure, Success, Try}
@@ -11,6 +13,10 @@ import scala.util.{Failure, Success, Try}
   * @author mbadgujar
   */
 package object etl extends Logging {
+
+  val MainYamlFileOption = "main_yaml_file"
+
+  val MainYamlFileSubstitutionsOption = "substitutions"
 
   val UDFRegistrationClassProperty = "sope.etl.udf.class"
 
@@ -56,6 +62,20 @@ package object etl extends Logging {
   }
 
   /**
+    * Builds Optional Command line options
+    *
+    * @param optionName options
+    * @return [[cli.Option]]
+    */
+  def buildOptionalCmdLineOption(optionName: String): cli.Option = {
+    val substitutionOption = OptionBuilder.create(optionName)
+    substitutionOption.setArgs(1)
+    substitutionOption.setRequired(false)
+    substitutionOption
+  }
+
+
+  /**
     * Initializes Sope Configurations
     */
   object SopeETLConfig {
@@ -67,4 +87,5 @@ package object etl extends Logging {
     val UDFRegistrationConfig: Option[String] = getProperty(UDFRegistrationClassProperty)
     val TransformationRegistrationConfig: Option[String] = getProperty(TransformationRegistrationClassProperty)
   }
+
 }

@@ -147,8 +147,8 @@ object YamlFile {
     }
   }
 
-  case class End2EndYaml(yamlPath: String) extends YamlFile(yamlPath, None, classOf[TransformModelWithSourceTarget]) {
-
+  case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
+    extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget]) {
 
     /**
       * Performs end to end transformations - Reading sources and writing transformation result to provided targets
@@ -158,13 +158,14 @@ object YamlFile {
       */
     def performTransformations(sqlContext: SQLContext): Unit = {
       performRegistrations(sqlContext)
+      val testingMode = SopeETLConfig.TestingModeConfig
+      if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
       val sourceDFMap = model.sources
         .map(source => {
           val sourceDF = source.apply(sqlContext)
-          if (SopeETLConfig.TestingModeConfig) {
-            logWarning("TESTING MODE IS ENABLED!")
+          if (testingMode) {
             val fraction = SopeETLConfig.TestingDataFraction
-            logInfo(s"Data fraction for sampling: $fraction")
+            logWarning(s"Sampling ${fraction * 100} percent data from source: $source")
             source.getSourceName -> sourceDF
               .sample(withReplacement = true, SopeETLConfig.TestingDataFraction)
               .alias(source.getSourceName)
