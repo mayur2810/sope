@@ -83,7 +83,7 @@ SelectNot | {type: select_not, columns: [col1, col2, ..]} |
 Filter | {type: filter, condition: filter_condition} |
 Rename  | {type: rename, list: {col1: new_col1, col2: new_col2, ..}} | list: list of existing name and new name
 Column Transform |{type: transform, list: {col1: func(<any_col>), col2: func(<any_col1>, <any_expr>), ..} }| list of column name and functions applied to column
-Column Transform(Bulk)| {type: transform-all, function: <single-arg-function> suffix: <suffix_to_append>, columns: [col1, col2, expr1, expr2] } | **suffix** is optional, if not provided the columns will be replaced by transformed column else new column with appended suffix will be generated. **columns** is optional, if not provided the function will be applied on all the columns of the input 
+Column Transform(Bulk)| {type: transform-all, function: <single-arg-function>, suffix: <suffix_to_append>, columns: [col1, col2, expr1, expr2] } | **suffix** is optional, if not provided the columns will be replaced by transformed column else new column with appended suffix will be generated. **columns** is optional, if not provided the function will be applied on all the columns of the input 
 Limit | {type: "limit", size: <int> } |
 Distinct | {type: distinct} |
 Drop Columns |  {type: drop, columns: ["col1", "col2", ...]} |
@@ -98,4 +98,5 @@ Except | {type: except, with: ["dataset1", "dataset2", ..]} |
 Sequence | {type: sequence, sk_source: source_alias, sk_column: source_key_column} | max 'sk_column' value plus 1 will used as start index for sequence generation
 SCD | {type: scd, dim_table: "table_name", sk_column: "sk_key", natural_keys: ["nk1", "nk2", ..], derived_columns: ["derived_col1", ..], meta_columns: ["update_date", ..], incremental_load: true(default)/false } | Perform SCD on the dimension table, the output will be fused input & dimension records with 'INSERT', 'UPDATE', 'NCD' or 'INVALID' scd_status. Users can update this dataset according to required SCD type.
 NA  | {type: na, default_numeric: <default_numeric_value_for_nulls>, default_string: <default_string_value_for_nulls>, columns: [col1, col2, ..]} | Assigns default numeric/string values to NULLs VALUES for provided columns
-
+Call Yaml | {type: yaml, yaml_file: <yaml_file_name_to_call>, substitutions: ["s1", "s2", {k1: v1, k2: v2}], input_aliases: [i1, i2, i3..], output_alias: "output"} | Calls another yaml and fetcher the transformation result from output alias. The substitutions are optional. If provided the substitution should contain valid yaml objects and should correspond to valid type in the yaml template.  
+Named Transformation | {type: named_transform , name: <registered_transformation_name>, inputs: ["t1", "t2"]} | Calls registered transformation. If transformation takes more than one input transformations , than provide them in required order in 'inputs' 

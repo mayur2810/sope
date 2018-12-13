@@ -1,8 +1,8 @@
 sope-spark
 ==========
 
-This module contains library functions and an internal dsl library that helps with writing **Spark SQL** ETL transformations in concise manner.
-It will reduce the boiler-plate code for complex transformations using core Spark-SQL API and will assist in code readability and review.
+This module contains library functions and a Scala internal dsl library that helps with writing **Spark SQL** ETL transformations in concise manner.
+It will reduce the boiler-plate code for complex transformations and will assist in code readability and review.
 
 1. Using Library functions:
    
@@ -64,7 +64,7 @@ It will reduce the boiler-plate code for complex transformations using core Spar
     Following is a sample DSL usage :
     ```scala
     // Use Following import to use the DSL constructs
-    import com.mayurb.spark.sql.dsl._
+    import com.sope.spark.sql.dsl._
  
     val studentDF =  ...
     val classDF = ...
