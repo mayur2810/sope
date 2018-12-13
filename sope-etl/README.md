@@ -1,7 +1,7 @@
 sope-etl
 ========
 
-####YAML Transformer: 
+#### YAML Transformer: 
 
 The YAML Transformer reads a yaml file and executes the transformations defined in the file. You will find the transformer useful for creating simple or medium complexity transformation pipelines by using a external YAML file, instead of writing scala/java files. 
 The transformer supports following useful features:
@@ -13,7 +13,7 @@ The transformer supports following useful features:
 
 The details about the Transformer constructs are provided in following document: [**Transformer Constructs**](yaml-transformer-constructs.md)
 	
-#####Transformer Modes:
+##### Transformer Modes:
 
 The transformer supports both end-to-end and intermediate mode.
   - End-to-End mode:
@@ -116,19 +116,19 @@ The transformer supports both end-to-end and intermediate mode.
         val transformedDF = transformationResult.last._2
         ```
         
-#####Optimizations:
+##### Optimizations:
 The Yaml Transformer will try to figure out if there are any transformations that are being reused and persist them using MEMORY_ONLY mode. This may be useful if you do not want to explicitly tag the transformation for persistence and let the transformer decide on it.
 
 Also, if the transformation to be persisted is being used is referred in multiple joins, the data to be persisted will be pre-sorted on the join columns involved in most joins.
 This feature is enabled by default. To deactivate auto-persist set *sope.auto.persist.enabled=false* using --driver-java-options. 
 	
-#####Templates:
+##### Templates:
 The Transformer supports a 'yaml' action construct which can be used to call another yaml. It also supports substitution mode to drive the templates using dynamic values.
 There are some etl specific templates that are provided for reference:
 - [SCD Template](src/main/resources/templates/scd_template.yaml)
 - [DQ Template](src/main/resources/templates/data_quality_template.yaml)	  
      
-#####Custom Transformation:
+##### Custom Transformation:
 If there is a need to call some complex/pre-built logic developed in using Scala/Java SparkSQl API's, they can be integrated by calling the 'named_transform' action construct. For integration, you need to implement the 'com.sope.etl.register.TransformationRegistration' trait and define the 'registerTransformations' which return a Map of transformation name and transformation function (DataFrame*) => DataFrame.
 
 An interface 'com.sope.etl.register.UDFRegistration' is also provided for registering custom UDF's for use in transformer.
@@ -144,7 +144,7 @@ example:
 ```  
 
 		
-#####Testing mode:
+##### Testing mode:
 The testing mode allows to sample data for all sources at once, without the need to edit the Yaml transformation file.
 This is helpful if you need to test transformation pipeline on small subset of data.
 To enable testing mode, set following system properties using *driver-java-options* property.
