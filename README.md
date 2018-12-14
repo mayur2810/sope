@@ -23,3 +23,6 @@ The project contains following sub-modules
 ##### Building the project:
 The project only supports Spark versions 2.x onwards.
 Use **mvn clean package** to build the project. Import the generated jars in your project.
+
+##### Contributions
+Please feel free to add issues to report any bugs/propose addition of new features.
