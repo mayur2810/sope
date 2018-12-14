@@ -17,17 +17,19 @@ package object model {
   /**
     * Class represents a transformation entity.
     *
-    * @param source  input source name
-    * @param alias   alias for the transformation
+    * @param source       input source name
+    * @param alias        alias for the transformation
     * @param persistLevel Persistence level for this transformation
-    * @param coalesce Coalesce partitions
-    * @param actions Actions to performed on source. Either 'actions' or 'sql' should be provided
-    * @param sql     Transformation provided as sql query. Either 'sql' or 'actions' should be provided
+    * @param coalesce     Coalesce partitions
+    * @param description  Description for this transformation
+    * @param actions      Actions to performed on source. Either 'actions' or 'sql' should be provided
+    * @param sql          Transformation provided as sql query. Either 'sql' or 'actions' should be provided
     */
   case class DFTransformation(@JsonProperty(required = true, value = "input") source: String,
                               alias: Option[String],
                               @JsonProperty(value = "persist") persistLevel: Option[String],
                               coalesce: Int,
+                              description: Option[String],
                               actions: Option[Seq[_ <: TransformActionRoot]],
                               sql: Option[String]) {
 
@@ -53,6 +55,7 @@ package object model {
   // Model for YAML without source target information
   case class TransformModelWithoutSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[String],
                                                @JsonProperty(required = true) transformations: Seq[DFTransformation]) extends TransformModel
+
   // Model for YAML with source target information
   case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[_ <: SourceTypeRoot],
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
