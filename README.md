@@ -4,6 +4,9 @@ Sope
 
 > Marathi, IPA: /sə/ /o/ /pə/ /e/ (Adjective: Achieved without great effort)
 
+[![Build Status](https://travis-ci.org/mayur2810/sope.svg?branch=master)](https://travis-ci.org/mayur2810/sope)
+
+
 **Sope** is set of utilities and library functions that helps with ETL development using **Apache Spark**.
 The project contains following sub-modules
 - *sope-spark*
@@ -20,7 +23,7 @@ The project contains following sub-modules
     [More information](sope-etl/README.md)
 
 
-##### Building the project:
+#### Building the project:
 The project only supports Spark versions 2.x onwards.
 Use **mvn clean package** to build the project. Import the generated jars in your project.<br>
 By default the project is built using latest Spark version 2.4 (scala 2.11), which should be compatible with all 2.x versions.<br>
@@ -28,5 +31,5 @@ If you need to override the spark/scala version, use 'custom' profile for build 
 **mvn package -Pcustom  -Dspark.version=2.4.0 -Dscala.version.tag=2.12 -Dscala.version=2.12.1**
 
 
-##### Contributions
+#### Contributions
 Please feel free to add issues to report any bugs/propose addition of new features.
