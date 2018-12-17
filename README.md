@@ -22,9 +22,9 @@ The project contains following sub-modules
 
 ##### Building the project:
 The project only supports Spark versions 2.x onwards.
-Use **mvn clean package** to build the project. Import the generated jars in your project.
-By default the project if built using Spark version 2.4 (scala 2.11), which should be compatible with all 2.x versions.
-If you need to override the spark/scala version, use 'custom' profile for build as follows:
+Use **mvn clean package** to build the project. Import the generated jars in your project.<br>
+By default the project is built using latest Spark version 2.4 (scala 2.11), which should be compatible with all 2.x versions.<br>
+If you need to override the spark/scala version, use 'custom' profile for build as follows:<br>
 **mvn package -Pcustom  -Dspark.version=2.4.0 -Dscala.version.tag=2.12 -Dscala.version=2.12.1**
 
 
