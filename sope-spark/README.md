@@ -78,7 +78,7 @@ It will reduce the boiler-plate code for complex transformations and will assist
     val transformed = rename + transform + join + Sequence(0l, "id") --> studentDF
     ```
     
-    Following DSL constructs are supported. Please refer scala doc for more details:
+    Following DSL constructs are supported. Please refer [scala doc](https://mayur2810.github.io/sope/sope-spark) for more details:
     - Select
     - SelectNot
     - Filter
