@@ -1,0 +1,345 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>udfs - sope-spark 1.2 API - com.sope.spark.sql.udfs</title>
+          <meta name="description" content="udfs - sope - spark 1.2 API - com.sope.spark.sql.udfs" />
+          <meta name="keywords" content="udfs sope spark 1.2 API com.sope.spark.sql.udfs" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.sope.spark.sql.udfs.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.sope">sope</a>.<a href="../../package.html" class="extype" name="com.sope.spark">spark</a>.<a href="../package.html" class="extype" name="com.sope.spark.sql">sql</a></p>
+        <h1>udfs</h1><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">udfs</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.sope.spark.sql.udfs"><span>udfs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.sope.spark.sql.udfs.CollectStruct" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CollectStructextendsUserDefinedAggregateFunction"></a>
+      <a id="CollectStruct:CollectStruct"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$CollectStruct.html"><span class="name">CollectStruct</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.sql.expressions.UserDefinedAggregateFunction">UserDefinedAggregateFunction</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@CollectStructextendsUserDefinedAggregateFunction" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">UDAF to group struct type columns to List/Array type
+</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.sope.spark.sql.udfs#checkDateFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkDateFormat(dateStr:String,format:String):Boolean"></a>
+      <a id="checkDateFormat(String,String):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkDateFormat</span><span class="params">(<span name="dateStr">dateStr: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@checkDateFormat(dateStr:String,format:String):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Check Date format
+</p><div class="fullcomment"><div class="comment cmt"><p>Check Date format
+</p></div><dl class="paramcmts block"><dt class="param">dateStr</dt><dd class="cmt"><p>Date String</p></dd><dt class="param">format</dt><dd class="cmt"><p>Date format</p></dd><dt>returns</dt><dd class="cmt"><p><span class="extype" name="Boolean">Boolean</span></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.udfs#checkEmptyUDF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="checkEmptyUDF:org.apache.spark.sql.expressions.UserDefinedFunction"></a>
+      <a id="checkEmptyUDF:UserDefinedFunction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkEmptyUDF</span><span class="result">: <span class="extype" name="org.apache.spark.sql.expressions.UserDefinedFunction">UserDefinedFunction</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@checkEmptyUDF:org.apache.spark.sql.expressions.UserDefinedFunction" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.spark.sql.udfs#checkNotEmptyUDF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="checkNotEmptyUDF:org.apache.spark.sql.expressions.UserDefinedFunction"></a>
+      <a id="checkNotEmptyUDF:UserDefinedFunction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkNotEmptyUDF</span><span class="result">: <span class="extype" name="org.apache.spark.sql.expressions.UserDefinedFunction">UserDefinedFunction</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@checkNotEmptyUDF:org.apache.spark.sql.expressions.UserDefinedFunction" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.spark.sql.udfs#dateFormatCheckUdf" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="dateFormatCheckUdf:org.apache.spark.sql.expressions.UserDefinedFunction"></a>
+      <a id="dateFormatCheckUdf:UserDefinedFunction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dateFormatCheckUdf</span><span class="result">: <span class="extype" name="org.apache.spark.sql.expressions.UserDefinedFunction">UserDefinedFunction</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@dateFormatCheckUdf:org.apache.spark.sql.expressions.UserDefinedFunction" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.spark.sql.udfs#dateOrdering" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="dateOrdering:Ordering[java.sql.Date]"></a>
+      <a id="dateOrdering:Ordering[Date]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dateOrdering</span><span class="result">: <span class="extype" name="scala.Ordering">Ordering</span>[<span class="extype" name="java.sql.Date">Date</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@dateOrdering:Ordering[java.sql.Date]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.spark.sql.udfs#isNotEmpty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isNotEmpty(value:Any):Boolean"></a>
+      <a id="isNotEmpty(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isNotEmpty</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@isNotEmpty(value:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Check if the column value is not empty
+</p><div class="fullcomment"><div class="comment cmt"><p>Check if the column value is not empty
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>column value</p></dd><dt>returns</dt><dd class="cmt"><p><span class="extype" name="Boolean">Boolean</span></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.udfs#mergeFunc" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mergeFunc(orderingColumn:String,rows:Seq[org.apache.spark.sql.Row]):org.apache.spark.sql.Row"></a>
+      <a id="mergeFunc(String,Seq[Row]):Row"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mergeFunc</span><span class="params">(<span name="orderingColumn">orderingColumn: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rows">rows: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.apache.spark.sql.Row">Row</span>]</span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.Row">Row</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@mergeFunc(orderingColumn:String,rows:Seq[org.apache.spark.sql.Row]):org.apache.spark.sql.Row" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Merge Function for merging records with information across different dates
+If value is present for latest date, it is considered or not null value for next date is considered
+</p><div class="fullcomment"><div class="comment cmt"><p>Merge Function for merging records with information across different dates
+If value is present for latest date, it is considered or not null value for next date is considered
+</p></div><dl class="paramcmts block"><dt class="param">orderingColumn</dt><dd class="cmt"><p>Date Column for orderingmm</p></dd><dt class="param">rows</dt><dd class="cmt"><p>Rows to be merged</p></dd><dt>returns</dt><dd class="cmt"><p>Merged Row</p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.udfs#mergeUDF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="mergeUDF[T](orderingDateColumn:String,orderingColumnType:Class[T],outputStructure:org.apache.spark.sql.types.StructType):org.apache.spark.sql.expressions.UserDefinedFunction"></a>
+      <a id="mergeUDF[T](String,Class[T],StructType):UserDefinedFunction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mergeUDF</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="orderingDateColumn">orderingDateColumn: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orderingColumnType">orderingColumnType: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.sope.spark.sql.udfs.mergeUDF.T">T</span>]</span>, <span name="outputStructure">outputStructure: <span class="extype" name="org.apache.spark.sql.types.StructType">StructType</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.expressions.UserDefinedFunction">UserDefinedFunction</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@mergeUDF[T](orderingDateColumn:String,orderingColumnType:Class[T],outputStructure:org.apache.spark.sql.types.StructType):org.apache.spark.sql.expressions.UserDefinedFunction" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.spark.sql.udfs#registerUDFs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="registerUDFs(sqlContext:org.apache.spark.sql.SQLContext):Unit"></a>
+      <a id="registerUDFs(SQLContext):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">registerUDFs</span><span class="params">(<span name="sqlContext">sqlContext: <span class="extype" name="org.apache.spark.sql.SQLContext">SQLContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@registerUDFs(sqlContext:org.apache.spark.sql.SQLContext):Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.spark.sql.udfs#strToLong" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="strToLong(str:String):Long"></a>
+      <a id="strToLong(String):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">strToLong</span><span class="params">(<span name="str">str: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@strToLong(str:String):Long" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Converts String to Long
+</p><div class="fullcomment"><div class="comment cmt"><p>Converts String to Long
+</p></div><dl class="paramcmts block"><dt class="param">str</dt><dd class="cmt"><p>Input string</p></dd><dt>returns</dt><dd class="cmt"><p>Long</p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.udfs#strToLongUDF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="strToLongUDF:org.apache.spark.sql.expressions.UserDefinedFunction"></a>
+      <a id="strToLongUDF:UserDefinedFunction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">strToLongUDF</span><span class="result">: <span class="extype" name="org.apache.spark.sql.expressions.UserDefinedFunction">UserDefinedFunction</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.udfs.package@strToLongUDF:org.apache.spark.sql.expressions.UserDefinedFunction" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

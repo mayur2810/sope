@@ -1,0 +1,235 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>model - sope-etl 1.2 API - com.sope.etl.transform.model</title>
+          <meta name="description" content="model - sope - etl 1.2 API - com.sope.etl.transform.model" />
+          <meta name="keywords" content="model sope etl 1.2 API com.sope.etl.transform.model" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.sope.etl.transform.model.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.sope">sope</a>.<a href="../../package.html" class="extype" name="com.sope.etl">etl</a>.<a href="../package.html" class="extype" name="com.sope.etl.transform">transform</a></p>
+        <h1>model</h1><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">model</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Package contains YAML Transformer Root construct mappings and definitions
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.sope.etl.transform.model"><span>model</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.sope.etl.transform.model.DFTransformation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DFTransformationextendsProductwithSerializable"></a>
+      <a id="DFTransformation:DFTransformation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$DFTransformation.html"><span class="name">DFTransformation</span></a><span class="params">(<span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alias">alias: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="persistLevel">persistLevel: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="coalesce">coalesce: <span class="extype" name="scala.Int">Int</span></span>, <span name="description">description: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="actions">actions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[_ &lt;: <a href="action/package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a>]]</span>, <span name="sql">sql: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@DFTransformationextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Class represents a transformation entity.</p><div class="fullcomment"><div class="comment cmt"><p>Class represents a transformation entity.
+</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>input source name</p></dd><dt class="param">alias</dt><dd class="cmt"><p>alias for the transformation</p></dd><dt class="param">persistLevel</dt><dd class="cmt"><p>Persistence level for this transformation</p></dd><dt class="param">coalesce</dt><dd class="cmt"><p>Coalesce partitions</p></dd><dt class="param">description</dt><dd class="cmt"><p>Description for this transformation</p></dd><dt class="param">actions</dt><dd class="cmt"><p>Actions to performed on source. Either 'actions' or 'sql' should be provided</p></dd><dt class="param">sql</dt><dd class="cmt"><p>Transformation provided as sql query. Either 'sql' or 'actions' should be provided</p></dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.TransformModel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TransformModelextendsAnyRef"></a>
+      <a id="TransformModel:TransformModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$TransformModel.html"><span class="name">TransformModel</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformModelextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.TransformModelWithSourceTarget" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TransformModelWithSourceTargetextendspackage.TransformModelwithProductwithSerializable"></a>
+      <a id="TransformModelWithSourceTarget:TransformModelWithSourceTarget"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$TransformModelWithSourceTarget.html"><span class="name">TransformModelWithSourceTarget</span></a><span class="params">(<span name="sources">sources: <span class="extype" name="scala.Seq">Seq</span>[_ &lt;: <a href="io/input/package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a>]</span>, <span name="transformations">transformations: <span class="extype" name="scala.Seq">Seq</span>[<a href="package$$DFTransformation.html" class="extype" name="com.sope.etl.transform.model.DFTransformation">DFTransformation</a>]</span>, <span name="targets">targets: <span class="extype" name="scala.Seq">Seq</span>[<a href="io/output/package$$TargetTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.output.TargetTypeRoot">TargetTypeRoot</a>]</span>)</span><span class="result"> extends <a href="package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformModelWithSourceTargetextendspackage.TransformModelwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.TransformModelWithoutSourceTarget" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TransformModelWithoutSourceTargetextendspackage.TransformModelwithProductwithSerializable"></a>
+      <a id="TransformModelWithoutSourceTarget:TransformModelWithoutSourceTarget"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$TransformModelWithoutSourceTarget.html"><span class="name">TransformModelWithoutSourceTarget</span></a><span class="params">(<span name="sources">sources: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="transformations">transformations: <span class="extype" name="scala.Seq">Seq</span>[<a href="package$$DFTransformation.html" class="extype" name="com.sope.etl.transform.model.DFTransformation">DFTransformation</a>]</span>)</span><span class="result"> extends <a href="package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformModelWithoutSourceTargetextendspackage.TransformModelwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.sope.etl.transform.model.action" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="action"></a>
+      <a id="action:action"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="action/package.html"><span class="name">action</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@action" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Package contains YAML Transformer Action (transform) construct mappings and definitions
+</p>
+    </li><li name="com.sope.etl.transform.model.io" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="io"></a>
+      <a id="io:io"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="io/package.html"><span class="name">io</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@io" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
