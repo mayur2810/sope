@@ -118,7 +118,7 @@ The transformer supports both end-to-end and intermediate mode.
 #### Optimizations:
 The Yaml Transformer will try to figure out if there are any transformations that are being reused and persist them using MEMORY_ONLY mode. This may be useful if you do not want to explicitly tag the transformation for persistence and let the transformer decide on it.
 
-Also, if the transformation to be persisted is being used is referred in multiple joins, the data to be persisted will be pre-partitioned on the join columns that are involved in most joins.
+Also, if the transformation to be persisted is being used for multiple joins, it will be pre-partitioned on the join columns that are involved in most joins.
 This feature is enabled by default. To deactivate auto-persist set *sope.auto.persist.enabled=false* using --driver-java-options. 
 	
 #### Templates:
