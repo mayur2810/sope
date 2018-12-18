@@ -1,0 +1,8 @@
+inputs: ["dq_input"]
+transformations :
+    - alias: "dq_output"
+      input : "dq_input"
+      actions:
+        - {type: "dq_check", dq_function: "isnull" , id: "is_null" , columns: $1 }
+        - {type: "dq_check", dq_function: "check_empty" , id: "is_empty" , columns: $2 }
+        - {type: "dq_check", dq_function: "date_format_check" , id: "date_check" , options:["yyyy-mm-dd"] , columns: $3 }

@@ -3,7 +3,7 @@ package com.sope.spark.sql
 import java.sql.Date
 import java.text.SimpleDateFormat
 
-import org.apache.spark.sql.Row
+import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction, UserDefinedFunction}
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.sql.types._
@@ -141,5 +141,14 @@ package object udfs {
     null
    }
 
+
+  def registerUDFs(sqlContext: SQLContext): Unit = {
+    Map(
+      "check_empty" -> checkEmptyUDF,
+      "check_not_empty" -> checkEmptyUDF,
+      "str_to_long" -> strToLongUDF,
+      "date_format_check" -> dateFormatCheckUdf)
+      .foreach { case (name, udf) => sqlContext.udf.register(name, udf) }
+  }
 
 }

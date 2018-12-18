@@ -1,10 +1,11 @@
 package com.sope.etl
 
+import java.sql.{Date => SDate}
+
 import com.sope.etl.TestContext._
 import com.sope.etl.model.{Date, Product, ProductDim, Transactions}
-import com.sope.etl.transform.YamlDataTransform
+import com.sope.etl.yaml.YamlFile.IntermediateYaml
 import org.scalatest.{FlatSpec, Matchers}
-import java.sql.{Date => SDate}
 
 /**
   * Yaml Transformer Unit tests
@@ -50,13 +51,13 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
   )
 
   private val transformedResult = {
+    System.setProperty(UDFRegistrationClassProperty, "com.sope.etl.custom.CustomUDF")
+    System.setProperty(TransformationRegistrationClassProperty, "com.sope.etl.custom.CustomTransformation")
     val transactionsDF = TransactionData.toDF
     val productDF = productData.toDF
     val dateDF = dateData.toDF
     val productDimDF = productDimData.toDF
-    val yamlPath = this.getClass.getClassLoader.getResource("./withoutSourceInfo.yaml").getPath
-    val ydt = new YamlDataTransform(yamlPath, transactionsDF, productDF, dateDF, productDimDF)
-    ydt.getTransformedDFs.toMap
+    IntermediateYaml("withoutSourceInfo.yaml").getTransformedDFs(transactionsDF, productDF, dateDF, productDimDF).toMap
   }
 
 
@@ -147,6 +148,41 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     println("except_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(0)
+  }
+
+  "transform_all_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("transform_all_test")
+    println("transform_all_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns.length should be(6)
+  }
+
+  "transform_whole_table_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("transform_whole_table_test")
+    println("transform_whole_table_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns.length should be(8)
+  }
+
+  "rename_all_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("rename_all_test")
+    println("rename_all ==>")
+    transformedDF.show(false)
+    transformedDF.columns.forall(_.contains("_renamed"))
+  }
+
+  "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("custom_udf_call_test")
+    println("custom_udf_call_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns should contain("upper_loc")
+  }
+
+  "custom_transform_call_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("custom_transform_call_test")
+    println("custom_transform_call_test ==>")
+    transformedDF.show(false)
+    transformedDF.columns should contain("new_column")
   }
 
 }

@@ -2,12 +2,14 @@ package com.sope.etl.transform.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.etl.register.TransformationRegistration
 import com.sope.etl.scd.DimensionTable
 import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.etl.yaml.YamlFile.IntermediateYaml
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{Column, DataFrame}
 
 /**
   * Package contains YAML Transformer Action (transform) construct mappings and definitions
@@ -21,10 +23,12 @@ package object action {
    */
   object Actions {
     final val Rename = "rename"
+    final val RenameAll = "rename_all"
     final val Filter = "filter"
     final val Join = "join"
     final val GroupBy = "group_by"
     final val Transform = "transform"
+    final val TransformAll = "transform_all"
     final val Select = "select"
     final val SelectNot = "select_not"
     final val Distinct = "distinct"
@@ -39,6 +43,9 @@ package object action {
     final val DropColumn = "drop"
     final val Unstruct = "unstruct"
     final val NA = "na"
+    final val Yaml = "yaml"
+    final val Named = "named_transform"
+    final val DQCheck = "dq_check"
   }
 
   /**
@@ -52,10 +59,12 @@ package object action {
     property = "type")
   @JsonSubTypes(Array(
     new Type(value = classOf[RenameAction], name = Actions.Rename),
+    new Type(value = classOf[RenameAllAction], name = Actions.RenameAll),
     new Type(value = classOf[FilterAction], name = Actions.Filter),
     new Type(value = classOf[JoinAction], name = Actions.Join),
     new Type(value = classOf[GroupAction], name = Actions.GroupBy),
     new Type(value = classOf[TransformAction], name = Actions.Transform),
+    new Type(value = classOf[TransformAllAction], name = Actions.TransformAll),
     new Type(value = classOf[SelectAction], name = Actions.Select),
     new Type(value = classOf[SelectNotAction], name = Actions.SelectNot),
     new Type(value = classOf[DistinctAction], name = Actions.Distinct),
@@ -69,12 +78,33 @@ package object action {
     new Type(value = classOf[DropDuplicateAction], name = Actions.DropDuplicates),
     new Type(value = classOf[DropColumnAction], name = Actions.DropColumn),
     new Type(value = classOf[UnstructAction], name = Actions.Unstruct),
-    new Type(value = classOf[NAAction], name = Actions.NA)
+    new Type(value = classOf[NAAction], name = Actions.NA),
+    new Type(value = classOf[YamlAction], name = Actions.Yaml),
+    new Type(value = classOf[NamedAction], name = Actions.Named),
+    new Type(value = classOf[DQCheckAction], name = Actions.DQCheck)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
+
     def apply(dataframes: DataFrame*): DFFunc
 
     def inputAliases: Seq[String] = Nil
+
+    /**
+      * Get the Multi arg function that is registered in Spark Function registry
+      *
+      * @param name Function name
+      * @return [[MultiColFunc]]
+      */
+    protected def getMultiArgFunction(name: String): MultiColFunc = (columns: Seq[Column]) => callUDF(name, columns: _*)
+
+    /**
+      * Get the Single Arg Function that is registered in Spark Function registry
+      *
+      * @param name Function name
+      * @return [[ColFunc]]
+      */
+    protected def getSingleArgFunction(name: String): ColFunc = callUDF(name, _)
+
   }
 
 
@@ -83,10 +113,27 @@ package object action {
   }
 
 
+  case class RenameAllAction(@JsonProperty(required = true) append: String,
+                             @JsonProperty(required = false) prefix: Option[Boolean]) extends TransformActionRoot(Actions.RenameAll) {
+    override def apply(dataframes: DataFrame*): DFFunc = Rename(append, prefix.getOrElse(false))
+  }
+
+
   case class TransformAction(@JsonProperty(required = true) list: Map[String, String]) extends TransformActionRoot(Actions.Transform) {
     override def apply(dataframes: DataFrame*): DFFunc = Transform(list.toSeq: _*)
   }
 
+
+  case class TransformAllAction(@JsonProperty(value = "function", required = true) transformExpr: String,
+                                @JsonProperty(required = false) suffix: Option[String],
+                                @JsonProperty(required = false) columns: Option[List[String]]) extends TransformActionRoot(Actions.TransformAll) {
+    override def apply(dataframes: DataFrame*): DFFunc = (columns, suffix) match {
+      case (None, None) => Transform(getSingleArgFunction(transformExpr))
+      case (None, Some(colSuffix)) => (df: DataFrame) => df.transform(Transform(colSuffix, getSingleArgFunction(transformExpr), df.columns: _*))
+      case (Some(cols), None) => Transform(getSingleArgFunction(transformExpr), cols: _*)
+      case (Some(cols), Some(colSuffix)) => Transform(colSuffix, getSingleArgFunction(transformExpr), cols: _*)
+    }
+  }
 
   case class JoinAction(@JsonProperty(value = "condition", required = false) joinCondition: String,
                         @JsonProperty(value = "columns", required = false) joinColumns: Seq[String],
@@ -94,18 +141,21 @@ package object action {
                         @JsonProperty(value = "with", required = true) joinSource: String,
                         @JsonProperty(value = "broadcast_hint") broadcastHint: String) extends TransformActionRoot(Actions.Join) {
 
-    private val joinTypeFunc: (DFJoinFunc) => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
+    private val joinTypeFunc: DFJoinFunc => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
       case "inner" => joinFunc >< _
       case "left" => joinFunc << _
       case "right" => joinFunc >> _
       case "full" => joinFunc <> _
     }
 
-    override def apply(dataframes: DataFrame*): DFFunc = {
+    def isExpressionBased: Boolean = {
       if (joinCondition == null && joinColumns == null)
         throw new YamlDataTransformException("Please provide either 'condition' or 'columns' option in join action definition")
+      joinCondition != null
+    }
 
-      if (joinCondition != null)
+    override def apply(dataframes: DataFrame*): DFFunc = {
+      if (isExpressionBased)
         joinTypeFunc(Join(Option(broadcastHint), expr(joinCondition)))(dataframes.head)
       else
         joinTypeFunc(Join(Option(broadcastHint), joinColumns: _*))(dataframes.head)
@@ -214,6 +264,54 @@ package object action {
                       columns: Option[Seq[String]])
     extends TransformActionRoot(Actions.NA) {
     override def apply(dataframes: DataFrame*): DFFunc = NA(defaultNumericValue, defaultStringValue, columns.getOrElse(Nil))
+  }
+
+
+  case class YamlAction(@JsonProperty(value = "yaml_file", required = true) yamlFile: String,
+                        @JsonProperty(value = "input_aliases", required = false) inputs: Option[Seq[String]],
+                        @JsonProperty(value = "output_alias", required = true) outputAlias: String,
+                        @JsonProperty(value = "substitutions", required = false) substitutions: Option[Seq[Any]])
+    extends TransformActionRoot(Actions.Yaml) {
+
+    override def apply(dataframes: DataFrame*): DFFunc =
+      (df: DataFrame) => {
+        val transformed = IntermediateYaml(yamlFile, substitutions).getTransformedDFs(df +: dataframes: _*).toMap
+        transformed.getOrElse(outputAlias, throw new YamlDataTransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
+      }
+
+    override def inputAliases: Seq[String] = inputs.getOrElse(Nil)
+  }
+
+  case class NamedAction(@JsonProperty(value = "name", required = true) transformationName: String,
+                         @JsonProperty(value = "input_aliases", required = false) inputs: Option[Seq[String]])
+    extends TransformActionRoot(Actions.Named) {
+
+    override def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => TransformationRegistration
+      .getTransformation(transformationName)
+      .fold(throw new YamlDataTransformException(s"Named transformation: '$transformationName' is not registered")) {
+        transformation => transformation.apply(df +: dataframes)
+      }
+
+    override def inputAliases: Seq[String] = inputs.getOrElse(Nil)
+  }
+
+  case class DQCheckAction(@JsonProperty(required = true) id: String,
+                           @JsonProperty(value = "dq_function", required = true) dqFunction: String,
+                           @JsonProperty(value = "options") functionOptions: Option[Seq[Any]],
+                           @JsonProperty(required = true) columns: Seq[String])
+    extends TransformActionRoot(Actions.DQCheck) {
+
+    private val DQStatusSuffix = "dq_failed"
+    private val DQColumnListSuffix = "dq_failed_columns"
+
+    override def apply(dataframes: DataFrame*): DFFunc = {
+      Transform(columns.map(column => s"${column}_${id}_$DQStatusSuffix" -> getMultiArgFunction(dqFunction)(col(column) +:
+        functionOptions.fold(Nil: Seq[Column])(_.map(lit)))): _*) +
+        Transform {
+          val dqColumns = columns.map(column => when(col(s"${column}_${id}_$DQStatusSuffix") === true, lit(column)).otherwise(lit(null)))
+          s"${id}_$DQColumnListSuffix" -> concat_ws(",", dqColumns: _*)
+        }
+    }
   }
 
 }

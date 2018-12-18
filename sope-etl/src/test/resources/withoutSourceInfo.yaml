@@ -17,23 +17,9 @@ transformations :
         - {type: "group_by", columns: ["product"], expr: "count(product) as p_cnt"}
         - {type: "order_by", columns: ["p_cnt:desc"]}
     - input : "product"
-      alias: "scd_product"
-      persist: "memory_only"
-      actions:
-        - {type: "scd", dim_table: "dim_product", sk_column: "product_key", natural_keys: ["product_id"], derived_columns: ["derived_attr"], meta_columns: ["last_updated_date"]}
-    - input: "scd_product"
-      alias: "insert_update"
-      coalesce: 50
-      actions:
-        - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
-        - {type: transform, list: {last_updated_date: "current_date"}}
-        - {type: sequence, sk_source: "dim_product", sk_column: "product_key"}
-    - input: "scd_product"
       alias: "final_dim_out"
-      coalesce: 50
       actions:
-        - {type: filter, condition: "scd_status = 'NCD'"}
-        - {type: union, with: ["insert_update"]}
+        - {type: yaml, yaml_file: "templates/scd_template.yaml", substitutions: ["product_key", ["product_id"], ["derived_attr"], ["last_updated_date"]], input_aliases: ["dim_product"], output_alias: "scd_result"}
     - input: "final_dim_out"
       alias: "distinct_test"
       actions:
@@ -80,3 +66,23 @@ transformations :
       actions:
           - {type: filter, condition: "product_id = -1 or product_id = 0"}
           - {type: except, with: ["dim_product"]}
+    - alias: "transform_all_test"
+      input: "transactions"
+      actions:
+          - {type: transform_all, function: "upper", suffix: "_new", columns: ["loc", "product"]}
+    - alias: "transform_whole_table_test"
+      input: "transactions"
+      actions:
+          - {type: transform_all, suffix: "_new", function: "upper"}
+    - alias: "rename_all_test"
+      input: "transactions"
+      actions:
+          - {type: rename_all, append: "_renamed"}
+    - alias: "custom_udf_call_test"
+      input: "transactions"
+      actions:
+      - {type: transform, list: {upper_loc : "custom_upper(loc)"}}
+    - alias: "custom_transform_call_test"
+      input: "transactions"
+      actions:
+      - {type: named_transform , name: "custom_transform"}
