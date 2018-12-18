@@ -75,8 +75,8 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
           logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
           val persisted = (preSort(alias) match {
             case Some(sortCols) =>
-              logWarning(s"Persisted transformation: '$alias' will be pre-sorted on columns: ${sortCols.mkString(", ")}")
-              sourceDFMap(alias).sort(sortCols.map(col): _*)
+              logWarning(s"Persisted transformation: '$alias' will be pre-partitioned on columns: ${sortCols.mkString(", ")}")
+              sourceDFMap(alias).repartition(sortCols.map(col): _*)
             case None =>
               sourceDFMap(alias)
           }).persist(StorageLevel.MEMORY_ONLY)

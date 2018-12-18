@@ -6,7 +6,7 @@ sope-etl
 The YAML Transformer reads a yaml file and executes the transformations defined in the file. You will find the transformer useful for creating simple or medium complexity transformation pipelines by using a external YAML file, instead of writing scala/java files. 
 The transformer supports following useful features:
 - Simple: Simple and easy to use constructs with support for SQL.
-- Optimizations: Auto persists and pre-sorts persisted data.
+- Optimizations: Auto persists and pre-partitions persisted data for join optimization.
 - Template support: Create reusable yaml templates (Call yaml within yaml with support for substitutions).
 - Custom Transformations/UDF support: Call custom transformations/udfs written in Scala/Java. 
 - Testing mode:  Enable testing mode to test transformations on sample set of data. 
@@ -118,7 +118,7 @@ The transformer supports both end-to-end and intermediate mode.
 #### Optimizations:
 The Yaml Transformer will try to figure out if there are any transformations that are being reused and persist them using MEMORY_ONLY mode. This may be useful if you do not want to explicitly tag the transformation for persistence and let the transformer decide on it.
 
-Also, if the transformation to be persisted is being used is referred in multiple joins, the data to be persisted will be pre-sorted on the join columns involved in most joins.
+Also, if the transformation to be persisted is being used is referred in multiple joins, the data to be persisted will be pre-partitioned on the join columns that are involved in most joins.
 This feature is enabled by default. To deactivate auto-persist set *sope.auto.persist.enabled=false* using --driver-java-options. 
 	
 #### Templates:
