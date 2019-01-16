@@ -3,8 +3,8 @@ package com.sope.spark.sql
 import java.sql.Date
 import java.text.SimpleDateFormat
 
-import org.apache.spark.sql.{Row, SQLContext}
-import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction, UserDefinedFunction}
+import org.apache.spark.sql.{Row, SQLContext, UserDefinedFunction}
+import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.sql.types._
 
@@ -137,18 +137,16 @@ package object udfs {
   def dateFormatCheckUdf: UserDefinedFunction = udf(checkDateFormat(_: String, _: String))
 
   def mergeUDF[T](orderingDateColumn: String, orderingColumnType: Class[T], outputStructure: StructType): UserDefinedFunction = {
-     //udf(mergeFunc(orderingDateColumn, _: Seq[Row]), groupedSchema, col(groupedColumn))
+    //udf(mergeFunc(orderingDateColumn, _: Seq[Row]), groupedSchema, col(groupedColumn))
     null
-   }
+  }
 
 
   def registerUDFs(sqlContext: SQLContext): Unit = {
-    Map(
-      "check_empty" -> checkEmptyUDF,
-      "check_not_empty" -> checkEmptyUDF,
-      "str_to_long" -> strToLongUDF,
-      "date_format_check" -> dateFormatCheckUdf)
-      .foreach { case (name, udf) => sqlContext.udf.register(name, udf) }
+    sqlContext.udf.register("check_empty", !isNotEmpty(_: Any))
+    sqlContext.udf.register("check_not_empty", isNotEmpty(_: Any))
+    sqlContext.udf.register("str_to_long", strToLong(_: String))
+    sqlContext.udf.register("date_format_check", checkDateFormat(_: String, _: String))
   }
 
 }

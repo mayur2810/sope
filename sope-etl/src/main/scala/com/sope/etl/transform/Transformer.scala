@@ -70,7 +70,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
   private def getDF(alias: String): DataFrame = {
     if (sourceDFMap.isDefinedAt(alias)) {
       val autoPersist = autoPersistList.contains(alias)
-      sourceDFMap(alias).storageLevel match {
+      sourceDFMap(alias).rdd.getStorageLevel match {
         case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
           logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
           val persisted = (preSort(alias) match {
@@ -106,7 +106,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
       val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
       // if sql transform apply sql or perform provided action transformation
       val transformedDF = if (dfTransform.isSQLTransform) {
-        sourceDF.createOrReplaceTempView(dfTransform.source)
+        sourceDF.registerTempTable(dfTransform.source)
         sourceDF.sqlContext.sql(dfTransform.sql.get)
       } else {
         Try {

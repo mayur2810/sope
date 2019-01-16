@@ -22,24 +22,23 @@ package object output {
     new Type(value = classOf[HiveTarget], name = "hive"),
     new Type(value = classOf[OrcTarget], name = "orc"),
     new Type(value = classOf[ParquetTarget], name = "parquet"),
-    new Type(value = classOf[CSVTarget], name = "csv"),
     new Type(value = classOf[TextTarget], name = "text"),
     new Type(value = classOf[JsonTarget], name = "json"),
     new Type(value = classOf[CountOutput], name = "count"),
     new Type(value = classOf[ShowOutput], name = "show")
   ))
-  abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String, input: String, mode: String)
+  abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String)
     extends Logging {
     def apply(df: DataFrame): Unit
 
-    def getSaveMode: SaveMode = mode match {
+    def getSaveMode(mode: String): SaveMode = mode match {
       case "overwrite" => SaveMode.Overwrite
       case "append" => SaveMode.Append
       case "error_if_exits" => SaveMode.ErrorIfExists
       case "ignore" => SaveMode.Ignore
     }
 
-    def getInput: String = input
+    def getInput: String
 
     def getOptions(options: Map[String, String]): Map[String, String] = Option(options).getOrElse(Map())
   }
@@ -47,58 +46,73 @@ package object output {
   case class HiveTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) db: String,
-                        @JsonProperty(required = true) table: String) extends TargetTypeRoot("hive", input, mode) {
+                        @JsonProperty(required = true) table: String) extends TargetTypeRoot("hive") {
     def apply(df: DataFrame): Unit = {
       val targetTable = s"$db.$table"
       val targetTableDF = df.sqlContext.table(targetTable)
-      df.select(targetTableDF.getColumns: _*).write.mode(getSaveMode).insertInto(targetTable)
+      df.select(targetTableDF.getColumns: _*).write.mode(getSaveMode(mode)).insertInto(targetTable)
     }
+
+    override def getInput: String = input
   }
 
   case class OrcTarget(@JsonProperty(required = true) input: String,
                        @JsonProperty(required = true) mode: String,
                        @JsonProperty(required = true) path: String,
-                       options: Map[String, String]) extends TargetTypeRoot("orc", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).orc(path)
+                       options: Map[String, String]) extends TargetTypeRoot("orc") {
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode(mode)).options(getOptions(options)).orc(path)
+
+    override def getInput: String = input
   }
 
   case class ParquetTarget(@JsonProperty(required = true) input: String,
                            @JsonProperty(required = true) mode: String,
                            @JsonProperty(required = true) path: String,
-                           options: Map[String, String]) extends TargetTypeRoot("parquet", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).parquet(path)
+                           options: Map[String, String]) extends TargetTypeRoot("parquet") {
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode(mode)).options(getOptions(options)).parquet(path)
+
+    override def getInput: String = input
   }
 
-  case class CSVTarget(@JsonProperty(required = true) input: String,
-                       @JsonProperty(required = true) mode: String,
-                       @JsonProperty(required = true) path: String,
-                       options: Map[String, String]) extends TargetTypeRoot("csv", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).csv(path)
-  }
+  /*  case class CSVTarget(@JsonProperty(required = true) input: String,
+                         @JsonProperty(required = true) mode: String,
+                         @JsonProperty(required = true) path: String,
+                         options: Map[String, String]) extends TargetTypeRoot("csv", input, mode) {
+      def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).csv(path)
+    }*/
 
   case class TextTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) path: String,
-                        options: Map[String, String]) extends TargetTypeRoot("text", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).text(path)
+                        options: Map[String, String]) extends TargetTypeRoot("text") {
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode(mode)).options(getOptions(options)).text(path)
+
+    override def getInput: String = input
   }
 
   case class JsonTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) path: String,
-                        options: Map[String, String]) extends TargetTypeRoot("json", input, mode) {
-    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).json(path)
+                        options: Map[String, String]) extends TargetTypeRoot("json") {
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode(mode)).options(getOptions(options)).json(path)
+
+    override def getInput: String = input
   }
 
-  case class CountOutput(@JsonProperty(required = true) input: String) extends TargetTypeRoot("count", input, "") {
+  case class CountOutput(@JsonProperty(required = true) input: String) extends TargetTypeRoot("count") {
     def apply(df: DataFrame): Unit = logInfo(s"Count for transformation alias: $input :- ${df.count}")
+
+    override def getInput: String = input
   }
 
   case class ShowOutput(@JsonProperty(required = true) input: String,
-                        @JsonProperty(required = true) num_records: Int) extends TargetTypeRoot("show", input, "") {
+                        @JsonProperty(required = true) num_records: Int) extends TargetTypeRoot("show") {
     def apply(df: DataFrame): Unit = {
       logInfo(s"Showing sample rows for transformation alias: $input")
       df.show(num_records)
     }
+
+    override def getInput: String = input
   }
+
 }

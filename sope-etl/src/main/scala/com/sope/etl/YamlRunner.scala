@@ -4,7 +4,8 @@ import com.sope.etl.yaml.YamlFile.End2EndYaml
 import com.sope.etl.yaml.YamlParserUtil.parseYAML
 import com.sope.utils.Logging
 import org.apache.commons.cli.{BasicParser, Options}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.hive.HiveContext
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Helper for Running YAML Transformation
@@ -27,10 +28,10 @@ object YamlRunner extends Logging {
     val end2endYaml = End2EndYaml(mainYamlFile, substitutions)
     logInfo("Successfully parsed YAML File")
     logInfo("Initializing Spark context & executing the flow..")
-    val session = SparkSession.builder()
-      .enableHiveSupport()
-      .getOrCreate()
-    end2endYaml.performTransformations(session.sqlContext)
+    val sparkConf = new SparkConf()
+    val sc = new SparkContext(sparkConf)
+    val sqlContext = new HiveContext(sc)
+    end2endYaml.performTransformations(sqlContext)
   }
 
 }

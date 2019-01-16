@@ -327,7 +327,7 @@ package object dsl {
       * @param dataframes [[DataFrame]]s to be unioned
       * @return [[DFFunc]]
       */
-    def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => dataframes.foldLeft(df)(_ union _)
+    def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => dataframes.foldLeft(df)(_ unionAll _)
   }
 
   /*
@@ -393,7 +393,7 @@ package object dsl {
       * @param columns Column names on which duplicates will be dropped
       * @return [[DFFunc]]
       */
-    def apply(columns: String*): DFFunc = (df: DataFrame) => df.dropDuplicates(columns.head, columns.tail: _*)
+    def apply(columns: String*): DFFunc = (df: DataFrame) => df.dropDuplicates(columns)
   }
 
   /*

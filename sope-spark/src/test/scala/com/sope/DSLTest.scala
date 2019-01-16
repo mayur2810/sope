@@ -48,7 +48,7 @@ class DSLTest extends FlatSpec with Matchers {
   }
 
   "Filter and Rename DSL" should "generate the transformations correctly" in {
-    val filterCol = Filter(col(FirstName) =!= "N.A.")
+    val filterCol = Filter(col(FirstName) !== "N.A.")
     val filterStr = Filter(s"$LastName != 'Watson'")
     val rename = Rename((FirstName, "name"))
     val transformed = filterCol + filterStr + rename --> studentDF

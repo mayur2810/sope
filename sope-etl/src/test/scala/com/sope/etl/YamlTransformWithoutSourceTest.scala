@@ -171,7 +171,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.columns.forall(_.contains("_renamed"))
   }
 
-  "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
+/*  "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("custom_udf_call_test")
     println("custom_udf_call_test ==>")
     transformedDF.show(false)
@@ -183,6 +183,6 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     println("custom_transform_call_test ==>")
     transformedDF.show(false)
     transformedDF.columns should contain("new_column")
-  }
+  }*/
 
 }

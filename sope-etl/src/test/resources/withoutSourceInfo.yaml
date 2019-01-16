@@ -7,7 +7,7 @@ transformations :
       alias: "trxn_transformed"
       actions:
         - {type: rename, list: {id: "trxn_id" , loc: "location"}}
-        - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER (PARTITION BY location order by date desc)"}}
+        #- {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER(PARTITION BY location order by date desc)"}}
         - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
         - {type: join, with: "date", columns: ["date"], join_type: inner}
         - {type: select_not, columns: ["location"]}
@@ -78,11 +78,11 @@ transformations :
       input: "transactions"
       actions:
           - {type: rename_all, append: "_renamed"}
-    - alias: "custom_udf_call_test"
-      input: "transactions"
-      actions:
-      - {type: transform, list: {upper_loc : "custom_upper(loc)"}}
-    - alias: "custom_transform_call_test"
-      input: "transactions"
-      actions:
-      - {type: named_transform , name: "custom_transform"}
+    #- alias: "custom_udf_call_test"
+    #  input: "transactions"
+    # actions:
+    #  - {type: transform, list: {upper_loc : "custom_upper(loc)"}}
+    #- alias: "custom_transform_call_test"
+    #  input: "transactions"
+    #  actions:
+    #  - {type: named_transform , name: "custom_transform"}

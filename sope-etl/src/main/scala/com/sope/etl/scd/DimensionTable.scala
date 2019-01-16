@@ -186,7 +186,7 @@ object DimensionTable {
       *
       * @return [[DataFrame]]
       */
-    def getUnion: DataFrame = getMap.values.reduce(_ union _)
+    def getUnion: DataFrame = getMap.values.reduce(_ unionAll _)
   }
 
   /**

@@ -57,7 +57,7 @@ package object model {
                                                @JsonProperty(required = true) transformations: Seq[DFTransformation]) extends TransformModel
 
   // Model for YAML with source target information
-  case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[_ <: SourceTypeRoot],
+  case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[SourceTypeRoot],
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
                                             @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot]) extends TransformModel
 

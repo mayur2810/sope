@@ -1,7 +1,7 @@
 package com.sope.etl.register
 
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.sql.expressions.UserDefinedFunction
+import org.apache.spark.sql.{SQLContext, UserDefinedFunction}
+
 
 /**
   * Trait to use for Custom UDF registration
@@ -21,8 +21,7 @@ trait UDFRegistration {
     * Registers the UDF in Spark's Registry
     */
   def performRegistration(sqlContext: SQLContext): Unit = {
-    registerUDFs.foreach { case (name, udf) => sqlContext.udf.register(name, udf) }
+    registerUDFs.foreach { case (name, udf) => /*sqlContext.udf.register(name, udf))*/}
   }
-
 
 }

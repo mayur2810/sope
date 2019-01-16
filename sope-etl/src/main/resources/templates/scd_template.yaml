@@ -29,7 +29,7 @@ transformations :
       coalesce: 200
       actions:
         - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
-        - {type: transform, list: {last_updated_date: "current_date"}}
+        - {type: transform, list: {last_updated_date: "current_date()"}}
         - {type: sequence, sk_source: "dimension", sk_column: $1}
     - input: "scd_product"
       alias: "ncd"

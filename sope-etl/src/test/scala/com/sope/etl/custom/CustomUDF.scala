@@ -1,7 +1,7 @@
 package com.sope.etl.custom
 
 import com.sope.etl.register.UDFRegistration
-import org.apache.spark.sql.expressions.UserDefinedFunction
+import org.apache.spark.sql.UserDefinedFunction
 import org.apache.spark.sql.functions._
 
 object CustomUDF extends UDFRegistration {
