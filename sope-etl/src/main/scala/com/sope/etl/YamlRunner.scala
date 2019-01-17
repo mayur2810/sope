@@ -31,6 +31,8 @@ object YamlRunner extends Logging {
     val sparkConf = new SparkConf()
     val sc = new SparkContext(sparkConf)
     val sqlContext = new HiveContext(sc)
+    sqlContext.setConf("hive.exec.dynamic.partition", "true")
+    sqlContext.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
     end2endYaml.performTransformations(sqlContext)
   }
 
