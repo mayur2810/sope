@@ -50,7 +50,7 @@ package object output {
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) db: String,
                         @JsonProperty(required = true) table: String,
-                        @JsonProperty(required = false) partitionBy: Option[Seq[String]]) extends TargetTypeRoot("hive") {
+                        @JsonProperty(required = false, value = "partition_by") partitionBy: Option[Seq[String]]) extends TargetTypeRoot("hive") {
     def apply(df: DataFrame): Unit = {
       val targetTable = s"$db.$table"
       val targetTableDF = df.sqlContext.table(targetTable)
