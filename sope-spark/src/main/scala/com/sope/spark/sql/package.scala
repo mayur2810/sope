@@ -262,7 +262,7 @@ package object sql {
         .collect()
         .headOption match {
         case None => 0
-        case Some(row) => row.get(0).toString.toLong
+        case Some(row) => Option(row.get(0)).fold(0l)(v => v.toString.toLong)
       }
     }
 
