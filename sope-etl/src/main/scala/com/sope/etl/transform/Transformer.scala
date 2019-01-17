@@ -36,9 +36,10 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
               case _ => (false, None)
             }
           inputs ++
-            (InputSource(transform.source, isJoinAction, joinColumns) +:
-              action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns)))
-      }))
+            action.inputAliases
+              .filter(_ == transform.source)
+              .map(alias => InputSource(alias, isJoinAction, joinColumns))
+      } :+ InputSource(transform.source, isUsedForJoin = false, None)))
 
   /**
     * Check if the alias that is to be persisted can be
@@ -131,6 +132,6 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
       sourceDFMap = sourceDFMap updated(dfTransform.getAlias, transformedWithAliasDF)
       (dfTransform.getAlias, transformedWithAliasDF)
     })
-  }.map{case (alias, (df, _)) => (alias, df)}
+  }.map { case (alias, (df, _)) => (alias, df) }
 
 }
