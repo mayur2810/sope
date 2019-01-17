@@ -1,5 +1,7 @@
 package com.sope.etl.transform.model.io
 
+import java.util.Properties
+
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.spark.sql._
@@ -22,6 +24,7 @@ package object output {
     new Type(value = classOf[HiveTarget], name = "hive"),
     new Type(value = classOf[OrcTarget], name = "orc"),
     new Type(value = classOf[ParquetTarget], name = "parquet"),
+    new Type(value = classOf[JDBCTarget], name = "jdbc"),
     new Type(value = classOf[TextTarget], name = "text"),
     new Type(value = classOf[JsonTarget], name = "json"),
     new Type(value = classOf[CountOutput], name = "count"),
@@ -46,11 +49,16 @@ package object output {
   case class HiveTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: String,
                         @JsonProperty(required = true) db: String,
-                        @JsonProperty(required = true) table: String) extends TargetTypeRoot("hive") {
+                        @JsonProperty(required = true) table: String,
+                        @JsonProperty(required = false) partitionBy: Option[Seq[String]]) extends TargetTypeRoot("hive") {
     def apply(df: DataFrame): Unit = {
       val targetTable = s"$db.$table"
       val targetTableDF = df.sqlContext.table(targetTable)
-      df.select(targetTableDF.getColumns: _*).write.mode(getSaveMode(mode)).insertInto(targetTable)
+      (partitionBy match {
+        case Some(cols) =>
+          df.select(targetTableDF.getColumns: _*).write.partitionBy(cols: _*)
+        case None => df.select(targetTableDF.getColumns: _*).write
+      }).mode(getSaveMode(mode)).insertInto(targetTable)
     }
 
     override def getInput: String = input
@@ -74,12 +82,21 @@ package object output {
     override def getInput: String = input
   }
 
-  /*  case class CSVTarget(@JsonProperty(required = true) input: String,
+  case class JDBCTarget(@JsonProperty(required = true) input: String,
                          @JsonProperty(required = true) mode: String,
-                         @JsonProperty(required = true) path: String,
-                         options: Map[String, String]) extends TargetTypeRoot("csv", input, mode) {
-      def apply(df: DataFrame): Unit = df.write.mode(getSaveMode).options(getOptions(options)).csv(path)
-    }*/
+                         @JsonProperty(required = true) url: String,
+                         @JsonProperty(required = true) table: String,
+                         options: Map[String, String]) extends TargetTypeRoot("csv") {
+    private val properties = Option(options).fold(new Properties())(options => {
+      val properties = new Properties()
+      options.foreach { case (k, v) => properties.setProperty(k, v) }
+      properties
+    })
+
+    def apply(df: DataFrame): Unit = df.write.mode(getSaveMode(mode)).jdbc(url, table, properties)
+
+    override def getInput: String = input
+  }
 
   case class TextTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: String,
