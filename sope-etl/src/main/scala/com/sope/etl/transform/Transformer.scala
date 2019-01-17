@@ -23,7 +23,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
   private case class InputSource(name: String, isUsedForJoin: Boolean, joinColumns: Option[Seq[String]])
 
   private val autoPersistSetting = SopeETLConfig.AutoPersistConfig
-  private var sourceDFMap: Map[String, DataFrame] = inputMap
+  private var sourceDFMap: Map[String, (DataFrame, Boolean)] = inputMap.map { case (k, v) => k -> (v, false) }
 
   // Generate the input sources for the transformation
   private lazy val inputSources = transformations
@@ -70,19 +70,18 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
   private def getDF(alias: String): DataFrame = {
     if (sourceDFMap.isDefinedAt(alias)) {
       val autoPersist = autoPersistList.contains(alias)
-      sourceDFMap(alias).rdd.getStorageLevel match {
-        case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
+      sourceDFMap(alias) match {
+        case (df: DataFrame, persistFlag) if !persistFlag && `autoPersist` =>
           logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
           val persisted = (preSort(alias) match {
             case Some(sortCols) =>
               logWarning(s"Persisted transformation: '$alias' will be pre-partitioned on columns: ${sortCols.mkString(", ")}")
-              sourceDFMap(alias).repartition(sortCols.map(col): _*)
-            case None =>
-              sourceDFMap(alias)
+              df.repartition(sortCols.map(col): _*)
+            case None => df
           }).persist(StorageLevel.MEMORY_ONLY)
-          sourceDFMap = sourceDFMap updated(alias, persisted)
+          sourceDFMap = sourceDFMap updated(alias, (persisted, true))
           persisted
-        case _ => sourceDFMap(alias)
+        case _ => sourceDFMap(alias)._1
       }
     }
     else
@@ -123,15 +122,15 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
 
       // Add alias to dataframe
       val transformedWithAliasDF = {
-        dfTransform.persistLevel.fold(transformedDF)(level => {
+        dfTransform.persistLevel.fold((transformedDF.alias(dfTransform.getAlias), false))(level => {
           logInfo(s"Transformation ${dfTransform.getAlias} is configured to be persisted at level: $level")
-          transformedDF.persist(StorageLevel.fromString(level.toUpperCase))
+          (transformedDF.persist(StorageLevel.fromString(level.toUpperCase)).alias(dfTransform.getAlias), true)
         })
-      }.alias(dfTransform.getAlias)
+      }
       // Update Map
       sourceDFMap = sourceDFMap updated(dfTransform.getAlias, transformedWithAliasDF)
       (dfTransform.getAlias, transformedWithAliasDF)
     })
-  }
+  }.map{case (alias, (df, _)) => (alias, df)}
 
 }
