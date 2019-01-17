@@ -317,6 +317,14 @@ package object dsl {
         df.groupBy(groupColumns: _*).agg(columns.head, columns.tail: _*)
   }
 
+
+  /*
+    Aggregate Transform
+    */
+  object Aggregate {
+    def apply(columns: Column*): DFFunc = (df: DataFrame) => df.agg(columns.head, columns.tail :_*)
+  }
+
   /*
      Union Transform
     */
@@ -329,6 +337,7 @@ package object dsl {
       */
     def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => dataframes.foldLeft(df)(_ unionAll _)
   }
+
 
   /*
    Intersect Transform
