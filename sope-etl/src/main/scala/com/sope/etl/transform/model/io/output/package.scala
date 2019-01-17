@@ -126,7 +126,7 @@ package object output {
                         @JsonProperty(required = true) num_records: Int) extends TargetTypeRoot("show") {
     def apply(df: DataFrame): Unit = {
       logInfo(s"Showing sample rows for transformation alias: $input")
-      df.show(num_records)
+      if(num_records == 0) df.show else df.show(num_records)
     }
 
     override def getInput: String = input
