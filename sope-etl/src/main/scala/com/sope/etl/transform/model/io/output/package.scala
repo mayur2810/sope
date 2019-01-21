@@ -32,7 +32,7 @@ package object output {
     extends Logging {
     def apply(df: DataFrame): Unit
 
-    def getSaveMode: SaveMode = mode match {
+    def getSaveMode: SaveMode = mode.toLowerCase match {
       case "overwrite" => SaveMode.Overwrite
       case "append" => SaveMode.Append
       case "error_if_exits" => SaveMode.ErrorIfExists
@@ -98,7 +98,8 @@ package object output {
                         @JsonProperty(required = true) num_records: Int) extends TargetTypeRoot("show", input, "") {
     def apply(df: DataFrame): Unit = {
       logInfo(s"Showing sample rows for transformation alias: $input")
-      df.show(num_records)
+      if (num_records == 0) df.show(num_records, truncate = false) else df.show(false)
     }
   }
+
 }
