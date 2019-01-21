@@ -27,27 +27,29 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
 
   // Generate the input sources for the transformation
   private lazy val inputSources = transformations
-    .flatMap(transform => transform.actions.fold(Nil: Seq[InputSource])(actions =>
-      actions.foldLeft(Nil: Seq[InputSource]) {
-        case (inputs, action) =>
-          val (isJoinAction, joinColumns) =
-            action match {
-              case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
-              case _ => (false, None)
-            }
-          inputs ++
-            (InputSource(transform.source, isJoinAction, joinColumns) +:
-              action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns)))
-      }))
+    .flatMap { transform =>
+      transform.actions
+        .map { actions =>
+          actions.foldLeft(Nil: Seq[InputSource]) {
+            case (inputs, action) =>
+              val (isJoinAction, joinColumns) =
+                action match {
+                  case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
+                  case _ => (false, None)
+                }
+              inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
+          } :+ InputSource(transform.source, isUsedForJoin = false, None)
+        }.getOrElse(Nil)
+    }
 
   /**
     * Check if the alias that is to be persisted can be
-    * pre sorted if used in multiple joins using same columns
+    * pre partitioned if used in multiple joins using same columns
     *
     * @param alias Transformation alias
-    * @return Sort columns
+    * @return Partitioning columns
     */
-  private def preSort(alias: String): Option[Seq[String]] = {
+  private def prePartitionColumns(alias: String): Option[Seq[String]] = {
     val joinSources = inputSources
       .filter(source => source.name == alias && source.isUsedForJoin)
       .map(source => source.joinColumns.get.sorted)
@@ -73,7 +75,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
       sourceDFMap(alias).storageLevel match {
         case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
           logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
-          val persisted = (preSort(alias) match {
+          val persisted = (prePartitionColumns(alias) match {
             case Some(sortCols) =>
               logWarning(s"Persisted transformation: '$alias' will be pre-partitioned on columns: ${sortCols.mkString(", ")}")
               sourceDFMap(alias).repartition(sortCols.map(col): _*)
