@@ -291,6 +291,29 @@ package object dsl {
         }
   }
 
+  /*
+   Aggregate Transform
+  */
+  object Aggregate {
+    /**
+      * Apply Column Aggregate Function
+      *
+      * @param aggregateStrExprs String expressions for aggregation
+      * @return [[DFFunc]]
+      */
+    def apply(aggregateStrExprs: String*): DFFunc = {
+      val aggregateExprs = aggregateStrExprs.map(expr)
+      (df: DataFrame) => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
+    }
+
+    /**
+      * Apply Column Aggregate Function
+      *
+      * @param aggregateExprs Column expressions for aggregation
+      * @return [[DFFunc]]
+      */
+    def apply[_: ClassTag](aggregateExprs: Column*): DFFunc = (df: DataFrame) => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
+  }
 
   /*
     Group Transform

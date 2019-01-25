@@ -162,7 +162,15 @@ object YamlFile {
       if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
       val sourceDFMap = model.sources
         .map(source => {
-          val sourceDF = source.apply(sqlContext)
+          val sourceDF = Try {
+            source.apply(sqlContext)
+          } match {
+            case Success(df) => df
+            case Failure(exception) =>
+              logError(s"Failed to read data from source: ${source.getSourceName}")
+              throw exception
+          }
+
           if (testingMode) {
             val fraction = SopeETLConfig.TestingDataFraction
             logWarning(s"Sampling ${fraction * 100} percent data from source: $source")

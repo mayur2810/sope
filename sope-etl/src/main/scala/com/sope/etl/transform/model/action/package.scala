@@ -27,6 +27,7 @@ package object action {
     final val Filter = "filter"
     final val Join = "join"
     final val GroupBy = "group_by"
+    final val Aggregate = "aggregate"
     final val Transform = "transform"
     final val TransformAll = "transform_all"
     final val Select = "select"
@@ -63,6 +64,7 @@ package object action {
     new Type(value = classOf[FilterAction], name = Actions.Filter),
     new Type(value = classOf[JoinAction], name = Actions.Join),
     new Type(value = classOf[GroupAction], name = Actions.GroupBy),
+    new Type(value = classOf[AggregateAction], name = Actions.Aggregate),
     new Type(value = classOf[TransformAction], name = Actions.Transform),
     new Type(value = classOf[TransformAllAction], name = Actions.TransformAll),
     new Type(value = classOf[SelectAction], name = Actions.Select),
@@ -171,6 +173,10 @@ package object action {
     override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns: _*) ^ groupExpr
   }
 
+  case class AggregateAction(@JsonProperty(required = true) exprs: Seq[String])
+    extends TransformActionRoot(Actions.Aggregate) {
+    override def apply(dataframes: DataFrame*): DFFunc = Aggregate(exprs: _*)
+  }
 
   case class FilterAction(@JsonProperty(required = true) condition: String)
     extends TransformActionRoot(Actions.Filter) {

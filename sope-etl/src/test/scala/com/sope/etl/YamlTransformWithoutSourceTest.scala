@@ -63,7 +63,6 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
 
   "trxn_transformed" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("trxn_transformed")
-    println("trxn_transformed ==>")
     transformedDF.show(false)
     transformedDF.count should be(5)
     transformedDF.filter("product = 'shirt'")
@@ -74,7 +73,6 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
 
   "grp_by" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("grp_by")
-    println("grp_by ==>")
     transformedDF.show(false)
     transformedDF.count should be(3)
     transformedDF.filter("product = 'shirt'")
@@ -85,7 +83,6 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
 
   "product scd-1" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("final_dim_out")
-    println("product scd-1 ==>")
     transformedDF.show(false)
     transformedDF.count should be(8)
     transformedDF.filter("scd_status = 'NCD'").count should be(5)
@@ -95,21 +92,18 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
 
   "distinct_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("distinct_test")
-    println("distinct_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(8)
   }
 
   "drop_duplicate_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("drop_duplicate_test")
-    println("drop_duplicate_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(3)
   }
 
   "aliasing_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("aliasing_test")
-    println("aliased_column_selection_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(5)
   }
@@ -117,72 +111,67 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
 
   "na_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("na_test")
-    println("na_test ==>")
     transformedDF.show(false)
     transformedDF.filter("product_key = -1").count should be(3)
   }
 
   "limit_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("limit_test")
-    println("limit_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(2)
   }
 
   "unstruct_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("unstruct_test")
-    println("unstruct_test ==>")
     transformedDF.show(false)
     transformedDF.columns.length should be(5)
   }
 
   "intersect_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("intersect_test")
-    println("intersect_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(2)
   }
 
   "except_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("except_test")
-    println("except_test ==>")
     transformedDF.show(false)
     transformedDF.count should be(0)
   }
 
   "transform_all_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("transform_all_test")
-    println("transform_all_test ==>")
     transformedDF.show(false)
     transformedDF.columns.length should be(6)
   }
 
   "transform_whole_table_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("transform_whole_table_test")
-    println("transform_whole_table_test ==>")
     transformedDF.show(false)
     transformedDF.columns.length should be(8)
   }
 
   "rename_all_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("rename_all_test")
-    println("rename_all ==>")
     transformedDF.show(false)
     transformedDF.columns.forall(_.contains("_renamed"))
   }
 
   "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("custom_udf_call_test")
-    println("custom_udf_call_test ==>")
     transformedDF.show(false)
     transformedDF.columns should contain("upper_loc")
   }
 
   "custom_transform_call_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("custom_transform_call_test")
-    println("custom_transform_call_test ==>")
     transformedDF.show(false)
     transformedDF.columns should contain("new_column")
   }
 
+  "aggregate_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("aggregate_test")
+    transformedDF.show(false)
+    transformedDF.collect().head.getInt(0) should be(5)
+  }
 }

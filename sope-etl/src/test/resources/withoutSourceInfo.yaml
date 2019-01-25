@@ -78,6 +78,10 @@ transformations :
       input: "transactions"
       actions:
           - {type: rename_all, append: "_renamed"}
+    - alias: "aggregate_test"
+      input: "transactions"
+      actions:
+          - {type: aggregate, exprs: [max(id)]}
     - alias: "custom_udf_call_test"
       input: "transactions"
       actions:
