@@ -1,5 +1,7 @@
 package com.sope.etl.transform.model.io
 
+import java.util.Properties
+
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.spark.sql.DFFunc2
@@ -22,7 +24,9 @@ package object input {
     new Type(value = classOf[ParquetSource], name = "parquet"),
     new Type(value = classOf[CSVSource], name = "csv"),
     new Type(value = classOf[TextSource], name = "text"),
-    new Type(value = classOf[JsonSource], name = "json")
+    new Type(value = classOf[JsonSource], name = "json"),
+    new Type(value = classOf[JDBCSource], name = "jdbc"),
+    new Type(value = classOf[CustomSource], name = "custom")
   ))
   abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String, alias: String) {
     def apply: DFFunc2
@@ -50,9 +54,9 @@ package object input {
     def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).parquet(path)
   }
 
-  case class CSVSource(@JsonProperty(required = true) name: String,
+  case class CSVSource(@JsonProperty(required = true) alias: String,
                        @JsonProperty(required = true) path: String,
-                       options: Map[String, String]) extends SourceTypeRoot("csv", name) {
+                       options: Map[String, String]) extends SourceTypeRoot("csv", alias) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).csv(path)
   }
 
@@ -66,6 +70,25 @@ package object input {
                         @JsonProperty(required = true) path: String,
                         options: Map[String, String]) extends SourceTypeRoot("json", alias) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.options(getOptions(options)).json(path)
+  }
+
+  case class JDBCSource(@JsonProperty(required = true) alias: String,
+                        @JsonProperty(required = true) url: String,
+                        @JsonProperty(required = true) table: String,
+                        options: Map[String, String]) extends SourceTypeRoot("json", alias) {
+    private val properties = Option(options).fold(new Properties())(options => {
+      val properties = new Properties()
+      options.foreach { case (k, v) => properties.setProperty(k, v) }
+      properties
+    })
+
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.jdbc(url, table, properties)
+  }
+
+  case class CustomSource(@JsonProperty(required = true) alias: String,
+                          @JsonProperty(required = true) format: String,
+                          @JsonProperty(required = true) options: Map[String, String]) extends SourceTypeRoot("custom", alias) {
+    def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.format(format).options(options).load()
   }
 
 }
