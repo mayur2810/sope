@@ -17,30 +17,30 @@ import scala.util.{Failure, Success, Try}
   *
   * @author mbadgujar
   */
-class Transformer(file: String, inputMap: Map[String, DataFrame], transformations: Seq[DFTransformation]) extends Logging {
+class Transformer(file: String, inputMap: Map[String, DataFrame], model: TransformModel) extends Logging {
 
 
   private case class InputSource(name: String, isUsedForJoin: Boolean, joinColumns: Option[Seq[String]])
 
   private val autoPersistSetting = SopeETLConfig.AutoPersistConfig
   private var sourceDFMap: Map[String, DataFrame] = inputMap
+  private val transformations = model.transformations
 
   // Generate the input sources for the transformation
-  private lazy val inputSources = transformations
-    .flatMap { transform =>
-      transform.actions
-        .map { actions =>
-          actions.foldLeft(Nil: Seq[InputSource]) {
-            case (inputs, action) =>
-              val (isJoinAction, joinColumns) =
-                action match {
-                  case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
-                  case _ => (false, None)
-                }
-              inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
-          } :+ InputSource(transform.source, isUsedForJoin = false, None)
-        }.getOrElse(Nil)
-    }
+  private lazy val inputSources = transformations.flatMap { transform =>
+    transform.actions
+      .map { actions =>
+        actions.foldLeft(Nil: Seq[InputSource]) {
+          case (inputs, action) =>
+            val (isJoinAction, joinColumns) =
+              action match {
+                case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
+                case _ => (false, None)
+              }
+            inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
+        } :+ InputSource(transform.source, isUsedForJoin = false, None)
+      }.getOrElse(Nil)
+  } ++ model.targets.map(target => InputSource(target.getInput, isUsedForJoin = false, None)) // add inputs from target information
 
   /**
     * Check if the alias that is to be persisted can be
@@ -53,7 +53,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
     val joinSources = inputSources
       .filter(source => source.name == alias && source.isUsedForJoin)
       .map(source => source.joinColumns.get.sorted)
-    if (joinSources.nonEmpty) Some(joinSources.maxBy(_.mkString(","))) else None
+    if (joinSources.nonEmpty && joinSources.size >= 2) Some(joinSources.maxBy(_.mkString(","))) else None
   }
 
   // Initialize the auto persist mapping for sources
@@ -102,7 +102,8 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
     logDebug("AUTO persist data list: " + autoPersistList.mkString(", "))
 
     transformations.map(dfTransform => {
-      logInfo(s"Applying transformation: ${dfTransform.getAlias}")
+      val transformAlias = dfTransform.getAlias
+      logInfo(s"Applying transformation: $transformAlias")
       val sourceDF = getDF(dfTransform.source)
       // coalesce function
       val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
@@ -118,7 +119,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
         } match {
           case Success(df) => df
           case Failure(e) =>
-            logError(s"Transformation failed for alias: ${dfTransform.getAlias} in $file file")
+            logError(s"Transformation failed for alias: $transformAlias in $file file")
             throw e
         }
       }.transform(coalesceFunc)
@@ -126,13 +127,13 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], transformation
       // Add alias to dataframe
       val transformedWithAliasDF = {
         dfTransform.persistLevel.fold(transformedDF)(level => {
-          logInfo(s"Transformation ${dfTransform.getAlias} is configured to be persisted at level: $level")
+          logInfo(s"Transformation $transformAlias is configured to be persisted at level: $level")
           transformedDF.persist(StorageLevel.fromString(level.toUpperCase))
         })
-      }.alias(dfTransform.getAlias)
+      }.alias(transformAlias)
       // Update Map
-      sourceDFMap = sourceDFMap updated(dfTransform.getAlias, transformedWithAliasDF)
-      (dfTransform.getAlias, transformedWithAliasDF)
+      sourceDFMap = sourceDFMap updated(transformAlias, transformedWithAliasDF)
+      (transformAlias, getDF(transformAlias))
     })
   }
 

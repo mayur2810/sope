@@ -15,6 +15,32 @@ import com.sope.etl.transform.model.io.output.TargetTypeRoot
 package object model {
 
   /**
+    * Base Trait for Transformation Model
+    */
+  trait TransformModel {
+    /**
+      * Get the sources involved
+      *
+      * @return Seq[_]
+      */
+    def sources: Seq[_]
+
+    /**
+      * Transformations list
+      *
+      * @return Seq[DFTransformation]
+      */
+    def transformations: Seq[DFTransformation]
+
+    /**
+      * Output Targets
+      *
+      * @return Seq[TargetTypeRoot]
+      */
+    def targets: Seq[TargetTypeRoot]
+  }
+
+  /**
     * Class represents a transformation entity.
     *
     * @param source       input source name
@@ -50,15 +76,18 @@ package object model {
     def getAlias: String = alias.getOrElse(source)
   }
 
-  trait TransformModel
-
   // Model for YAML without source target information
   case class TransformModelWithoutSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[String],
-                                               @JsonProperty(required = true) transformations: Seq[DFTransformation]) extends TransformModel
+                                               @JsonProperty(required = true) transformations: Seq[DFTransformation]) extends TransformModel {
+
+    override def targets: Seq[TargetTypeRoot] = Nil
+  }
 
   // Model for YAML with source target information
-  case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[_ <: SourceTypeRoot],
+  case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[SourceTypeRoot],
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
-                                            @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot]) extends TransformModel
+                                            @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot]) extends TransformModel {
+
+  }
 
 }

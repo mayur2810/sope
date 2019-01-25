@@ -81,6 +81,7 @@ transformations :
     - alias: "aggregate_test"
       input: "transactions"
       actions:
+          - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
           - {type: aggregate, exprs: [max(id)]}
     - alias: "custom_udf_call_test"
       input: "transactions"

@@ -143,7 +143,7 @@ object YamlFile {
         throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
       performRegistrations(dataFrames.head.sqlContext)
       val sourceDFMap = model.sources.zip(dataFrames).map { case (source, df) => (source, df.alias(source)) }
-      new Transformer(getYamlFileName, sourceDFMap.toMap, model.transformations).transform
+      new Transformer(getYamlFileName, sourceDFMap.toMap, model).transform
     }
   }
 
@@ -181,7 +181,7 @@ object YamlFile {
           else
             source.getSourceName -> sourceDF.alias(source.getSourceName)
         }).toMap
-      val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model.transformations).transform.toMap
+      val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
       model.targets.foreach(target => target(transformationResult(target.getInput)))
     }
   }
