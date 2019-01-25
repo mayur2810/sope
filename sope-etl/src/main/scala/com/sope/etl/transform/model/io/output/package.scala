@@ -57,7 +57,7 @@ package object output {
       val writeModeApplied = mode.fold(df.write)(_ => df.write.mode(getSaveMode))
       val partitioningApplied = partitionBy.fold(writeModeApplied)(cols => writeModeApplied.partitionBy(cols: _*))
       val bucketingApplied = bucketBy
-        .fold(partitioningApplied)(bucketingOption => writeModeApplied
+        .fold(partitioningApplied)(bucketingOption => partitioningApplied
           .bucketBy(bucketingOption.numBuckets, bucketingOption.columns.head, bucketingOption.columns.tail: _*))
       bucketingApplied.options(options.getOrElse(Map()))
     }
