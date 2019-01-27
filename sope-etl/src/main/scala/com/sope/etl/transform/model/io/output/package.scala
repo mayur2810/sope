@@ -4,10 +4,10 @@ import java.util.Properties
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
-import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.spark.sql._
 import com.sope.utils.Logging
-import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
+import org.apache.spark.sql.streaming.DataStreamWriter
+import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row}
 
 /**
   * Package contains YAML Transformer Output construct mappings and definitions
@@ -39,30 +39,32 @@ package object output {
                                 mode: Option[String],
                                 partitionBy: Option[Seq[String]],
                                 bucketBy: Option[BucketingOption],
-                                options: Option[Map[String, String]]) extends Logging {
+                                options: Option[Map[String, String]],
+                                outputMode: Option[String] = None) extends Logging {
 
     def apply(df: DataFrame): Unit
 
     def getInput: String = input
 
-    protected def getSaveMode: SaveMode = mode.getOrElse("").toLowerCase match {
-      case "overwrite" => SaveMode.Overwrite
-      case "append" => SaveMode.Append
-      case "error_if_exits" => SaveMode.ErrorIfExists
-      case "ignore" => SaveMode.Ignore
-      case _ => throw new YamlDataTransformException(s"Invalid save mode provided for writing input: $input")
-    }
-
     def getWriter(df: DataFrame): DataFrameWriter[Row] = {
-      val writeModeApplied = mode.fold(df.write)(_ => df.write.mode(getSaveMode))
+      val writeModeApplied = mode.fold(df.write)(_ => df.write.mode(mode.get))
       val partitioningApplied = partitionBy.fold(writeModeApplied)(cols => writeModeApplied.partitionBy(cols: _*))
       val bucketingApplied = bucketBy
         .fold(partitioningApplied)(bucketingOption => partitioningApplied
           .bucketBy(bucketingOption.numBuckets, bucketingOption.columns.head, bucketingOption.columns.tail: _*))
       bucketingApplied.options(options.getOrElse(Map()))
     }
+
+    def getStreamWriter(df: DataFrame): DataStreamWriter[Row] = {
+      val writeModeApplied = outputMode.fold(df.writeStream)(_ => df.writeStream.outputMode(outputMode.get))
+      partitionBy.fold(writeModeApplied)(cols => writeModeApplied.partitionBy(cols: _*))
+      //TODO: Add trigger support
+    }
   }
 
+  /*
+     Hive Target
+   */
   case class HiveTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: Option[String],
                         @JsonProperty(required = true) db: String,
@@ -85,6 +87,9 @@ package object output {
     }
   }
 
+  /*
+    ORC Target
+  */
   case class OrcTarget(@JsonProperty(required = true) input: String,
                        @JsonProperty(required = true) mode: Option[String],
                        @JsonProperty(required = true) path: String,
@@ -95,6 +100,9 @@ package object output {
     def apply(df: DataFrame): Unit = getWriter(df).orc(path)
   }
 
+  /*
+    Parquet Target
+  */
   case class ParquetTarget(@JsonProperty(required = true) input: String,
                            @JsonProperty(required = true) mode: Option[String],
                            @JsonProperty(required = true) path: String,
@@ -105,6 +113,9 @@ package object output {
     def apply(df: DataFrame): Unit = getWriter(df).parquet(path)
   }
 
+  /*
+    CSV Target
+  */
   case class CSVTarget(@JsonProperty(required = true) input: String,
                        @JsonProperty(required = true) mode: Option[String],
                        @JsonProperty(required = true) path: String,
@@ -115,6 +126,9 @@ package object output {
     def apply(df: DataFrame): Unit = getWriter(df).csv(path)
   }
 
+  /*
+    Text Target
+  */
   case class TextTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: Option[String],
                         @JsonProperty(required = true) path: String,
@@ -125,6 +139,9 @@ package object output {
     def apply(df: DataFrame): Unit = getWriter(df).text(path)
   }
 
+  /*
+    JSON Target
+  */
   case class JsonTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: Option[String],
                         @JsonProperty(required = true) path: String,
@@ -135,6 +152,9 @@ package object output {
     def apply(df: DataFrame): Unit = getWriter(df).json(path)
   }
 
+  /*
+    JDBC Target
+  */
   case class JDBCTarget(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) mode: Option[String],
                         @JsonProperty(required = true) url: String,
@@ -152,11 +172,17 @@ package object output {
     override def getInput: String = input
   }
 
+  /*
+    Show Count
+  */
   case class CountOutput(@JsonProperty(required = true) input: String)
     extends TargetTypeRoot("count", input, None, None, None, None) {
     def apply(df: DataFrame): Unit = logInfo(s"Count for transformation alias: $input :- ${df.count}")
   }
 
+  /*
+    Show sample result
+  */
   case class ShowOutput(@JsonProperty(required = true) input: String,
                         @JsonProperty(required = true) num_records: Int)
     extends TargetTypeRoot("show", input, None, None, None, None) {
@@ -166,14 +192,25 @@ package object output {
     }
   }
 
+  /*
+    Custom target
+  */
   case class CustomTarget(@JsonProperty(required = true) input: String,
                           @JsonProperty(required = true) format: String,
                           mode: Option[String],
                           @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                           @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
+                          @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                          @JsonProperty(value = "output_mode") outputMode: Option[String],
                           options: Option[Map[String, String]])
-    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options) {
-    def apply(df: DataFrame): Unit = getWriter(df).format(format).save()
+    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode) {
+    def apply(df: DataFrame): Unit =
+      if (isStreaming.getOrElse(false)) {
+        val query = getStreamWriter(df).format(format).start()
+        query.awaitTermination()
+      }
+      else
+        getWriter(df).format(format).save()
   }
 
 }
