@@ -47,6 +47,7 @@ package object action {
     final val Yaml = "yaml"
     final val Named = "named_transform"
     final val DQCheck = "dq_check"
+    final val Watermark = "watermark"
   }
 
   /**
@@ -83,7 +84,8 @@ package object action {
     new Type(value = classOf[NAAction], name = Actions.NA),
     new Type(value = classOf[YamlAction], name = Actions.Yaml),
     new Type(value = classOf[NamedAction], name = Actions.Named),
-    new Type(value = classOf[DQCheckAction], name = Actions.DQCheck)
+    new Type(value = classOf[DQCheckAction], name = Actions.DQCheck),
+    new Type(value = classOf[WatermarkAction], name = Actions.Watermark)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
 
@@ -320,4 +322,9 @@ package object action {
     }
   }
 
+  case class WatermarkAction(@JsonProperty(required = true, value = "event_time") eventTime: String,
+                             @JsonProperty(required = true, value = "delay_threshold") delayThreshold: String)
+    extends TransformActionRoot(Actions.Watermark) {
+    override def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => df.withWatermark(eventTime, delayThreshold)
+  }
 }
