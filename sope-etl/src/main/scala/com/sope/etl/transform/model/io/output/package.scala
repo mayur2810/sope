@@ -4,9 +4,10 @@ import java.util.Properties
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.spark.sql._
 import com.sope.utils.Logging
-import org.apache.spark.sql.streaming.DataStreamWriter
+import org.apache.spark.sql.streaming.{DataStreamWriter, Trigger}
 import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row}
 
 /**
@@ -18,6 +19,9 @@ package object output {
 
   case class BucketingOption(@JsonProperty(value = "num_buckets") numBuckets: Int = 200,
                              @JsonProperty(required = true) columns: Seq[String])
+
+  case class TriggerOption(@JsonProperty(value = "trigger_type", required = true) triggerType: String, interval: String)
+
 
   @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -40,7 +44,8 @@ package object output {
                                 partitionBy: Option[Seq[String]],
                                 bucketBy: Option[BucketingOption],
                                 options: Option[Map[String, String]],
-                                outputMode: Option[String] = None) extends Logging {
+                                outputMode: Option[String] = None,
+                                trigger: Option[TriggerOption] = None) extends Logging {
 
     def apply(df: DataFrame): Unit
 
@@ -57,8 +62,16 @@ package object output {
 
     def getStreamWriter(df: DataFrame): DataStreamWriter[Row] = {
       val writeModeApplied = outputMode.fold(df.writeStream)(_ => df.writeStream.outputMode(outputMode.get))
-      partitionBy.fold(writeModeApplied)(cols => writeModeApplied.partitionBy(cols: _*))
-      //TODO: Add trigger support
+      val partitioningApplied = partitionBy.fold(writeModeApplied)(cols => writeModeApplied.partitionBy(cols: _*))
+      trigger.fold(partitioningApplied)(triggerOption => {
+        val trigger = triggerOption.triggerType.toLowerCase match {
+          case "processing_time" => Trigger.ProcessingTime(triggerOption.interval)
+          case "once" => Trigger.Once()
+          case "continuous" => Trigger.Continuous(triggerOption.interval)
+          case _ => throw new YamlDataTransformException(s"invalid Trigger mode provided for streaming input: $input")
+        }
+        partitioningApplied.trigger(trigger)
+      })
     }
   }
 
