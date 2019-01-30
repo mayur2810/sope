@@ -150,6 +150,13 @@ object YamlFile {
   case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
     extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget]) {
 
+    /* Add the provided configurations to Spark context */
+    private def addConfigurations(sqlContext: SQLContext): Unit = {
+      model.configs
+        .getOrElse(Map())
+        .foreach { case (k, v) => sqlContext.setConf(k, v) }
+    }
+
     /**
       * Performs end to end transformations - Reading sources and writing transformation result to provided targets
       * The source yaml file should contains source and target information.
@@ -157,6 +164,7 @@ object YamlFile {
       * @param sqlContext Spark [[SQLContext]]
       */
     def performTransformations(sqlContext: SQLContext): Unit = {
+      addConfigurations(sqlContext)
       performRegistrations(sqlContext)
       val testingMode = SopeETLConfig.TestingModeConfig
       if (testingMode) logWarning("TESTING MODE IS ENABLED!!")

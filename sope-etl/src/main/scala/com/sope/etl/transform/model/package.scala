@@ -86,8 +86,7 @@ package object model {
   // Model for YAML with source target information
   case class TransformModelWithSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[SourceTypeRoot],
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
-                                            @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot]) extends TransformModel {
-
-  }
+                                            @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot],
+                                            configs: Option[Map[String, String]]) extends TransformModel
 
 }
