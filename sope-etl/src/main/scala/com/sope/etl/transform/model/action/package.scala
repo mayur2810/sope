@@ -172,7 +172,7 @@ package object action {
   case class GroupAction(@JsonProperty(value = "columns", required = true) groupColumns: Seq[String],
                          @JsonProperty(value = "expr", required = true) groupExpr: String)
     extends TransformActionRoot(Actions.GroupBy) {
-    override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns: _*) ^ groupExpr
+    override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns.map(expr): _*) ^ groupExpr
   }
 
   case class AggregateAction(@JsonProperty(required = true) exprs: Seq[String])
