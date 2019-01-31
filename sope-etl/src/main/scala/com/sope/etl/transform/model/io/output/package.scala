@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.spark.sql._
+import com.sope.spark.utils.google.BigQueryWriter
 import com.sope.utils.Logging
 import org.apache.spark.sql.streaming.{DataStreamWriter, Trigger}
 import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row}
@@ -34,6 +35,7 @@ package object output {
     new Type(value = classOf[CSVTarget], name = "csv"),
     new Type(value = classOf[TextTarget], name = "text"),
     new Type(value = classOf[JsonTarget], name = "json"),
+    new Type(value = classOf[BigQueryTarget], name = "bigquery"),
     new Type(value = classOf[CustomTarget], name = "custom"),
     new Type(value = classOf[CountOutput], name = "count"),
     new Type(value = classOf[ShowOutput], name = "show")
@@ -203,6 +205,21 @@ package object output {
       logInfo(s"Showing sample rows for transformation alias: $input")
       if (num_records == 0) df.show(num_records, truncate = false) else df.show(false)
     }
+  }
+
+  /*
+   BigQuery Target
+  */
+  case class BigQueryTarget(@JsonProperty(required = true) input: String,
+                            @JsonProperty(required = true) db: String,
+                            @JsonProperty(required = true) table: String,
+                            @JsonProperty(value = "project_id") projectId: Option[String],
+                            @JsonProperty(required = true) mode: Option[String])
+    extends TargetTypeRoot("custom", input, mode, None, None, None, None) {
+    private val bqDataset = projectId.fold(s"$db.$table")(id => s"$id:$db.$table")
+    private val overwriteFlag = mode.fold(false)(mode => if (mode.toLowerCase == "overwrite") true else false)
+
+    def apply(df: DataFrame): Unit = new BigQueryWriter(df, bqDataset, overwriteFlag).save()
   }
 
   /*

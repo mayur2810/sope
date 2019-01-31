@@ -42,6 +42,7 @@
         <surfire.plugin.version>2.7</surfire.plugin.version>
         <eclipse.plugin.version>2.10</eclipse.plugin.version>
         <scoverage.plugin.version>1.3.0</scoverage.plugin.version>
+        <bigquery.connector.version>hadoop3-0.13.11</bigquery.connector.version>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +77,11 @@
                         <artifactId>jackson-core</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.google.cloud.bigdataoss</groupId>
+                <artifactId>bigquery-connector</artifactId>
+                <version>${bigquery.connector.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.scalatest</groupId>

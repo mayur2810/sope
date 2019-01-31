@@ -37,6 +37,11 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.cloud.bigdataoss</groupId>
+            <artifactId>bigquery-connector</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.mayurb</groupId>
             <artifactId>sope-spark</artifactId>
             <version>${project.ver}</version>

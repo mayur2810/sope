@@ -33,6 +33,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.cloud.bigdataoss</groupId>
+            <artifactId>bigquery-connector</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.version.tag}</artifactId>
         </dependency>

@@ -5,6 +5,7 @@ import java.util.Properties
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.spark.sql.DFFunc2
+import com.sope.spark.utils.google.BigQueryReader
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.{DataFrameReader, SQLContext}
 
@@ -27,6 +28,7 @@ package object input {
     new Type(value = classOf[TextSource], name = "text"),
     new Type(value = classOf[JsonSource], name = "json"),
     new Type(value = classOf[JDBCSource], name = "jdbc"),
+    new Type(value = classOf[BigQuerySource], name = "bigquery"),
     new Type(value = classOf[CustomSource], name = "custom")
   ))
   abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
@@ -38,7 +40,7 @@ package object input {
     def getSourceName: String = alias
 
     def getReader(sqlContext: SQLContext): Either[DataFrameReader, DataStreamReader] =
-      if (isStreaming.get)
+      if (isStreaming.getOrElse(false))
         Right(sqlContext.readStream.options(options.getOrElse(Map())))
       else
         Left(sqlContext.read.options(options.getOrElse(Map())))
@@ -123,6 +125,20 @@ package object input {
     })
 
     def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.read.jdbc(url, table, properties)
+  }
+
+
+  /*
+   Big Query Source
+   */
+  case class BigQuerySource(@JsonProperty(required = true) alias: String,
+                            @JsonProperty(required = true) db: String,
+                            @JsonProperty(required = true) table: String,
+                            @JsonProperty(value = "project_id") projectId: Option[String])
+    extends SourceTypeRoot("bigquery", alias, None) {
+    private val bqDataset = projectId.fold(s"$db.$table")(id => s"$id:$db.$table")
+
+    def apply: DFFunc2 = (sqlContext: SQLContext) => new BigQueryReader(sqlContext, bqDataset).load()
   }
 
   /*
