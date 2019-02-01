@@ -1,6 +1,8 @@
 package com.sope.etl.register
 
+import com.sope.etl.{SopeETLConfig, getClassInstance}
 import com.sope.spark.sql.MultiDFFunc
+import com.sope.utils.Logging
 
 import scala.collection.mutable
 
@@ -30,7 +32,7 @@ trait TransformationRegistration {
   }
 }
 
-object TransformationRegistration {
+object TransformationRegistration extends Logging {
 
   private val transformationList = mutable.HashMap[String, MultiDFFunc]()
 
@@ -50,4 +52,22 @@ object TransformationRegistration {
     * @return Option[MultiDFFunc]
     */
   def getTransformation(name: String): Option[MultiDFFunc] = transformationList.get(name)
+
+
+  /*
+    Registers Custom Transformation from provided class
+  */
+  def registerTransformations(): Unit = {
+    SopeETLConfig.TransformationRegistrationConfig match {
+      case Some(classStr) =>
+        logInfo(s"Registering custom Transformations from $classStr")
+        getClassInstance[TransformationRegistration](classStr) match {
+          case Some(transformClass) =>
+            transformClass.performRegistration()
+            logInfo("Successfully registered Custom Transformations")
+          case _ => logError(s"Transformation Registration failed")
+        }
+      case None => logInfo("No class defined for registering Custom Transformations")
+    }
+  }
 }

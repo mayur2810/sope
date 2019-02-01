@@ -1,12 +1,8 @@
 package com.sope.etl.yaml
 
 import com.fasterxml.jackson.databind.JsonMappingException
-import com.sope.etl._
-import com.sope.etl.register._
 import com.sope.etl.yaml.YamlParserUtil._
-import com.sope.spark.sql.udfs._
 import com.sope.utils.Logging
-import org.apache.spark.sql.SQLContext
 
 import scala.util.{Failure, Success, Try}
 
@@ -38,51 +34,6 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Seq[Any]] = N
     val errorLocation = lines.filter(_._2 == errorLine - 1)
     s"Encountered issue while parsing Yaml File : $getYamlFileName. Error Line No. : $errorLine:$errorColumn\n" +
       errorLocation(0)._1 + s"\n${(1 until errorColumn).map(_ => " ").mkString("")}^"
-  }
-
-  /*
-     Registers custom udf from provided class
-  */
-  private def registerCustomUDFs(sqlContext: SQLContext): Unit = {
-    SopeETLConfig.UDFRegistrationConfig match {
-      case Some(classStr) =>
-        logInfo(s"Registering custom UDFs from $classStr")
-        getClassInstance[UDFRegistration](classStr) match {
-          case Some(udfClass) =>
-            udfClass.performRegistration(sqlContext)
-            logInfo("Successfully registered custom UDFs")
-          case _ => logError(s"UDF Registration failed")
-        }
-      case None => logInfo("No class defined for registering Custom udfs")
-    }
-  }
-
-  /*
-    Registers Custom Transformation from provided class
-  */
-  private def registerTransformations(): Unit = {
-    SopeETLConfig.TransformationRegistrationConfig match {
-      case Some(classStr) =>
-        logInfo(s"Registering custom Transformations from $classStr")
-        getClassInstance[TransformationRegistration](classStr) match {
-          case Some(transformClass) =>
-            transformClass.performRegistration()
-            logInfo("Successfully registered Custom Transformations")
-          case _ => logError(s"Transformation Registration failed")
-        }
-      case None => logInfo("No class defined for registering Custom Transformations")
-    }
-  }
-
-  /**
-    * Performs Custom UDF & Transformation registrations
-    *
-    * @param sqlContext Spark's SQL Context
-    */
-  protected def performRegistrations(sqlContext: SQLContext): Unit = {
-    registerUDFs(sqlContext) // Register sope utility udfs
-    registerCustomUDFs(sqlContext) // Register custom udfs if provided
-    registerTransformations() // Register custom transformations
   }
 
 

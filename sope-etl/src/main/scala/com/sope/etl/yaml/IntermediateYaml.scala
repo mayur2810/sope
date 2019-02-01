@@ -1,5 +1,6 @@
 package com.sope.etl.yaml
 
+import com.sope.etl._
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.TransformModelWithoutSourceTarget

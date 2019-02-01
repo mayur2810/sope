@@ -1,8 +1,12 @@
 package com.sope
 
+import com.sope.etl.register.TransformationRegistration._
+import com.sope.etl.register.UDFRegistration._
+import com.sope.spark.sql.udfs.registerUDFs
 import com.sope.utils.Logging
 import org.apache.commons.cli
 import org.apache.commons.cli.OptionBuilder
+import org.apache.spark.sql.SQLContext
 
 import scala.reflect.runtime.universe._
 import scala.util.{Failure, Success, Try}
@@ -60,6 +64,18 @@ package object etl extends Logging {
         None
     }
   }
+
+  /**
+    * Performs Custom UDF & Transformation registrations
+    *
+    * @param sqlContext Spark's SQL Context
+    */
+  def performRegistrations(sqlContext: SQLContext): Unit = {
+    registerUDFs(sqlContext) // Register sope utility udfs
+    registerCustomUDFs(sqlContext) // Register custom udfs if provided
+    registerTransformations() // Register custom transformations
+  }
+
 
   /**
     * Builds Optional Command line options

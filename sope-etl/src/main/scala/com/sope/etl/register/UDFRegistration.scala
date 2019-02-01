@@ -1,5 +1,7 @@
 package com.sope.etl.register
 
+import com.sope.etl.{SopeETLConfig, getClassInstance}
+import com.sope.utils.Logging
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.expressions.UserDefinedFunction
 
@@ -25,4 +27,24 @@ trait UDFRegistration {
   }
 
 
+}
+
+object UDFRegistration extends Logging {
+
+  /*
+   Registers custom udf from provided class
+  */
+  def registerCustomUDFs(sqlContext: SQLContext): Unit = {
+    SopeETLConfig.UDFRegistrationConfig match {
+      case Some(classStr) =>
+        logInfo(s"Registering custom UDFs from $classStr")
+        getClassInstance[UDFRegistration](classStr) match {
+          case Some(udfClass) =>
+            udfClass.performRegistration(sqlContext)
+            logInfo("Successfully registered custom UDFs")
+          case _ => logError(s"UDF Registration failed")
+        }
+      case None => logInfo("No class defined for registering Custom udfs")
+    }
+  }
 }

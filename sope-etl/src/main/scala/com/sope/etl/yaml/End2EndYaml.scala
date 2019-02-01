@@ -1,6 +1,6 @@
 package com.sope.etl.yaml
 
-import com.sope.etl.SopeETLConfig
+import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
 import org.apache.spark.sql.SQLContext
