@@ -1,6 +1,6 @@
 package com.sope.etl
 
-import com.sope.etl.yaml.YamlFile.End2EndYaml
+import com.sope.etl.yaml.End2EndYaml
 import com.sope.etl.yaml.YamlParserUtil.parseYAML
 import com.sope.utils.Logging
 import org.apache.commons.cli.{BasicParser, Options}

@@ -1,0 +1,9 @@
+{
+  a: "Int",
+  b: "String",
+  c: "Timestamp",
+  d: "date",
+  e: "array<Int>",
+  f: "map< Int, String>",
+  g: "struct<x: Int, y: struct<s1:date, s2: decimal(10,2)>, x: bigint>"
+}

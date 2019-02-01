@@ -2,7 +2,7 @@ package com.sope.etl
 
 import com.sope.etl.TestContext.getSQlContext
 import com.sope.etl.model.Transactions
-import com.sope.etl.yaml.YamlFile.IntermediateYaml
+import com.sope.etl.yaml.IntermediateYaml
 import org.scalatest.{FlatSpec, Matchers}
 
 /**

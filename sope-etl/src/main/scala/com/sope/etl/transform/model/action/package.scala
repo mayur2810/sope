@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInf
 import com.sope.etl.register.TransformationRegistration
 import com.sope.etl.scd.DimensionTable
 import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.yaml.YamlFile.IntermediateYaml
+import com.sope.etl.yaml.IntermediateYaml
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
 import org.apache.spark.sql.functions._

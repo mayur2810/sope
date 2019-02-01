@@ -5,8 +5,10 @@ import java.util.Properties
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.spark.sql.DFFunc2
+import com.sope.etl.yaml.SchemaYaml
 import com.sope.spark.utils.google.BigQueryReader
 import org.apache.spark.sql.streaming.DataStreamReader
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrameReader, SQLContext}
 
 /**
@@ -34,16 +36,25 @@ package object input {
   abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
                                 alias: String,
                                 options: Option[Map[String, String]],
-                                isStreaming: Option[Boolean] = Some(false)) {
+                                isStreaming: Option[Boolean] = Some(false),
+                                schemaFile: Option[String] = None) {
     def apply: DFFunc2
 
     def getSourceName: String = alias
 
+    protected def getSchema: Option[StructType] = schemaFile.fold(None: Option[StructType]) {
+      file => Some(SchemaYaml(file).getSparkSchema)
+    }
+
     def getReader(sqlContext: SQLContext): Either[DataFrameReader, DataStreamReader] =
-      if (isStreaming.getOrElse(false))
-        Right(sqlContext.readStream.options(options.getOrElse(Map())))
-      else
-        Left(sqlContext.read.options(options.getOrElse(Map())))
+      if (isStreaming.getOrElse(false)) {
+        val streamReader = sqlContext.readStream.options(options.getOrElse(Map()))
+        Right(getSchema.fold(streamReader)(schema => streamReader.schema(schema)))
+      }
+      else {
+        val reader = sqlContext.read.options(options.getOrElse(Map()))
+        Left(getSchema.fold(reader)(schema => reader.schema(schema)))
+      }
   }
 
   /*
@@ -61,8 +72,9 @@ package object input {
   case class OrcSource(@JsonProperty(required = true) alias: String,
                        @JsonProperty(required = true) path: String,
                        @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                       @JsonProperty(value = "schema_file") schemaFile: Option[String],
                        options: Option[Map[String, String]])
-    extends SourceTypeRoot("orc", alias, options, isStreaming) {
+    extends SourceTypeRoot("orc", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.orc(path), _.orc(path))
   }
 
@@ -72,8 +84,9 @@ package object input {
   case class ParquetSource(@JsonProperty(required = true) alias: String,
                            @JsonProperty(required = true) path: String,
                            @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                           @JsonProperty(value = "schema_file") schemaFile: Option[String],
                            options: Option[Map[String, String]])
-    extends SourceTypeRoot("parquet", alias, options, isStreaming) {
+    extends SourceTypeRoot("parquet", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.parquet(path), _.parquet(path))
   }
 
@@ -83,8 +96,9 @@ package object input {
   case class CSVSource(@JsonProperty(required = true) alias: String,
                        @JsonProperty(required = true) path: String,
                        @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                       @JsonProperty(value = "schema_file") schemaFile: Option[String],
                        options: Option[Map[String, String]])
-    extends SourceTypeRoot("csv", alias, options, isStreaming) {
+    extends SourceTypeRoot("csv", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.csv(path), _.csv(path))
   }
 
@@ -94,8 +108,9 @@ package object input {
   case class TextSource(@JsonProperty(required = true) alias: String,
                         @JsonProperty(required = true) path: String,
                         @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                        @JsonProperty(value = "schema_file") schemaFile: Option[String],
                         options: Option[Map[String, String]])
-    extends SourceTypeRoot("text", alias, options, isStreaming) {
+    extends SourceTypeRoot("text", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.text(path), _.text(path))
   }
 
@@ -105,8 +120,9 @@ package object input {
   case class JsonSource(@JsonProperty(required = true) alias: String,
                         @JsonProperty(required = true) path: String,
                         @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                        @JsonProperty(value = "schema_file") schemaFile: Option[String],
                         options: Option[Map[String, String]])
-    extends SourceTypeRoot("json", alias, options, isStreaming) {
+    extends SourceTypeRoot("json", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.json(path), _.json(path))
   }
 
@@ -147,8 +163,9 @@ package object input {
   case class CustomSource(@JsonProperty(required = true) alias: String,
                           @JsonProperty(required = true) format: String,
                           @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
+                          @JsonProperty(value = "schema_file") schemaFile: Option[String],
                           @JsonProperty(required = true) options: Option[Map[String, String]])
-    extends SourceTypeRoot("custom", alias, options, isStreaming) {
+    extends SourceTypeRoot("custom", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.format(format).load(), _.format(format).load())
   }
 

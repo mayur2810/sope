@@ -3,13 +3,10 @@ package com.sope.etl.yaml
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.sope.etl._
 import com.sope.etl.register._
-import com.sope.etl.transform.Transformer
-import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.transform.model.{TransformModel, TransformModelWithSourceTarget, TransformModelWithoutSourceTarget}
 import com.sope.etl.yaml.YamlParserUtil._
 import com.sope.spark.sql.udfs._
 import com.sope.utils.Logging
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.SQLContext
 
 import scala.util.{Failure, Success, Try}
 
@@ -18,7 +15,7 @@ import scala.util.{Failure, Success, Try}
   *
   * @author mbadgujar
   */
-abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Option[Seq[Any]] = None, modelClass: Class[T])
+abstract class YamlFile[T](yamlPath: String, substitutions: Option[Seq[Any]] = None, modelClass: Class[T])
   extends Logging {
 
   protected val model: T = serialize
@@ -126,74 +123,3 @@ abstract class YamlFile[T <: TransformModel](yamlPath: String, substitutions: Op
   }
 
 }
-
-object YamlFile {
-
-  case class IntermediateYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
-    extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutSourceTarget]) {
-
-    /**
-      * Perform transformation on provided dataframes.
-      * The sources provided in YAML file should be equal and in-order to the provided dataframes
-      *
-      * @return Transformed [[DataFrame]]
-      */
-    def getTransformedDFs(dataFrames: DataFrame*): Seq[(String, DataFrame)] = {
-      if (model.sources.size != dataFrames.size)
-        throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
-      performRegistrations(dataFrames.head.sqlContext)
-      val sourceDFMap = model.sources.zip(dataFrames).map { case (source, df) => (source, df.alias(source)) }
-      new Transformer(getYamlFileName, sourceDFMap.toMap, model).transform
-    }
-  }
-
-  case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
-    extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget]) {
-
-    /* Add the provided configurations to Spark context */
-    private def addConfigurations(sqlContext: SQLContext): Unit = {
-      model.configs
-        .getOrElse(Map())
-        .foreach { case (k, v) => sqlContext.setConf(k, v) }
-    }
-
-    /**
-      * Performs end to end transformations - Reading sources and writing transformation result to provided targets
-      * The source yaml file should contains source and target information.
-      *
-      * @param sqlContext Spark [[SQLContext]]
-      */
-    def performTransformations(sqlContext: SQLContext): Unit = {
-      addConfigurations(sqlContext)
-      performRegistrations(sqlContext)
-      val testingMode = SopeETLConfig.TestingModeConfig
-      if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
-      val sourceDFMap = model.sources
-        .map(source => {
-          val sourceDF = Try {
-            source.apply(sqlContext)
-          } match {
-            case Success(df) => df
-            case Failure(exception) =>
-              logError(s"Failed to read data from source: ${source.getSourceName}")
-              throw exception
-          }
-
-          if (testingMode) {
-            val fraction = SopeETLConfig.TestingDataFraction
-            logWarning(s"Sampling ${fraction * 100} percent data from source: $source")
-            source.getSourceName -> sourceDF
-              .sample(withReplacement = true, SopeETLConfig.TestingDataFraction)
-              .alias(source.getSourceName)
-          }
-          else
-            source.getSourceName -> sourceDF.alias(source.getSourceName)
-        }).toMap
-      val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
-      model.targets.foreach(target => target(transformationResult(target.getInput)))
-    }
-  }
-
-}
-
-
