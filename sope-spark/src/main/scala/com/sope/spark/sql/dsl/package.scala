@@ -323,21 +323,28 @@ package object dsl {
       * Apply Group Function
       *
       * @param groupColumns Group columns
+      * @param pivotColumn  pivot column
       * @return [[DFGroupFunc]]
       */
-    def apply(groupColumns: String*): DFGroupFunc =
-      (df: DataFrame, columns: Seq[Column]) =>
-        df.groupBy(groupColumns.head, groupColumns.tail: _*).agg(columns.head, columns.tail: _*)
+    def apply(groupColumns: String*)(pivotColumn: Option[String] = None): DFGroupFunc =
+      apply(groupColumns.map(expr): _*)(pivotColumn)
 
     /**
       * Apply Group Function
       *
       * @param groupColumns Group column Expressions
+      * @param pivotColumn  pivot column
       * @return [[DFGroupFunc]]
       */
-    def apply[_: ClassTag](groupColumns: Column*): DFGroupFunc =
-      (df: DataFrame, columns: Seq[Column]) =>
-        df.groupBy(groupColumns: _*).agg(columns.head, columns.tail: _*)
+    def apply[_: ClassTag](groupColumns: Column*)(pivotColumn: Option[String]): DFGroupFunc =
+      (df: DataFrame, columns: Seq[Column]) => {
+        val grouped = df.groupBy(groupColumns: _*)
+        pivotColumn match {
+          case Some(pivot) => grouped.pivot(pivot).agg(columns.head, columns.tail: _*)
+          case None => grouped.agg(columns.head, columns.tail: _*)
+        }
+      }
+
   }
 
   /*

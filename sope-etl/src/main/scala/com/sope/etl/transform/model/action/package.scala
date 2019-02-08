@@ -170,9 +170,10 @@ package object action {
 
 
   case class GroupAction(@JsonProperty(value = "columns", required = true) groupColumns: Seq[String],
-                         @JsonProperty(value = "expr", required = true) groupExpr: String)
+                         @JsonProperty(value = "expr", required = true) groupExpr: String,
+                         @JsonProperty(value = "pivot_column") pivotColumn: Option[String])
     extends TransformActionRoot(Actions.GroupBy) {
-    override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns.map(expr): _*) ^ groupExpr
+    override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns.map(expr): _*)(pivotColumn) ^ groupExpr
   }
 
   case class AggregateAction(@JsonProperty(required = true) exprs: Seq[String])
@@ -327,4 +328,5 @@ package object action {
     extends TransformActionRoot(Actions.Watermark) {
     override def apply(dataframes: DataFrame*): DFFunc = (df: DataFrame) => df.withWatermark(eventTime, delayThreshold)
   }
+
 }

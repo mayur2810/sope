@@ -81,6 +81,15 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
   }
 
 
+  "grp_by_pivot" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("grp_by_pivot")
+    transformedDF.show(false)
+    transformedDF.count should be(3)
+    transformedDF.filter("product = 'shirt'")
+      .select("2018")
+      .distinct.collect.head.getAs[Int](0) should be(3)
+  }
+
   "product scd-1" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("final_dim_out")
     transformedDF.show(false)
