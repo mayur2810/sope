@@ -72,7 +72,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
   private def getDF(alias: String): DataFrame = {
     if (sourceDFMap.isDefinedAt(alias)) {
       val autoPersist = autoPersistList.contains(alias)
-      sourceDFMap(alias).storageLevel match {
+      val df = sourceDFMap(alias).storageLevel match {
         case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
           logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
           val persisted = (prePartitionColumns(alias) match {
@@ -86,6 +86,8 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           persisted
         case _ => sourceDFMap(alias)
       }
+      logDebug(s"Schema for transformation $alias :-\n${df.schema.treeString}")
+      df
     }
     else
       throw new YamlDataTransformException(s"Alias: $alias not found")

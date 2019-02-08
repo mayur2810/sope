@@ -26,6 +26,7 @@ object YamlRunner extends Logging {
     logInfo(s"Substitutions provided : ${substitutions.mkString(",")}")
     val end2endYaml = End2EndYaml(mainYamlFile, substitutions)
     logInfo("Successfully parsed YAML File")
+    logDebug(s"Parsed YAML file :-\n${end2endYaml.getText}")
     logInfo("Initializing Spark context & executing the flow..")
     val session = SparkSession.builder()
       .enableHiveSupport()

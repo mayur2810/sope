@@ -1,5 +1,7 @@
 package com.sope.etl.yaml
 
+import java.util.Calendar
+
 import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
@@ -42,7 +44,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
         } match {
           case Success(df) => df
           case Failure(exception) =>
-            logError(s"Failed to read data from source: ${source.getSourceName}")
+            logError(s"Failed to create dataframe from source: ${source.getSourceName}")
             throw exception
         }
 
@@ -56,7 +58,16 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
         else
           source.getSourceName -> sourceDF.alias(source.getSourceName)
       }).toMap
+
+    // Apply transformations
     val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
-    model.targets.foreach(target => target(transformationResult(target.getInput)))
+
+    // Write transformed dataframes to output targets
+    model.targets.foreach(target => {
+      logInfo(s"Outputting transformation: ${target.getInput} to target: ${target.getId}")
+      logInfo(s"Start time: ${Calendar.getInstance().getTime}")
+      target(transformationResult(target.getInput))
+      logInfo(s"End time: ${Calendar.getInstance().getTime}")
+    })
   }
 }

@@ -53,6 +53,8 @@ package object output {
 
     def getInput: String = input
 
+    def getId: String = id
+
     def getWriter(df: DataFrame): DataFrameWriter[Row] = {
       val writeModeApplied = mode.fold(df.write)(_ => df.write.mode(mode.get))
       val partitioningApplied = partitionBy.fold(writeModeApplied)(cols => writeModeApplied.partitionBy(cols: _*))
