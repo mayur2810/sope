@@ -78,7 +78,8 @@ package object model {
 
   // Model for YAML without source target information
   case class TransformModelWithoutSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[String],
-                                               @JsonProperty(required = true) transformations: Seq[DFTransformation]) extends TransformModel {
+                                               @JsonProperty(required = true) transformations: Seq[DFTransformation],
+                                               udfs: Option[Map[String, String]]) extends TransformModel {
 
     override def targets: Seq[TargetTypeRoot] = Nil
   }

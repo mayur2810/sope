@@ -4,7 +4,9 @@ import com.sope.etl._
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.TransformModelWithoutSourceTarget
+import com.sope.etl.utils.ScalaScriptEngine
 import org.apache.spark.sql.DataFrame
+
 
 /**
   * Intermediate Mode YAML. The sources are logical aliases which are passed dynamically.
@@ -26,7 +28,13 @@ case class IntermediateYaml(yamlPath: String, substitutions: Option[Seq[Any]] = 
   def getTransformedDFs(dataFrames: DataFrame*): Seq[(String, DataFrame)] = {
     if (model.sources.size != dataFrames.size)
       throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
-    performRegistrations(dataFrames.head.sqlContext)
+    val sqlContext = dataFrames.head.sqlContext
+    if (model.udfs.isDefined) {
+      val udfMap = model.udfs.get
+        .map { case (k, v) => k -> ScalaScriptEngine.eval(k, v) }
+      udfMap.foreach { case (k, v) => sqlContext.udf.register(k, v) }
+    }
+    performRegistrations(sqlContext)
     val sourceDFMap = model.sources.zip(dataFrames).map { case (source, df) => (source, df.alias(source)) }
     new Transformer(getYamlFileName, sourceDFMap.toMap, model).transform
   }

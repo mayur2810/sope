@@ -4,11 +4,15 @@ import com.sope.etl.register.TransformationRegistration._
 import com.sope.etl.register.UDFRegistration._
 import com.sope.spark.sql.udfs.registerUDFs
 import com.sope.utils.Logging
+import javax.script.ScriptEngineManager
 import org.apache.commons.cli
 import org.apache.commons.cli.OptionBuilder
 import org.apache.spark.sql.SQLContext
 
 import scala.reflect.runtime.universe._
+
+
+import scala.tools.nsc.interpreter.IMain
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -89,6 +93,8 @@ package object etl extends Logging {
     substitutionOption.setRequired(false)
     substitutionOption
   }
+
+
 
 
   /**

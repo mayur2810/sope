@@ -1,8 +1,14 @@
+udfs : {
+     "add_2" : "(i : Int) => i + 2"
+}
 inputs: ["transactions", "product", "date", "dim_product"]
 transformations :
     - input: "product"
       alias: "product_filtered"
-      sql: "select product_id, product_desc as product from product where product_desc != 'N.A.'"
+      #sql: "select product_id, product_desc as product from product where product_desc != 'N.A.'"
+      actions:
+        - {type: filter, condition: "product_desc != 'N.A.'"}
+        - {type: select, columns: [product_id, "product_desc as product"]}
     - input: "transactions"
       alias: "trxn_transformed"
       actions:
@@ -96,3 +102,4 @@ transformations :
       input: "transactions"
       actions:
       - {type: named_transform , name: "custom_transform"}
+      - {type: transform, list: {add_2_to_id : add_2(id)}}
