@@ -56,7 +56,11 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
             .alias(source.getSourceName)
         }
         else
-          source.getSourceName -> sourceDF.alias(source.getSourceName)
+          source.getSourceName -> {
+            val sourceAlias = source.getSourceName
+            sourceDF.createOrReplaceTempView(sourceAlias)
+            sourceDF.alias(sourceAlias)
+          }
       }).toMap
 
     // Apply transformations

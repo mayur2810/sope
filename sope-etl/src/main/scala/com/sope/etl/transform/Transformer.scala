@@ -111,7 +111,6 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
       val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
       // if sql transform apply sql or perform provided action transformation
       val transformedDF = if (dfTransform.isSQLTransform) {
-        sourceDF.createOrReplaceTempView(dfTransform.source)
         sourceDF.sqlContext.sql(dfTransform.sql.get)
       } else {
         Try {
@@ -133,6 +132,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           transformedDF.persist(StorageLevel.fromString(level.toUpperCase))
         })
       }.alias(transformAlias)
+      transformedWithAliasDF.createOrReplaceTempView(transformAlias)
       // Update Map
       sourceDFMap = sourceDFMap updated(transformAlias, transformedWithAliasDF)
       (transformAlias, getDF(transformAlias))
