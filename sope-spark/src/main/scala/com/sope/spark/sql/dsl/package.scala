@@ -63,7 +63,8 @@ package object dsl {
       * @param alias    DF alias
       * @return [[DFFunc]]
       */
-    def apply(joinedDF: DataFrame, alias: String): DFFunc = (df: DataFrame) => df.select(joinedDF.getColumns(alias): _*)
+    def apply(joinedDF: DataFrame, alias: String, includeColumns: Seq[String] = Nil, excludeColumns: Seq[String] = Nil): DFFunc =
+      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumns) ++ includeColumns.map(col): _*)
   }
 
 

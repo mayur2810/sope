@@ -31,6 +31,8 @@ package object action {
     final val Transform = "transform"
     final val TransformAll = "transform_all"
     final val Select = "select"
+    final val SelectAlias = "select_alias"
+    final val SelectReorder = "select_reorder"
     final val SelectNot = "select_not"
     final val Distinct = "distinct"
     final val Limit = "limit"
@@ -69,6 +71,8 @@ package object action {
     new Type(value = classOf[TransformAction], name = Actions.Transform),
     new Type(value = classOf[TransformAllAction], name = Actions.TransformAll),
     new Type(value = classOf[SelectAction], name = Actions.Select),
+    new Type(value = classOf[SelectWithAliasAction], name = Actions.SelectAlias),
+    new Type(value = classOf[SelectWithReorderedAction], name = Actions.SelectReorder),
     new Type(value = classOf[SelectNotAction], name = Actions.SelectNot),
     new Type(value = classOf[DistinctAction], name = Actions.Distinct),
     new Type(value = classOf[LimitAction], name = Actions.Limit),
@@ -191,6 +195,22 @@ package object action {
     extends TransformActionRoot(Actions.Select) {
     override def apply(dataframes: DataFrame*): DFFunc = Select(columns: _*)
   }
+
+  case class SelectWithAliasAction(@JsonProperty(required = true) alias: String,
+                                   @JsonProperty(value = "include_columns") includeColumns: Option[Seq[String]],
+                                   @JsonProperty(value = "skip_columns") skipColumns: Option[Seq[String]])
+    extends TransformActionRoot(Actions.SelectAlias) {
+    override def apply(dataframes: DataFrame*): DFFunc =
+      Select(dataframes.head, alias, includeColumns.getOrElse(Nil), skipColumns.getOrElse(Nil))
+  }
+
+  case class SelectWithReorderedAction(@JsonProperty(required = true) alias: String)
+    extends TransformActionRoot(Actions.SelectReorder) {
+    override def apply(dataframes: DataFrame*): DFFunc = Select(dataframes.head)
+
+    override def inputAliases: Seq[String] = Seq(alias)
+  }
+
 
   case class SelectNotAction(@JsonProperty(required = true) columns: Seq[String])
     extends TransformActionRoot(Actions.SelectNot) {
