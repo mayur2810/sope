@@ -5,6 +5,7 @@ import java.util.Calendar
 import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
+import com.sope.etl.utils.ScalaScriptEngine
 import org.apache.spark.sql.SQLContext
 
 import scala.util.{Failure, Success, Try}
@@ -33,6 +34,9 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
     * @param sqlContext Spark [[SQLContext]]
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
+    model.udfs.getOrElse(Map())
+      .map { case (k, v) => k -> ScalaScriptEngine.eval(k, v) }
+      .foreach { case (k, v) => sqlContext.udf.register(k, v) }
     addConfigurations(sqlContext)
     performRegistrations(sqlContext)
     val testingMode = SopeETLConfig.TestingModeConfig
