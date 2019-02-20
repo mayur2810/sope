@@ -56,8 +56,8 @@ package object etl extends Logging {
     * @tparam A Object Type
     * @return Option of type A
     */
-  def getObjectInstanceParent[A](clsName: String): Option[A] = {
-    val mirror = runtimeMirror(ClassLoader.getSystemClassLoader)
+  def getObjectInstance[A](classloader: ClassLoader, clsName: String): Option[A] = {
+    val mirror = runtimeMirror(classloader)
     val module = mirror.staticModule(clsName)
     Some(mirror.reflectModule(module).instance.asInstanceOf[A])
   }

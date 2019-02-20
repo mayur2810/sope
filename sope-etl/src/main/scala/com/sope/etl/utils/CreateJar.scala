@@ -44,16 +44,17 @@ object CreateJar {
       println(entry)
       in = new BufferedInputStream(new FileInputStream(source))
       val buffer = new Array[Byte](1024)
-      val count = in.read(buffer)
-      target.write(buffer, 0, count)
+      var count: Int = 0
+      while (count != -1) {
+        count = in.read(buffer)
+        if (count != -1)
+          target.write(buffer, 0, count)
+      }
+      //val count = in.read(buffer)
       target.closeEntry()
     }
     finally {
       if (in != null) in.close()
     }
-  }
-
-  def main(args: Array[String]): Unit = {
-
   }
 }

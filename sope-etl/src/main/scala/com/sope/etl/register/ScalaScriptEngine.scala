@@ -5,6 +5,9 @@ import com.sope.utils.Logging
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.IMain
 import scala.util.{Failure, Success, Try}
+import com.sope.etl.getObjectInstance
+import org.apache.spark.sql.expressions.UserDefinedFunction
+
 object ScalaScriptEngine extends Logging {
 
   val DefaultClassLocation = "/tmp/sope/dynamic"
@@ -23,7 +26,7 @@ object ScalaScriptEngine extends Logging {
        |
     """.stripMargin
 
-  def eval(UDFName: String, code: String): Unit = {
+  def eval(UDFName: String, code: String): UserDefinedFunction = {
     val settings = new Settings
     settings.Yreploutdir.value = DefaultClassLocation
     settings.usejavacp.value = true
@@ -38,7 +41,9 @@ object ScalaScriptEngine extends Logging {
         logError("Failed to compile UDF code")
         throw exception
     }
+    val udf = getObjectInstance[UDFTrait](eval.classLoader, "com.sope.etl.dynamic." + UDFName).get.getUDF
     eval.close()
+    udf
   }
 
 }
