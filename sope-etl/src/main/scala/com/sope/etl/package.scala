@@ -50,6 +50,19 @@ package object etl extends Logging {
   }
 
   /**
+    * Get Scala 'Object' instance from class name
+    *
+    * @param clsName Class Name
+    * @tparam A Object Type
+    * @return Option of type A
+    */
+  def getObjectInstanceParent[A](clsName: String): Option[A] = {
+    val mirror = runtimeMirror(ClassLoader.getSystemClassLoader)
+    val module = mirror.staticModule(clsName)
+    Some(mirror.reflectModule(module).instance.asInstanceOf[A])
+  }
+
+  /**
     * Get Class Instance A from provided class name
     *
     * @param clsName Class Name

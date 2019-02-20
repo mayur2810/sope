@@ -27,7 +27,6 @@ object ScalaScriptEngine extends Logging {
     val settings = new Settings
     settings.Yreploutdir.value = DefaultClassLocation
     settings.usejavacp.value = true
-    settings.verbose.value = true
     val eval = new IMain(settings)
     val objectCode = objectString(UDFName, code)
     logDebug(s"UDF code to be compiled: $objectCode")

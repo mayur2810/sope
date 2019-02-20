@@ -30,8 +30,8 @@ object YamlRunner extends Logging {
     val sparkConf = if (end2endYaml.registerTempClassPath) {
       logInfo(s"Setting driver classpath for dynamic udfs: ${ScalaScriptEngine.DefaultClassLocation}")
       new SparkConf()
-        .set("spark.driver.extraClassPath", ScalaScriptEngine.DefaultClassLocation)
-        .set("spark.files", s"${ScalaScriptEngine.DefaultClassLocation}/*")
+        //.set("spark.driver.extraClassPath", ScalaScriptEngine.DefaultClassLocation)
+        .set("spark.jars", "/tmp/sope/sope-dynamic-udf.jar")
     } else new SparkConf()
     logInfo("Successfully parsed YAML File")
     logDebug(s"Parsed YAML file :-\n${end2endYaml.getText}")

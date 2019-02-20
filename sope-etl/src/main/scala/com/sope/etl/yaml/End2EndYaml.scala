@@ -6,6 +6,7 @@ import com.sope.etl.register.ScalaScriptEngine
 import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
+import com.sope.etl.utils.CreateJar
 import org.apache.spark.sql.SQLContext
 
 import scala.util.{Failure, Success, Try}
@@ -34,6 +35,8 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
     new java.io.File(ScalaScriptEngine.DefaultClassLocation).mkdirs()
     model.udfs.getOrElse(Map())
       .foreach { case (k, v) => k -> ScalaScriptEngine.eval(k, v) }
+    new java.io.File("/tmp/sope/jar").mkdir()
+    CreateJar.run(ScalaScriptEngine.DefaultClassLocation)
   }
 
   def registerTempClassPath : Boolean = model.udfs.isDefined
@@ -44,7 +47,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
     logInfo("Registering dynamic udfs")
     import com.sope.etl.register.UDFTrait
     model.udfs.getOrElse(Map())
-      .map { case (k, _) => (k, getObjectInstance[UDFTrait](s"com.sope.etl.dynamic.$k"))}
+      .map { case (k, _) => (k, getObjectInstanceParent[UDFTrait](s"com.sope.etl.dynamic.$k"))}
       .foreach{case (udfName, udfInst) => sqlContext.udf.register(udfName, udfInst.get.getUDF)}
 
   }
