@@ -2,10 +2,10 @@ package com.sope.etl.yaml
 
 import java.util.Calendar
 
+import com.sope.etl.register.ScalaScriptEngine
 import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
-import com.sope.etl.utils.ScalaScriptEngine
 import org.apache.spark.sql.SQLContext
 
 import scala.util.{Failure, Success, Try}
@@ -27,6 +27,27 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
       .foreach { case (k, v) => sqlContext.setConf(k, v) }
   }
 
+  private def loadDynamicUDFs(): Unit = {
+    logInfo("Deleting Temp DIR")
+    new java.io.File(ScalaScriptEngine.DefaultClassLocation).delete()
+    logInfo("Creating Temp DIR")
+    new java.io.File(ScalaScriptEngine.DefaultClassLocation).mkdirs()
+    model.udfs.getOrElse(Map())
+      .foreach { case (k, v) => k -> ScalaScriptEngine.eval(k, v) }
+  }
+
+  def registerTempClassPath : Boolean = model.udfs.isDefined
+
+  loadDynamicUDFs()
+
+  private def registerDynamicUDFs(sqlContext: SQLContext): Unit = {
+    logInfo("Registering dynamic udfs")
+    import com.sope.etl.register.UDFTrait
+    model.udfs.getOrElse(Map())
+      .map { case (k, _) => (k, getObjectInstance[UDFTrait](s"com.sope.etl.dynamic.$k"))}
+      .foreach{case (udfName, udfInst) => sqlContext.udf.register(udfName, udfInst.get.getUDF)}
+
+  }
   /**
     * Performs end to end transformations - Reading sources and writing transformation result to provided targets
     * The source yaml file should contains source and target information.
@@ -34,11 +55,9 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
     * @param sqlContext Spark [[SQLContext]]
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
-    model.udfs.getOrElse(Map())
-      .map { case (k, v) => k -> ScalaScriptEngine.eval(k, v) }
-      .foreach { case (k, v) => sqlContext.udf.register(k, v) }
     addConfigurations(sqlContext)
     performRegistrations(sqlContext)
+    registerDynamicUDFs(sqlContext)
     val testingMode = SopeETLConfig.TestingModeConfig
     if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
     val sourceDFMap = model.sources

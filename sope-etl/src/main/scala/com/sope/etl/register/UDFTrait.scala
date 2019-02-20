@@ -1,7 +1,7 @@
-package com.sope.etl.utils
+package com.sope.etl.register
 
 import org.apache.spark.sql.expressions.UserDefinedFunction
 
 trait UDFTrait {
-  def udff: UserDefinedFunction
+  def getUDF: UserDefinedFunction
 }
