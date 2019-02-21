@@ -1,14 +1,14 @@
 package com.sope.etl.register
 
+import com.sope.etl.getObjectInstance
+import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.etl.utils.CreateJar
 import com.sope.utils.Logging
+import org.apache.commons.io.FileUtils
+import org.apache.spark.sql.expressions.UserDefinedFunction
 
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.IMain
-import scala.util.{Failure, Success, Try}
-import com.sope.etl.getObjectInstance
-import com.sope.etl.utils.CreateJar
-import org.apache.commons.io.FileUtils
-import org.apache.spark.sql.expressions.UserDefinedFunction
 
 object UDFBuilder extends Logging {
 
@@ -37,13 +37,9 @@ object UDFBuilder extends Logging {
     val eval = new IMain(settings)
     val objectCode = objectString(UDFName, code)
     logDebug(s"UDF code to be compiled: $objectCode")
-    Try {
-      eval.compileString(objectCode)
-    } match {
-      case Success(_) =>
-      case Failure(exception) =>
-        logError("Failed to compile UDF code")
-        throw exception
+    if (!eval.compileString(objectCode)) {
+      logError("Failed to compile UDF code")
+      throw new YamlDataTransformException(s"Failed to build $UDFName UDF")
     }
     val udf = getObjectInstance[UDFTrait](eval.classLoader, "com.sope.etl.dynamic." + UDFName).get.getUDF
     eval.close()
