@@ -3,22 +3,21 @@ package com.sope.etl.utils
 import java.io._
 import java.util.jar.{JarEntry, JarOutputStream}
 
+import com.sope.etl.register.UDFBuilder
+
 /**
   *
   * @author mbadgujar
   */
 object CreateJar {
 
-  @throws[IOException]
-  def run(tempDir: String): Unit = {
-    //val manifest = new Manifest
-    //manifest.getMainAttributes.put(Attributes.Name.MANIFEST_VERSION, "1.0")
-    val target = new JarOutputStream(new FileOutputStream(s"/tmp/sope/sope-dynamic-udf.jar"))
+  def build(tempDir: String, jarLocation: String): Unit = {
+    val target = new JarOutputStream(new FileOutputStream(jarLocation))
     add(new File(tempDir), target)
     target.close()
   }
 
-  @throws[IOException]
+
   private def add(source: File, target: JarOutputStream): Unit = {
     var in: BufferedInputStream = null
     try {

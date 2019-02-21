@@ -2,13 +2,11 @@ package com.sope.etl.yaml
 
 import java.util.Calendar
 
-import com.sope.etl.register.ScalaScriptEngine
-import com.sope.etl.{SopeETLConfig, _}
+import com.sope.etl.register.UDFBuilder
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
-import com.sope.etl.utils.CreateJar
+import com.sope.etl.{SopeETLConfig, _}
 import org.apache.spark.sql.SQLContext
-import org.apache.spark.sql.expressions.UserDefinedFunction
 
 import scala.util.{Failure, Success, Try}
 
@@ -29,21 +27,10 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
       .foreach { case (k, v) => sqlContext.setConf(k, v) }
   }
 
-  private def loadDynamicUDFs(): Map[String, UserDefinedFunction] = {
-    logInfo("Deleting Temp DIR")
-    new java.io.File(ScalaScriptEngine.DefaultClassLocation).delete()
-    logInfo("Creating Temp DIR")
-    new java.io.File(ScalaScriptEngine.DefaultClassLocation).mkdirs()
-    val ret = model.udfs.getOrElse(Map())
-      .map { case (k, v) => k -> ScalaScriptEngine.eval(k, v) }
-    new java.io.File("/tmp/sope/jar").mkdir()
-    CreateJar.run(ScalaScriptEngine.DefaultClassLocation)
-    ret
-  }
 
-  def registerTempClassPath: Boolean = model.udfs.isDefined
+  def dynamicUDFDefined: Boolean = model.udfs.isDefined && model.udfs.get.nonEmpty
 
-  private val udfMap = loadDynamicUDFs()
+  private val udfMap = if (dynamicUDFDefined) UDFBuilder.buildDynamicUDFs(model.udfs.get) else Map()
 
   private def registerDynamicUDFs(sqlContext: SQLContext): Unit = {
     logInfo("Registering dynamic udfs")

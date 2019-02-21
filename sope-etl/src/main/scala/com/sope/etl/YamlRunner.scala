@@ -1,6 +1,6 @@
 package com.sope.etl
 
-import com.sope.etl.register.ScalaScriptEngine
+import com.sope.etl.register.UDFBuilder
 import com.sope.etl.yaml.End2EndYaml
 import com.sope.etl.yaml.YamlParserUtil.parseYAML
 import com.sope.utils.Logging
@@ -27,11 +27,9 @@ object YamlRunner extends Logging {
     val substitutions = optionMap.get(MainYamlFileSubstitutionsOption).map(parseYAML(_, classOf[Seq[Any]]))
     logInfo(s"Substitutions provided : ${substitutions.mkString(",")}")
     val end2endYaml = End2EndYaml(mainYamlFile, substitutions)
-    val sparkConf = if (end2endYaml.registerTempClassPath) {
-      logInfo(s"Setting driver classpath for dynamic udfs: ${ScalaScriptEngine.DefaultClassLocation}")
+    val sparkConf = if (end2endYaml.dynamicUDFDefined) {
       new SparkConf()
-        //.set("spark.driver.extraClassPath", ScalaScriptEngine.DefaultClassLocation)
-        .set("spark.jars", "/tmp/sope/sope-dynamic-udf.jar")
+        .set("spark.jars", UDFBuilder.DefaultJarLocation)
     } else new SparkConf()
     logInfo("Successfully parsed YAML File")
     logDebug(s"Parsed YAML file :-\n${end2endYaml.getText}")
