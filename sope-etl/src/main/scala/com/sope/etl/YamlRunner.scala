@@ -31,8 +31,6 @@ object YamlRunner extends Logging {
       new SparkConf()
         .set("spark.jars", UDFBuilder.DefaultJarLocation)
     } else new SparkConf()
-    logInfo("Successfully parsed YAML File")
-    logDebug(s"Parsed YAML file :-\n${end2endYaml.getText}")
     logInfo("Initializing Spark context & executing the flow..")
     val session = SparkSession.builder()
       .config(sparkConf)

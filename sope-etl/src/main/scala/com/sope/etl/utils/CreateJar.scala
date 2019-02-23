@@ -3,8 +3,6 @@ package com.sope.etl.utils
 import java.io._
 import java.util.jar.{JarEntry, JarOutputStream}
 
-import com.sope.etl.register.UDFBuilder
-
 /**
   *
   * @author mbadgujar
@@ -36,11 +34,9 @@ object CreateJar {
         }
         return
       }
-      println(source)
       val entry = new JarEntry(source.getPath.replace("\\", "/").replace("/tmp/sope/dynamic/", ""))
       entry.setTime(source.lastModified)
       target.putNextEntry(entry)
-      println(entry)
       in = new BufferedInputStream(new FileInputStream(source))
       val buffer = new Array[Byte](1024)
       var count: Int = 0

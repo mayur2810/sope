@@ -22,35 +22,39 @@ object UDFBuilder extends Logging {
        |
        | import org.apache.spark.sql.functions._
        | import org.apache.spark.sql.expressions.UserDefinedFunction
-       | import com.sope.etl.register.UDFTrait
+       | //import com.sope.etl.register.UDFTrait
        |
-       | object $clazz extends UDFTrait {
-       |   override def getUDF : UserDefinedFunction = udf($code)
+       | object $clazz  {
+       |   def getUDF : UserDefinedFunction = udf($code)
        | }
        |
     """.stripMargin
 
-  private def evalUDF(UDFName: String, code: String): UserDefinedFunction = {
+  private def evalUDF(udfCodeMap: Map[String, String]): Map[String, UserDefinedFunction] = {
     val settings = new Settings
     settings.Yreploutdir.value = DefaultClassLocation
     settings.usejavacp.value = true
     val eval = new IMain(settings)
-    val objectCode = objectString(UDFName, code)
-    logDebug(s"UDF code to be compiled: $objectCode")
-    if (!eval.compileString(objectCode)) {
-      logError("Failed to compile UDF code")
-      throw new YamlDataTransformException(s"Failed to build $UDFName UDF")
+    val udfMap = udfCodeMap.map {
+      case (udfName, udfCode) =>
+        val objectCode = objectString(udfName, udfCode)
+        logDebug(s"UDF code to be compiled: $objectCode")
+        if (!eval.compileString(objectCode)) {
+          logError("Failed to compile UDF code")
+          throw new YamlDataTransformException(s"Failed to build $udfName UDF")
+        }
+        val instance = getObjectInstance[Any](eval.classLoader, "com.sope.etl.dynamic." + udfName).get
+        udfName -> instance.getClass.getDeclaredMethod("getUDF").invoke(instance).asInstanceOf[UserDefinedFunction]
     }
-    val udf = getObjectInstance[UDFTrait](eval.classLoader, "com.sope.etl.dynamic." + UDFName).get.getUDF
     eval.close()
-    udf
+    udfMap
   }
 
   def buildDynamicUDFs(udfCodeMap: Map[String, String]): Map[String, UserDefinedFunction] = {
     val file = new java.io.File(UDFBuilder.DefaultClassLocation)
     FileUtils.deleteDirectory(file)
     file.mkdirs()
-    val udfMap = udfCodeMap.map { case (udfName, udfCode) => udfName -> UDFBuilder.evalUDF(udfName, udfCode) }
+    val udfMap = evalUDF(udfCodeMap)
     CreateJar.build(DefaultClassLocation, DefaultJarLocation)
     udfMap
   }
