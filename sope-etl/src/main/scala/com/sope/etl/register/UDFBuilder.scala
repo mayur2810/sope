@@ -25,7 +25,6 @@ object UDFBuilder extends Logging {
        |
        | import org.apache.spark.sql.functions._
        | import org.apache.spark.sql.expressions.UserDefinedFunction
-       | //import com.sope.etl.register.UDFTrait
        |
        | object $clazz  {
        |   def getUDF : UserDefinedFunction = udf($code)
