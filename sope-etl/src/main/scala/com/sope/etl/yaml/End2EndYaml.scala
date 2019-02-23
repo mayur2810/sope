@@ -2,6 +2,7 @@ package com.sope.etl.yaml
 
 import java.util.Calendar
 
+import com.sope.etl.register.UDFBuilder
 import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
@@ -27,6 +28,24 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
   }
 
   /**
+    * Flag indicating Dynamic UDFs are provided in the Yaml file
+    *
+    * @return Boolean
+    */
+  def dynamicUDFDefined: Boolean = model.udfs.isDefined && model.udfs.get.nonEmpty
+
+  private val udfMap = if (dynamicUDFDefined) UDFBuilder.buildDynamicUDFs(model.udfs.get) else Map()
+
+  /*
+     Registers the UDF provided in YAML file
+   */
+  private def registerDynamicUDFs(sqlContext: SQLContext): Unit = {
+    logInfo("Registering dynamic udfs..")
+    udfMap.foreach { case (udfName, udfInst) => sqlContext.udf.register(udfName, udfInst) }
+  }
+
+
+  /**
     * Performs end to end transformations - Reading sources and writing transformation result to provided targets
     * The source yaml file should contains source and target information.
     *
@@ -35,6 +54,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
   def performTransformations(sqlContext: SQLContext): Unit = {
     addConfigurations(sqlContext)
     performRegistrations(sqlContext)
+    registerDynamicUDFs(sqlContext)
     val testingMode = SopeETLConfig.TestingModeConfig
     if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
     val sourceDFMap = model.sources

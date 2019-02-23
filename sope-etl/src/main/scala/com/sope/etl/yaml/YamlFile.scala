@@ -59,7 +59,10 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Seq[Any]] = N
   def serialize: T = Try {
     parseYAML(getText, modelClass)
   } match {
-    case Success(t) => t
+    case Success(t) =>
+      logInfo("Successfully parsed YAML File")
+      logDebug(s"Parsed YAML file :-\n $getText")
+      t
     case Failure(e) => e match {
       case e: JsonMappingException =>
         Option(e.getLocation) match {
