@@ -1,11 +1,15 @@
 package com.sope.etl.transform
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.sope.etl.annotations.sqlexpr
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.action._
 import com.sope.etl.transform.model.io.input.SourceTypeRoot
 import com.sope.etl.transform.model.io.output.TargetTypeRoot
+import org.apache.spark.sql.execution.SparkSqlParser
+import org.apache.spark.sql.internal.SQLConf
 
+import scala.reflect.runtime.universe._
 
 /**
   * Package contains YAML Transformer Root construct mappings and definitions
@@ -38,6 +42,11 @@ package object model {
       * @return Seq[TargetTypeRoot]
       */
     def targets: Seq[TargetTypeRoot]
+
+
+    def checkSQLExprAll(): Unit = {
+      transformations.foreach(_.checkSQLExpr())
+    }
   }
 
   /**
@@ -74,7 +83,36 @@ package object model {
       * @return alias
       */
     def getAlias: String = alias.getOrElse(source)
+
+
+    def checkSQLExpr(): Unit = {
+      // parser with Dummy Conf
+      val parser = new SparkSqlParser(new SQLConf)
+      if (isSQLTransform) {
+        println("parsing sql")
+        parser.parsePlan(sql.get)
+      } else {
+        actions.getOrElse(Nil).foreach { action =>
+          val m = runtimeMirror(this.getClass.getClassLoader)
+          println(action.getClass.getCanonicalName)
+          val cs = m.staticClass(action.getClass.getCanonicalName)
+          val im = m.reflect(action)
+          val tobeChecked = cs.selfType.members.collect {
+            case m: MethodSymbol if m.isCaseAccessor && m.annotations.exists(_.tree.tpe =:= typeOf[sqlexpr]) =>
+              im.reflectField(m).get
+          }.toList
+          println(tobeChecked)
+          tobeChecked.foreach {
+            case m: Map[String, String] => m.values.foreach(parser.parseExpression)
+            case seq: Seq[String] => seq.foreach(parser.parseExpression)
+            case s: String => parser.parseExpression(s)
+            case _ =>
+          }
+        }
+      }
+    }
   }
+
 
   // Model for YAML without source target information
   case class TransformModelWithoutSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[String],
@@ -82,6 +120,8 @@ package object model {
     extends TransformModel {
 
     override def targets: Seq[TargetTypeRoot] = Nil
+
+    checkSQLExprAll()
   }
 
   // Model for YAML with source target information
@@ -89,6 +129,8 @@ package object model {
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
                                             @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot],
                                             configs: Option[Map[String, String]],
-                                            udfs: Option[Map[String, String]]) extends TransformModel
+                                            udfs: Option[Map[String, String]]) extends TransformModel {
+    checkSQLExprAll()
+  }
 
 }

@@ -2,6 +2,7 @@ package com.sope.etl.transform.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.etl.annotations.sqlexpr
 import com.sope.etl.register.TransformationRegistration
 import com.sope.etl.scd.DimensionTable
 import com.sope.etl.transform.exception.YamlDataTransformException
@@ -127,14 +128,14 @@ package object action {
   }
 
 
-  case class TransformAction(@JsonProperty(required = true) list: Map[String, String]) extends TransformActionRoot(Actions.Transform) {
+  case class TransformAction(@sqlexpr @JsonProperty(required = true) list: Map[String, String]) extends TransformActionRoot(Actions.Transform) {
     override def apply(dataframes: DataFrame*): DFFunc = Transform(list.toSeq: _*)
   }
 
 
   case class TransformAllAction(@JsonProperty(value = "function", required = true) transformExpr: String,
                                 @JsonProperty(required = false) suffix: Option[String],
-                                @JsonProperty(required = false) columns: Option[List[String]]) extends TransformActionRoot(Actions.TransformAll) {
+                                @sqlexpr @JsonProperty(required = false) columns: Option[List[String]]) extends TransformActionRoot(Actions.TransformAll) {
     override def apply(dataframes: DataFrame*): DFFunc = (columns, suffix) match {
       case (None, None) => Transform(getSingleArgFunction(transformExpr))
       case (None, Some(colSuffix)) => (df: DataFrame) => df.transform(Transform(colSuffix, getSingleArgFunction(transformExpr), df.columns: _*))
@@ -143,7 +144,7 @@ package object action {
     }
   }
 
-  case class JoinAction(@JsonProperty(value = "condition", required = false) joinCondition: String,
+  case class JoinAction(@sqlexpr @JsonProperty(value = "condition", required = false) joinCondition: String,
                         @JsonProperty(value = "columns", required = false) joinColumns: Seq[String],
                         @JsonProperty(value = "join_type", required = true) joinType: String,
                         @JsonProperty(value = "with", required = true) joinSource: String,
@@ -173,25 +174,25 @@ package object action {
   }
 
 
-  case class GroupAction(@JsonProperty(value = "columns", required = true) groupColumns: Seq[String],
-                         @JsonProperty(value = "expr", required = true) groupExpr: String,
+  case class GroupAction(@sqlexpr @JsonProperty(value = "columns", required = true) groupColumns: Seq[String],
+                         @sqlexpr @JsonProperty(value = "expr", required = true) groupExpr: String,
                          @JsonProperty(value = "pivot_column") pivotColumn: Option[String])
     extends TransformActionRoot(Actions.GroupBy) {
     override def apply(dataframes: DataFrame*): DFFunc = Group(groupColumns.map(expr): _*)(pivotColumn) ^ groupExpr
   }
 
-  case class AggregateAction(@JsonProperty(required = true) exprs: Seq[String])
+  case class AggregateAction(@sqlexpr @JsonProperty(required = true) exprs: Seq[String])
     extends TransformActionRoot(Actions.Aggregate) {
     override def apply(dataframes: DataFrame*): DFFunc = Aggregate(exprs: _*)
   }
 
-  case class FilterAction(@JsonProperty(required = true) condition: String)
+  case class FilterAction(@sqlexpr @JsonProperty(required = true) condition: String)
     extends TransformActionRoot(Actions.Filter) {
     override def apply(dataframes: DataFrame*): DFFunc = Filter(condition)
   }
 
 
-  case class SelectAction(@JsonProperty(required = true) columns: Seq[String])
+  case class SelectAction(@sqlexpr @JsonProperty(required = true) columns: Seq[String])
     extends TransformActionRoot(Actions.Select) {
     override def apply(dataframes: DataFrame*): DFFunc = Select(columns: _*)
   }
