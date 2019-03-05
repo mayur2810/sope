@@ -42,11 +42,6 @@ package object model {
       * @return Seq[TargetTypeRoot]
       */
     def targets: Seq[TargetTypeRoot]
-
-
-    def checkSQLExprAll(): Unit = {
-      transformations.foreach(_.checkSQLExpr())
-    }
   }
 
   /**
@@ -86,31 +81,35 @@ package object model {
 
 
     def checkSQLExpr(): Unit = {
+
       // parser with Dummy Conf
       val parser = new SparkSqlParser(new SQLConf)
+      val check = parser.parseExpression _
+
+      def checkExpr(expr: Any): Unit = expr match {
+        case m: Map[_, _] => m.asInstanceOf[Map[String, String]].values.foreach(check)
+        case seq: Seq[_] => seq.asInstanceOf[Seq[String]].foreach(check)
+        case s: String => check(s)
+        case Some(obj) => checkExpr(obj)
+        case _ =>
+      }
+
       if (isSQLTransform) {
-        println("parsing sql")
         parser.parsePlan(sql.get)
       } else {
         actions.getOrElse(Nil).foreach { action =>
-          val m = runtimeMirror(this.getClass.getClassLoader)
-          println(action.getClass.getCanonicalName)
-          val cs = m.staticClass(action.getClass.getCanonicalName)
-          val im = m.reflect(action)
-          val tobeChecked = cs.selfType.members.collect {
+          val mirror = runtimeMirror(this.getClass.getClassLoader)
+          val clazz = mirror.staticClass(action.getClass.getCanonicalName)
+          val objMirror = mirror.reflect(action)
+          clazz.selfType.members.collect {
             case m: MethodSymbol if m.isCaseAccessor && m.annotations.exists(_.tree.tpe =:= typeOf[sqlexpr]) =>
-              im.reflectField(m).get
-          }.toList
-          println(tobeChecked)
-          tobeChecked.foreach {
-            case m: Map[String, String] => m.values.foreach(parser.parseExpression)
-            case seq: Seq[String] => seq.foreach(parser.parseExpression)
-            case s: String => parser.parseExpression(s)
-            case _ =>
-          }
+              objMirror.reflectField(m).get
+          }.foreach(checkExpr)
         }
       }
     }
+
+    checkSQLExpr()
   }
 
 
@@ -120,8 +119,6 @@ package object model {
     extends TransformModel {
 
     override def targets: Seq[TargetTypeRoot] = Nil
-
-    checkSQLExprAll()
   }
 
   // Model for YAML with source target information
@@ -129,8 +126,6 @@ package object model {
                                             @JsonProperty(required = true) transformations: Seq[DFTransformation],
                                             @JsonProperty(required = true, value = "outputs") targets: Seq[TargetTypeRoot],
                                             configs: Option[Map[String, String]],
-                                            udfs: Option[Map[String, String]]) extends TransformModel {
-    checkSQLExprAll()
-  }
+                                            udfs: Option[Map[String, String]]) extends TransformModel
 
 }
