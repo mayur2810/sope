@@ -1,11 +1,16 @@
 package com.sope.etl.transform
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.sope.etl.annotations.sqlexpr
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.action._
 import com.sope.etl.transform.model.io.input.SourceTypeRoot
 import com.sope.etl.transform.model.io.output.TargetTypeRoot
+import org.apache.spark.sql.execution.SparkSqlParser
+import org.apache.spark.sql.internal.SQLConf
 
+import scala.reflect.runtime.universe._
+import scala.util.{Failure, Success}
 
 /**
   * Package contains YAML Transformer Root construct mappings and definitions
@@ -74,7 +79,48 @@ package object model {
       * @return alias
       */
     def getAlias: String = alias.getOrElse(source)
+
+
+    /**
+      *  Validate SQL Expressions
+      */
+    protected def checkSQLExpr(): Unit = {
+
+      // parser with Dummy Conf
+      val parser = new SparkSqlParser(new SQLConf)
+      val check = parser.parseExpression _
+
+      def checkExpr(expr: Any): Unit = expr match {
+        case m: Map[_, _] => m.asInstanceOf[Map[String, String]].values.foreach(check)
+        case seq: Seq[_] => seq.asInstanceOf[Seq[String]].foreach(check)
+        case s: String => check(s)
+        case Some(obj) => checkExpr(obj)
+        case _ =>
+      }
+
+      if (isSQLTransform) {
+        parser.parsePlan(sql.get)
+      } else {
+        actions.getOrElse(Nil).foreach { action =>
+          val mirror = runtimeMirror(this.getClass.getClassLoader)
+          val clazz = mirror.staticClass(action.getClass.getCanonicalName)
+          val objMirror = mirror.reflect(action)
+          clazz.selfType.members.collect {
+            case m: MethodSymbol if m.isCaseAccessor && m.annotations.exists(_.tree.tpe =:= typeOf[sqlexpr]) =>
+              objMirror.reflectField(m).get
+          }.foreach(checkExpr)
+        }
+      }
+    }
+
+    // Throw exception if invalid sql/sql expr are seen
+    util.Try(checkSQLExpr()) match {
+      case Success(_) =>
+      case Failure(e) =>
+        throw new YamlDataTransformException(s"Invalid SQL/SQL expression provided for transformation: $getAlias \n ${e.getMessage}")
+    }
   }
+
 
   // Model for YAML without source target information
   case class TransformModelWithoutSourceTarget(@JsonProperty(required = true, value = "inputs") sources: Seq[String],
