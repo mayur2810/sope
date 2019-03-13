@@ -10,6 +10,7 @@ import org.apache.spark.sql.execution.SparkSqlParser
 import org.apache.spark.sql.internal.SQLConf
 
 import scala.reflect.runtime.universe._
+import scala.util.{Failure, Success}
 
 /**
   * Package contains YAML Transformer Root construct mappings and definitions
@@ -80,7 +81,10 @@ package object model {
     def getAlias: String = alias.getOrElse(source)
 
 
-    def checkSQLExpr(): Unit = {
+    /**
+      *  Validate SQL Expressions
+      */
+    protected def checkSQLExpr(): Unit = {
 
       // parser with Dummy Conf
       val parser = new SparkSqlParser(new SQLConf)
@@ -109,7 +113,12 @@ package object model {
       }
     }
 
-    checkSQLExpr()
+    // Throw exception if invalid sql/sql expr are seen
+    util.Try(checkSQLExpr()) match {
+      case Success(_) =>
+      case Failure(e) =>
+        throw new YamlDataTransformException(s"Invalid SQL/SQL expression provided for transformation: $getAlias \n ${e.getMessage}")
+    }
   }
 
 
