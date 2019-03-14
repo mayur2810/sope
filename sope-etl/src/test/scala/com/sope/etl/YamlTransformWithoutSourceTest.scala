@@ -183,4 +183,13 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.show(false)
     transformedDF.collect().head.getInt(0) should be(5)
   }
+
+  "partitioning_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("p_set")
+    transformedDF.show(false)
+    transformedDF.count should be(2)
+    val transformedDF1 = transformedResult("np_set")
+    transformedDF1.show(false)
+    transformedDF1.count should be(3)
+  }
 }
