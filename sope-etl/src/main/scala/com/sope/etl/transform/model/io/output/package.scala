@@ -200,8 +200,7 @@ package object output {
   /*
     Show sample result
   */
-  case class ShowOutput(@JsonProperty(required = true) input: String,
-                        @JsonProperty(required = true) num_records: Int)
+  case class ShowOutput(@JsonProperty(required = true) input: String, num_records: Int)
     extends TargetTypeRoot("show", input, None, None, None, None) {
     def apply(df: DataFrame): Unit = {
       logInfo(s"Showing sample rows for transformation alias: $input")
