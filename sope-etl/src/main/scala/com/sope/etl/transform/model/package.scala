@@ -51,7 +51,6 @@ package object model {
     * @param source       input source name
     * @param alias        alias for the transformation
     * @param persistLevel Persistence level for this transformation
-    * @param coalesce     Coalesce partitions
     * @param description  Description for this transformation
     * @param actions      Actions to performed on source. Either 'actions' or 'sql' should be provided
     * @param sql          Transformation provided as sql query. Either 'sql' or 'actions' should be provided
@@ -60,7 +59,6 @@ package object model {
                             alias: Option[String],
                             aliases: Option[Seq[String]],
                             @JsonProperty(value = "persist") persistLevel: Option[String],
-                            coalesce: Int,
                             description: Option[String],
                             actions: Option[Seq[_ <: TransformActionRoot]],
                             sql: Option[String]) {

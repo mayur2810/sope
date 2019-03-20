@@ -184,7 +184,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF.collect().head.getInt(0) should be(5)
   }
 
-  "partitioning_test" should "generate the transformation Dataframe correctly" in {
+  "partitioning_test" should "generate the transformation Dataframes correctly" in {
     val transformedDF = transformedResult("p_set")
     transformedDF.show(false)
     transformedDF.count should be(2)
@@ -193,7 +193,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF1.count should be(3)
   }
 
-  "router_test" should "generate the transformation Dataframe correctly" in {
+  "router_test" should "generate the transformation Dataframes correctly" in {
     val tSet = transformedResult("t_set")
     tSet.show(false)
     tSet.count() should be(2)
@@ -203,5 +203,10 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     val noMatchSet = transformedResult("no_match_set")
     noMatchSet.show(false)
     noMatchSet.count() should be(3)
+  }
+
+  "repartition_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("repartition_test")
+    transformedDF.rdd.partitions.length should be(10)
   }
 }

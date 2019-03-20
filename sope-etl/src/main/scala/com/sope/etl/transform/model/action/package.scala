@@ -53,6 +53,8 @@ package object action {
     final val Watermark = "watermark"
     final val Partition = "partition"
     final val Router = "router"
+    final val Coalesce = "coalesce"
+    final val Repartition = "repartition"
   }
 
   /**
@@ -94,7 +96,9 @@ package object action {
     new Type(value = classOf[DQCheckAction], name = Actions.DQCheck),
     new Type(value = classOf[WatermarkAction], name = Actions.Watermark),
     new Type(value = classOf[PartitionAction], name = Actions.Partition),
-    new Type(value = classOf[RouterAction], name = Actions.Router)
+    new Type(value = classOf[RouterAction], name = Actions.Router),
+    new Type(value = classOf[CoalesceAction], name = Actions.Coalesce),
+    new Type(value = classOf[RepartitionAction], name = Actions.Repartition)
   ))
   abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
 
@@ -147,6 +151,30 @@ package object action {
 
 
   // ===========================================  Concrete Actions are defined below  ====================================== //
+
+
+  /*
+      Coalesce
+   */
+  case class CoalesceAction(@JsonProperty(required = true, value = "num_partitions") numPartitions: Int) extends SingleOutputTransform(Actions.Coalesce) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc = (df: DataFrame) => df.coalesce(numPartitions)
+  }
+
+
+  /*
+     Repartition
+   */
+  case class RepartitionAction(@JsonProperty(required = false, value = "num_partitions") numPartitions: Int,
+                               @JsonProperty(required = false) columns: Option[Seq[String]]) extends SingleOutputTransform(Actions.Repartition) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc = (df: DataFrame) => {
+      (numPartitions, columns) match {
+        case (0, None) => df    /* do nothing */
+        case (0, Some(cols)) => df.repartition(cols.map(expr): _*)
+        case (number, None) => df.repartition(number)
+        case (number, Some(cols)) => df.repartition(number, cols.map(expr): _*)
+      }
+    }
+  }
 
   /*
       Rename

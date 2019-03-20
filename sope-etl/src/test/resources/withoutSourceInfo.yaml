@@ -104,3 +104,7 @@ transformations :
       input: "dim_product"
       actions:
       - {type: router , conditions: ["product_desc in ('tshirt','shirt')", "product_desc in ('jeans','trouser')"]}
+    - alias: "repartition_test"
+      input: "transactions"
+      actions:
+      - {type: repartition, columns: [lower(loc)], num_partitions: 10}

@@ -108,8 +108,6 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
       logInfo(s"Applying transformation: ${transformAliases.mkString(",")}")
       val actions = dfTransform.actions.getOrElse(Nil)
       val sourceDF = getDF(dfTransform.source)
-      // coalesce function
-      val coalesceFunc = (df: DataFrame) => if (dfTransform.coalesce == 0) df else df.coalesce(dfTransform.coalesce)
       // if sql transform apply sql or perform provided action transformation
       val transformedDF = if (dfTransform.isSQLTransform) {
         Nil :+ sourceDF.sqlContext.sql(dfTransform.sql.get)
@@ -139,7 +137,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
             logError(s"Transformation failed for alias: $transformAliases in $file file")
             throw e
         }
-      }.map(_.transform(coalesceFunc))
+      }
 
       // Add alias to dataframe
       dfTransform.persistLevel.fold(transformedDF)(level => {
