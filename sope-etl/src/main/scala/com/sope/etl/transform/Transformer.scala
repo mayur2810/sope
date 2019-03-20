@@ -103,7 +103,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
     logDebug("AUTO persist set: " + autoPersistSetting)
     logDebug("AUTO persist data list: " + autoPersistList.mkString(", "))
 
-    transformations.flatMap(dfTransform => {
+    inputMap.toSeq ++ transformations.flatMap(dfTransform => {
       val transformAliases = dfTransform.getAliases
       logInfo(s"Applying transformation: ${transformAliases.mkString(",")}")
       val actions = dfTransform.actions.getOrElse(Nil)
