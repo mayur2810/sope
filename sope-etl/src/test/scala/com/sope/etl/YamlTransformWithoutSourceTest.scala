@@ -192,4 +192,16 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     transformedDF1.show(false)
     transformedDF1.count should be(3)
   }
+
+  "router_test" should "generate the transformation Dataframe correctly" in {
+    val tSet = transformedResult("t_set")
+    tSet.show(false)
+    tSet.count() should be(2)
+    val lSet = transformedResult("l_set")
+    lSet.show(false)
+    lSet.count() should be(2)
+    val noMatchSet = transformedResult("no_match_set")
+    noMatchSet.show(false)
+    noMatchSet.count() should be(3)
+  }
 }

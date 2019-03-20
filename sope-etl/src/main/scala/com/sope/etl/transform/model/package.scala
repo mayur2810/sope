@@ -96,7 +96,7 @@ package object model {
       *
       * @return alias
       */
-    def getAlias: Seq[String] = if (isMultiOutputTransform) aliases.get else alias.getOrElse(source) +: Nil
+    def getAliases: Seq[String] = if (isMultiOutputTransform) aliases.get else alias.getOrElse(source) +: Nil
 
 
     /**
@@ -135,7 +135,7 @@ package object model {
     util.Try(checkSQLExpr()) match {
       case Success(_) =>
       case Failure(e) =>
-        throw new YamlDataTransformException(s"Invalid SQL/SQL expression provided for transformation: $getAlias \n ${e.getMessage}")
+        throw new YamlDataTransformException(s"Invalid SQL/SQL expression provided for transformation: $getAliases \n ${e.getMessage}")
     }
   }
 

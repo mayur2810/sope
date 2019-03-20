@@ -104,7 +104,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
     logDebug("AUTO persist data list: " + autoPersistList.mkString(", "))
 
     transformations.flatMap(dfTransform => {
-      val transformAliases = dfTransform.getAlias
+      val transformAliases = dfTransform.getAliases
       logInfo(s"Applying transformation: ${transformAliases.mkString(",")}")
       val actions = dfTransform.actions.getOrElse(Nil)
       val sourceDF = getDF(dfTransform.source)
@@ -143,7 +143,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
 
       // Add alias to dataframe
       dfTransform.persistLevel.fold(transformedDF)(level => {
-        logInfo(s"Transformation $transformAliases is configured to be persisted at level: $level")
+        logInfo(s"Transformation ${transformAliases.mkString(",")} is configured to be persisted at level: $level")
         transformedDF.map(_.persist(StorageLevel.fromString(level.toUpperCase)))
       })
         .zip(transformAliases)

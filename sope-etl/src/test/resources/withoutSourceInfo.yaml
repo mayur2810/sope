@@ -100,3 +100,7 @@ transformations :
       input: "transactions"
       actions:
       - {type: partition , condition: "lower(loc) = 'pune'"}
+    - aliases: [t_set, l_set, no_match_set]
+      input: "dim_product"
+      actions:
+      - {type: router , conditions: ["product_desc in ('tshirt','shirt')", "product_desc in ('jeans','trouser')"]}
