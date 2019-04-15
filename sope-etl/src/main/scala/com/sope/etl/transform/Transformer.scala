@@ -114,14 +114,14 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
             val transformedSingleAction = actions
               .take(actions.size - 1)
               .foldLeft(NoOp()) {
-                case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
+                (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
               }
             multiOutAction
               .apply(multiOutAction.inputAliases.map(getDF): _*)
               .map(action => transformedSingleAction + action --> sourceDF)
           case (_, _) =>
             Nil :+ actions.foldLeft(NoOp()) {
-              case (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
+              (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
             } --> sourceDF
         }
       } match {
