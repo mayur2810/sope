@@ -253,6 +253,16 @@ package object dsl {
     /**
       * Apply Join Function
       *
+      * @param conditions Join columns
+      * @return [[DFJoinFunc]]
+      */
+    def apply(conditions: String*): DFJoinFunc = (ldf: DataFrame, rdf: DataFrame, jType: String) =>
+      ldf.join(rdf, conditions.toSeq, jType)
+
+
+    /**
+      * Apply Join Function
+      *
       * @param broadcastHint Hint for broadcasting, "left" for broadcast hint to left [[DataFrame]]
       *                      or right for broadcast hint to "right" [[DataFrame]]
       * @param conditions    Join columns
@@ -304,7 +314,7 @@ package object dsl {
       */
     def apply(aggregateStrExprs: String*): DFFunc = {
       val aggregateExprs = aggregateStrExprs.map(expr)
-      (df: DataFrame) => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
+      df: DataFrame => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
     }
 
     /**
