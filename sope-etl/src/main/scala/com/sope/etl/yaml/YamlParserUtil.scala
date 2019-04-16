@@ -44,7 +44,12 @@ object YamlParserUtil {
       .fold(throw new YamlDataTransformException(s"Yaml File $yamlFile not found in driver classpath")) {
         url => url.getPath
       }
-    Source.fromFile(yamlFilePath).getLines.mkString("\n")
+    val file = Source.fromFile(yamlFilePath)
+    try {
+      file.getLines.mkString("\n")
+    } finally {
+      file.close()
+    }
   }
 
   /**
