@@ -1,7 +1,7 @@
 ## YAML Transformer Constructs
 
 A Yaml Transformer definition can have following constructs at root:
-  - inputs : Inputs sources to be transformed.
+  - inputs: Inputs sources to be transformed.
   - transformations: Transformations definitions.
   - outputs: Output targets (only defined for end-to-end mode).
 
@@ -19,14 +19,18 @@ Following input/source types are supported:
 Source | Definition | Description
 -------|----------- |------------
 hive   | {type: hive, alias: <dataframe_alias>, db: <hive_database>, table: <hive_table>} |
-json   | {type: json, alias: <dataframe_alias>, path: <hdfs_file_path>, options: {opt1: val1}} | options: provide json options (optional)
-csv   | {type: csv, alias: <dataframe_alias>, path: <hdfs_file_path>, options: {opt1: val1}} | options: provide csv options (optional)
-parquet   | {type: parquet, alias: <dataframe_alias>, path: <hdfs_file_path>, options: {opt1: val1}} | options: parquet options (optional)
-orc   | {type: orc, alias: <dataframe_alias>, path: <hdfs_file_path>, options: {opt1: val1}} | options: provide orc options (optional)
-text   | {type: text, alias: <dataframe_alias, path: <hdfs_file_path>, options: {opt1: val1}} | options: provide text options (optional)
+json   | {type: json, alias: <dataframe_alias>, path: <hdfs_file_path>, is_streaming: true/false, schema_file: <file_path>, options: {opt1: val1}} | options: provide json options (optional), is_streaming: marks as streaming source (optional, defaults to false), schema_file: path to schema file (optional)
+csv   | {type: csv, alias: <dataframe_alias>, path: <hdfs_file_path>, is_streaming: true/false, schema_file: <file_path>, options: {opt1: val1}} | options: provide csv options (optional), is_streaming: marks as streaming source (optional, defaults to false), schema_file: path to schema file (optional)
+parquet   | {type: parquet, alias: <dataframe_alias>, path: <hdfs_file_path>, is_streaming: true/false, schema_file: <file_path>, options: {opt1: val1}} | options: parquet options (optional), is_streaming: marks as streaming source (optional, defaults to false), schema_file: path to schema file (optional)
+orc   | {type: orc, alias: <dataframe_alias>, path: <hdfs_file_path>, is_streaming: true/false, schema_file: <file_path>, options: {opt1: val1}} | options: provide orc options (optional), is_streaming: marks as streaming source (optional, defaults to false), schema_file: path to schema file (optional)
+text   | {type: text, alias: <dataframe_alias>, path: <hdfs_file_path>, is_streaming: true/false, schema_file: <file_path>, options: {opt1: val1}} | options: provide text options (optional), is_streaming: marks as streaming source (optional, defaults to false), schema_file: path to schema file (optional)
+jdbc | {type: jdbc, alias: <dataframe_alias>, url: <jdbc_url>, table: <jdbc_table>, options: {opt1: val1, ..}} | options: provide jdbc options (optional)
+bigquery |  {type: bigquery, alias: <dataframe_alias>, db: <bigquery_dataset>, table: <bigquery_table>, project_id: <id>} | project_id is optional
+custom | {type: custom, alias: <dataframe_alias>, format: <custom_source_format>, is_streaming: true/false, schema_file: <file_path>, options: {opt1: val1}} | options: provide custom source options (optional), is_streaming: marks as streaming source, if supported by custom source (optional, defaults to false), schema_file: path to schema file (optional)
+
 
 - Intermediate Transformations:
-  For this mode the 'inputs' section just takes the logical aliases for dataframes that will passed to yaml transformer.
+  For this mode, the 'inputs' section just takes the logical aliases for dataframes that will be passed to yaml transformer.
   ```yaml
     inputs: [transactions, product, date]
   ```
@@ -44,13 +48,17 @@ text   | {type: text, alias: <dataframe_alias, path: <hdfs_file_path>, options: 
 
  Source | Definition | Description
  -------|----------- |------------
- hive   | {type: hive, input: <transformation_alias>, mode: <write_mode>, db: <hive_database>, table: <hive_table>} |
- json   | {type: json, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}} | options: provide json options (optional)
- csv   | {type: csv, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}} | options: provide csv options (optional)
- orc   | {type: orc, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}} | options: provide orc options (optional)
- parquet  | {type: parquet, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}} | options: provide parquet options (optional)
- text   | {type: text, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}} | options: provide text options (optional)
-
+ hive   | {type: hive, input: <transformation_alias>, mode: <write_mode>, db: <hive_database>, table: <hive_table>, save_as_table: <true/false>, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | save_as_table: if set, writes the data using saveAsTable api.(optional, defaults to false), partition_by and bucket_by are optional
+ json   | {type: json, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | options: provide json options (optional), partition_by and bucket_by are optional
+ csv   | {type: csv, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | options: provide csv options (optional), partition_by and bucket_by are optional
+ orc   | {type: orc, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | options: provide orc options (optional), partition_by and bucket_by are optional
+ parquet  | {type: parquet, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | options: provide parquet options (optional), partition_by and bucket_by are optional
+ text   | {type: text, input: <transformation_alias>, mode: <write_mode>, path: <hdfs_output_path>, options: {opt1: val1}, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | options: provide text options (optional), partition_by and bucket_by are optional
+ jdbc  | {type: jdbc, input: <transformation_alias>, mode: <write_mode>, url: <jbbc_url>, table: <jdbc_table>, options: {opt1: val1} }|  options: provide jdbc options (optional)
+ bigquery  | {type: bigquery, input: <transformation_alias>, mode: <write_mode>, db: <bigquery_dataset>, table: <bigquery_table>, project_id: <id>} | project id is optional
+ custom  |  {type: custom, input: <transformation_alias>, format: <output_format>, mode: <write_mode_batch>, is_streaming: <true/false>, output_mode: <write_mode_streaming>, options: {opt1: val1}, partition_by: [col1. col2, ..], bucket_by: {num_buckets: <int>, columns: [col1, col2, ..]}} | options: provide custom target options (optional), partition_by and bucket_by are optional. is_streaming is optional, defaults to false. If set, provide output_mode for the type of streaming write mode
+ count | {type: count, input: <transformation_alias> }| count the records in the provided transformation alias
+ show | {type: show, num_records: <int>} | num_records is optional, defaults to 20
 
 #### 3. transformations
 The 'transformations' section if defined as follows:
@@ -58,13 +66,15 @@ The 'transformations' section if defined as follows:
 ```yaml
 transformations :
     - input: input_alias  // Input alias on which transformations will performed. Can be from 'inputs' sections or previous transformation
-      alias: alias_for_this_transformation  //  (optional) if not provided, input alias will be replaced with this transformation
+      alias: a1 // alias for this transformation
+      aliases: [a1, a2] // aliases if the transformation returns multiple aliases. NOTE: Use either alias/aliases depending on the output scenario.
       persist: memory_only  // Persistence level if transformation is to be persisted. e.g. MEMORY_ONLY, MEMORY_AND_DISK (optional)
-      actions: // define multiple transformation actions for this input
+      actions: // define multiple transformation actions for this input.
         - {type: <transformation>, <transformation_options>}
         - {type: <transformation>, <transformation_options>}
-        ....
+        - {type: <multi_out_transformation>, <transformation_options>} // If the action is multi-output action, it should be the LAST transformation step/action
     - input: input_alias1
+      alias: a3
       sql: select * from input_alias1 // SQL can also be provided for Simple transformations. Either 'sql' or 'actions' can be provided.
     - input: input_alias2
       persist: true
@@ -74,7 +84,7 @@ transformations :
     ....
 ```
 
-Following transformation actions are supported:
+Following single output transformation actions are supported:
 
 Transformation | Definition | Description
 ---------------|------------|------------
@@ -83,7 +93,7 @@ SelectNot | {type: select_not, columns: [col1, col2, ..]} |
 Filter | {type: filter, condition: filter_condition} |
 Rename  | {type: rename, list: {col1: new_col1, col2: new_col2, ..}} | list: list of existing name and new name
 Column Transform |{type: transform, list: {col1: func(<any_col>), col2: func(<any_col1>, <any_expr>), ..} }| list of column name and functions applied to column
-Column Transform(Bulk)| {type: transform-all, function: <single-arg-function>, suffix: <suffix_to_append>, columns: [col1, col2, expr1, expr2] } | **suffix** is optional, if not provided the columns will be replaced by transformed column else new column with appended suffix will be generated. **columns** is optional, if not provided the function will be applied on all the columns of the input 
+Column Transform(Bulk)| {type: transform-all, function: <single-arg-function>, suffix: <suffix_to_append>, columns: [col1, col2, expr1, expr2] } | **suffix** is optional, if not provided the columns will be replaced by transformed column else new column with appended suffix will be generated. **columns** is optional, if not provided the function will be applied on all the columns of the input
 Limit | {type: limit, size: <int> } |
 Distinct | {type: distinct} |
 Drop Columns |  {type: drop, columns: [col1, col2, ...]} |
@@ -95,8 +105,19 @@ Order By |{type: order_by, columns: [col1:desc, col2, ..]} | to sort in descendi
 Union | {type: union, with: [dataset1, dataset2, ..]} |
 Intersect | {type: intersect, with: [dataset1, dataset2, ..]} |
 Except | {type: except, with: [dataset1, dataset2, ..]} |
+Repartition | {type: repartition, columns: [col1, col2, ...], num_partitions: <int>} | columns are optional, num_partitions is optional, defaults to 200
+Coalesce | {type: coalesce, num_partitions: <int> |
 Sequence | {type: sequence, sk_source: source_alias, sk_column: source_key_column} | max 'sk_column' value plus 1 will used as start index for sequence generation
 SCD | {type: scd, dim_table: table_name, sk_column: sk_key, natural_keys: [nk1, nk2, ..], derived_columns: [derived_col1, ..], meta_columns: [update_date, ..], incremental_load: true(default)/false } | Perform SCD on the dimension table, the output will be fused input & dimension records with 'INSERT', 'UPDATE', 'NCD' or 'INVALID' scd_status. Users can update this dataset according to required SCD type.
 NA  | {type: na, default_numeric: <default_numeric_value_for_nulls>, default_string: <default_string_value_for_nulls>, columns: [col1, col2, ..]} | Assigns default numeric/string values to NULLs VALUES for provided columns
-Call Yaml | {type: yaml, yaml_file: <yaml_file_name_to_call>, substitutions: [s1, s2, {k1: v1, k2: v2}], input_aliases: [i1, i2, i3..], output_alias: output} | Calls another yaml and gets the transformation output alias. The substitutions are optional. If provided the substitution should contain valid yaml objects and should correspond to valid type in the yaml template.  
-Named Transformation | {type: named_transform , name: <registered_transformation_name>, inputs: [t1, t2]} | Calls registered transformation. If transformation takes more than one input transformations , than provide them in required order in 'inputs' 
+Call Yaml | {type: yaml, yaml_file: <yaml_file_name_to_call>, substitutions: [s1, s2, {k1: v1, k2: v2}], input_aliases: [i1, i2, i3..], output_alias: output} | Calls another yaml and gets the transformation output alias. The substitutions are optional. If provided the substitution should contain valid yaml objects and should correspond to valid type in the yaml template.
+Named Transformation | {type: named_transform , name: <registered_transformation_name>, inputs: [t1, t2]} | Calls registered transformation. If transformation takes more than one input transformations , than provide them in required order in 'inputs'
+Data Quality Check | {type: dq_check, dq_function: <function>, id: <unique_dq_id>, columns: [col1, col2, ..] } |
+Watermark | {type: watermark, event_time: <event_column>, delay_threshold: <threshold time string> } | *For streaming mode; use to specify the watermark
+
+Following multi-output transformation actions are supported:
+
+Transformation | Definition | Description
+---------------|------------|------------
+Partition | {type: partition , condition: <boolean_expression> } | outputs are two transformations: First transformation will satisfy the passed boolean condition, other one will be an opposite set.
+Router |  {type: router , conditions: [<boolean_expr_1> , <boolean_expr_2>, ...]} | outputs transformation matching the passed conditions and another default set which negates all the conditions provided. Note: you need to provide the alias for the default set if needed.
