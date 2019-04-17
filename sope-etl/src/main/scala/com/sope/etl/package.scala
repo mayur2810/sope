@@ -1,8 +1,12 @@
 package com.sope
 
+import com.sope.etl.register.TransformationRegistration._
+import com.sope.etl.register.UDFRegistration._
+import com.sope.spark.sql.udfs.registerUDFs
 import com.sope.utils.Logging
 import org.apache.commons.cli
 import org.apache.commons.cli.OptionBuilder
+import org.apache.spark.sql.SQLContext
 
 import scala.reflect.runtime.universe._
 import scala.util.{Failure, Success, Try}
@@ -42,6 +46,21 @@ package object etl extends Logging {
   }
 
   /**
+    * Get Scala 'Object' instance from class name with provided classloader
+    *
+    * @param classloader Classloader to use
+    * @param clsName Class Name
+    * @tparam A Object Type
+    * @return Option of type A
+    */
+  def getObjectInstance[A](classloader: ClassLoader, clsName: String): Option[A] = {
+    val mirror = runtimeMirror(classloader)
+    val module = mirror.staticModule(clsName)
+    Some(mirror.reflectModule(module).instance.asInstanceOf[A])
+  }
+
+
+  /**
     * Get Class Instance A from provided class name
     *
     * @param clsName Class Name
@@ -60,6 +79,18 @@ package object etl extends Logging {
         None
     }
   }
+
+  /**
+    * Performs Custom UDF & Transformation registrations
+    *
+    * @param sqlContext Spark's SQL Context
+    */
+  def performRegistrations(sqlContext: SQLContext): Unit = {
+    registerUDFs(sqlContext) // Register sope utility udfs
+    registerCustomUDFs(sqlContext) // Register custom udfs if provided
+    registerTransformations() // Register custom transformations
+  }
+
 
   /**
     * Builds Optional Command line options

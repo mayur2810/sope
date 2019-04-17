@@ -7,29 +7,30 @@ Sope
 [![Build Status](https://travis-ci.org/mayur2810/sope.svg?branch=master)](https://travis-ci.org/mayur2810/sope)
 
 
-**Sope** is set of utilities and library functions that helps with ETL development using **Apache Spark**.
-The project contains following sub-modules
+**Sope** is set of utilities and library functions that help with ETL development using **Apache Spark**. At a high level,
+the library provides abstraction on top of Spark SQL APIs that makes it easier to develop applications which are based on SQL operations.
+The project contains the following sub-modules:
 - *sope-spark*
 - *sope-etl*
 
 1. **sope-spark**:
- This module contains library functions and a Scala internal **dsl** library that assists with writing **Spark SQL** ETL transformations in concise manner
- 
+ This module contains useful Dataframe functions and a Scala internal **dsl** library that assists with writing **Spark SQL** transformations in a concise manner.
+
     [More information](sope-spark/README.md)
- 
+
 2. **sope-etl**:
- This module contains a **YAML** based external transformer with easy to use ETL constructs.
- 
+ This module provides a **YAML** based external transformer with easy to use ETL constructs which acts like a configuration/script driven interface.
+
     [More information](sope-etl/README.md)
 
 
 #### Building the project:
-The project only supports Spark versions 2.x onwards.
+The project has full support for Spark versions 2.x onwards. Please refer the separate branch for 1.x support, which is limited in features.
 Use **mvn clean package** to build the project. Import the generated jars in your project.<br>
-By default the project is built using latest Spark version 2.4 (scala 2.11), which should be compatible with all 2.x versions.<br>
-If you need to override the spark/scala version, use 'custom' profile for build as follows:<br>
-**mvn package -Pcustom  -Dspark.version=2.4.0 -Dscala.version.tag=2.12 -Dscala.version=2.12.1**
+By default, the project is built using latest Spark version 2.4 (scala 2.11), which should be compatible with all 2.x versions.<br>
+If you need to override the spark/scala version, you can override the version properties for the build as follows:<br>
+**mvn package -Dspark.version=2.4.0 -Dscala.version.tag=2.12 -Dscala.version=2.12.1**
 
 
 #### Contributions
-Please feel free to add issues to report any bugs/propose addition of new features.
+Please feel free to add issues to report any bugs or to propose new features.

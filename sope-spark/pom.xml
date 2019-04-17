@@ -5,7 +5,7 @@
     <parent>
         <artifactId>sope</artifactId>
         <groupId>com.mayurb</groupId>
-        <version>1.3</version>
+        <version>1.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,6 +30,11 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-hive_${scala.version.tag}</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud.bigdataoss</groupId>
+            <artifactId>bigquery-connector</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

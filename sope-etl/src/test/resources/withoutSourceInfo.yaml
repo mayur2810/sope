@@ -16,6 +16,11 @@ transformations :
       actions:
         - {type: "group_by", columns: ["product"], expr: "count(product) as p_cnt"}
         - {type: "order_by", columns: ["p_cnt:desc"]}
+    - input: "transactions"
+      alias: "grp_by_pivot"
+      actions:
+        - {type: "transform", list: {year: "year(date)"}}
+        - {type: "group_by", columns: ["product"], pivot_column: "year",  expr: "count(product) as p_cnt"}
     - input : "product"
       alias: "final_dim_out"
       actions:
@@ -78,6 +83,11 @@ transformations :
       input: "transactions"
       actions:
           - {type: rename_all, append: "_renamed"}
+    - alias: "aggregate_test"
+      input: "transactions"
+      actions:
+          - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
+          - {type: aggregate, exprs: [max(id)]}
     - alias: "custom_udf_call_test"
       input: "transactions"
       actions:
@@ -86,3 +96,15 @@ transformations :
       input: "transactions"
       actions:
       - {type: named_transform , name: "custom_transform"}
+    - aliases: [p_set, np_set]
+      input: "transactions"
+      actions:
+      - {type: partition , condition: "lower(loc) = 'pune'"}
+    - aliases: [t_set, l_set, no_match_set]
+      input: "dim_product"
+      actions:
+      - {type: router , conditions: ["product_desc in ('tshirt','shirt')", "product_desc in ('jeans','trouser')"]}
+    - alias: "repartition_test"
+      input: "transactions"
+      actions:
+      - {type: repartition, columns: [lower(loc)], num_partitions: 10}

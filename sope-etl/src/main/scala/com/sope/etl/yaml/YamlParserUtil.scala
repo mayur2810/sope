@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.sope.etl.transform.exception.YamlDataTransformException
 
 import scala.collection.JavaConverters._
 import scala.io.Source
@@ -38,8 +39,17 @@ object YamlParserUtil {
     * @return String
     */
   def readYamlFile(yamlFile: String): String = {
-    val yamlFilePath = this.getClass.getClassLoader.getResource(s"./$yamlFile").getPath
-    Source.fromFile(yamlFilePath).getLines.mkString("\n")
+    val fileURL = this.getClass.getClassLoader.getResource(s"./$yamlFile")
+    val yamlFilePath = Option(fileURL)
+      .fold(throw new YamlDataTransformException(s"Yaml File $yamlFile not found in driver classpath")) {
+        url => url.getPath
+      }
+    val file = Source.fromFile(yamlFilePath)
+    try {
+      file.getLines.mkString("\n")
+    } finally {
+      file.close()
+    }
   }
 
   /**

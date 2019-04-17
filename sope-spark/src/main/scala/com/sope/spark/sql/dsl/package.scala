@@ -63,7 +63,8 @@ package object dsl {
       * @param alias    DF alias
       * @return [[DFFunc]]
       */
-    def apply(joinedDF: DataFrame, alias: String): DFFunc = (df: DataFrame) => df.select(joinedDF.getColumns(alias): _*)
+    def apply(joinedDF: DataFrame, alias: String, includeColumns: Seq[String] = Nil, excludeColumns: Seq[String] = Nil): DFFunc =
+      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumns) ++ includeColumns.map(col): _*)
   }
 
 
@@ -252,6 +253,16 @@ package object dsl {
     /**
       * Apply Join Function
       *
+      * @param conditions Join columns
+      * @return [[DFJoinFunc]]
+      */
+    def apply(conditions: String*): DFJoinFunc = (ldf: DataFrame, rdf: DataFrame, jType: String) =>
+      ldf.join(rdf, conditions.toSeq, jType)
+
+
+    /**
+      * Apply Join Function
+      *
       * @param broadcastHint Hint for broadcasting, "left" for broadcast hint to left [[DataFrame]]
       *                      or right for broadcast hint to "right" [[DataFrame]]
       * @param conditions    Join columns
@@ -291,6 +302,29 @@ package object dsl {
         }
   }
 
+  /*
+   Aggregate Transform
+  */
+  object Aggregate {
+    /**
+      * Apply Column Aggregate Function
+      *
+      * @param aggregateStrExprs String expressions for aggregation
+      * @return [[DFFunc]]
+      */
+    def apply(aggregateStrExprs: String*): DFFunc = {
+      val aggregateExprs = aggregateStrExprs.map(expr)
+      df: DataFrame => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
+    }
+
+    /**
+      * Apply Column Aggregate Function
+      *
+      * @param aggregateExprs Column expressions for aggregation
+      * @return [[DFFunc]]
+      */
+    def apply[_: ClassTag](aggregateExprs: Column*): DFFunc = (df: DataFrame) => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
+  }
 
   /*
     Group Transform
@@ -300,21 +334,28 @@ package object dsl {
       * Apply Group Function
       *
       * @param groupColumns Group columns
+      * @param pivotColumn  pivot column
       * @return [[DFGroupFunc]]
       */
-    def apply(groupColumns: String*): DFGroupFunc =
-      (df: DataFrame, columns: Seq[Column]) =>
-        df.groupBy(groupColumns.head, groupColumns.tail: _*).agg(columns.head, columns.tail: _*)
+    def apply(groupColumns: String*)(pivotColumn: Option[String] = None): DFGroupFunc =
+      apply(groupColumns.map(expr): _*)(pivotColumn)
 
     /**
       * Apply Group Function
       *
       * @param groupColumns Group column Expressions
+      * @param pivotColumn  pivot column
       * @return [[DFGroupFunc]]
       */
-    def apply[_: ClassTag](groupColumns: Column*): DFGroupFunc =
-      (df: DataFrame, columns: Seq[Column]) =>
-        df.groupBy(groupColumns: _*).agg(columns.head, columns.tail: _*)
+    def apply[_: ClassTag](groupColumns: Column*)(pivotColumn: Option[String]): DFGroupFunc =
+      (df: DataFrame, columns: Seq[Column]) => {
+        val grouped = df.groupBy(groupColumns: _*)
+        pivotColumn match {
+          case Some(pivot) => grouped.pivot(pivot).agg(columns.head, columns.tail: _*)
+          case None => grouped.agg(columns.head, columns.tail: _*)
+        }
+      }
+
   }
 
   /*

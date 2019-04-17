@@ -26,17 +26,17 @@ transformations :
     #Filter insert/updates and adds 'last_updated_date' column, Note: Update the name of the column is required
     - input: "scd_product"
       alias: "insert_update"
-      coalesce: 200
       actions:
         - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
         - {type: transform, list: {last_updated_date: "current_date"}}
         - {type: sequence, sk_source: "dimension", sk_column: $1}
     - input: "scd_product"
       alias: "ncd"
-      coalesce: 200
       actions:
         - {type: filter, condition: "scd_status = 'NCD'"}
+        - {type: coalesce, num_partitions: 200}
     - input: "ncd"
       alias: "scd_result"
       actions:
         - {type: union, with: ["insert_update"]}
+        - {type: coalesce, num_partitions: 200}

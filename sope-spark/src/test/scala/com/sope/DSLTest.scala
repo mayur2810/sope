@@ -87,4 +87,8 @@ class DSLTest extends FlatSpec with Matchers {
     (fullJoin --> studentDF).count should be(5)
   }
 
+  "Aggregate DSL" should "generate the transformations correctly" in {
+    (Aggregate("max(cls)") --> classDF).collect().head.getInt(0) should be(10)
+  }
+
 }

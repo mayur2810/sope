@@ -1,9 +1,11 @@
 package com.sope.etl
 
-import com.sope.etl.yaml.YamlFile.End2EndYaml
+import com.sope.etl.register.UDFBuilder
+import com.sope.etl.yaml.End2EndYaml
 import com.sope.etl.yaml.YamlParserUtil.parseYAML
 import com.sope.utils.Logging
 import org.apache.commons.cli.{BasicParser, Options}
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -25,9 +27,13 @@ object YamlRunner extends Logging {
     val substitutions = optionMap.get(MainYamlFileSubstitutionsOption).map(parseYAML(_, classOf[Seq[Any]]))
     logInfo(s"Substitutions provided : ${substitutions.mkString(",")}")
     val end2endYaml = End2EndYaml(mainYamlFile, substitutions)
-    logInfo("Successfully parsed YAML File")
+    val sparkConf = if (end2endYaml.dynamicUDFDefined) {
+      new SparkConf()
+        .set("spark.jars", UDFBuilder.DefaultJarLocation)
+    } else new SparkConf()
     logInfo("Initializing Spark context & executing the flow..")
     val session = SparkSession.builder()
+      .config(sparkConf)
       .enableHiveSupport()
       .getOrCreate()
     end2endYaml.performTransformations(session.sqlContext)
