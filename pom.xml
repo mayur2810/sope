@@ -22,12 +22,6 @@
                 <scala.version>2.11.8</scala.version>
             </properties>
         </profile>
-        <profile>
-            <id>custom</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-        </profile>
     </profiles>
 
     <properties>
