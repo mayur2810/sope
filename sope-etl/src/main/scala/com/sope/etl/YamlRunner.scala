@@ -28,8 +28,12 @@ object YamlRunner extends Logging {
     logInfo(s"Substitutions provided : ${substitutions.mkString(",")}")
     val end2endYaml = End2EndYaml(mainYamlFile, substitutions)
     val sparkConf = if (end2endYaml.dynamicUDFDefined) {
-      new SparkConf()
-        .set("spark.jars", UDFBuilder.DefaultJarLocation)
+      val sparkConf = new SparkConf()
+      val updatedJarList = sparkConf.get("spark.jars", "")
+        .split(",")
+        .filterNot(_.isEmpty)
+        .toSeq :+ UDFBuilder.DefaultJarLocation
+      sparkConf.set("spark.jars", updatedJarList.mkString(","))
     } else new SparkConf()
     logInfo("Initializing Spark context & executing the flow..")
     val session = SparkSession.builder()
