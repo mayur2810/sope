@@ -1,8 +1,10 @@
 inputs: ["dq_input"]
-transformations :
-    - alias: "dq_output"
-      input : "dq_input"
-      actions:
-        - {type: "dq_check", dq_function: "isnull" , id: "is_null" , columns: ${null_check_cols} }
-        - {type: "dq_check", dq_function: "check_empty" , id: "is_empty" , columns: ${empty_check_cols}}
-        - {type: "dq_check", dq_function: "date_format_check" , id: "date_check" , options:["yyyy-mm-dd"] , columns: ${date_check_cols} }
+transformations:
+  - alias: "dq_output"
+    input: "dq_input"
+    actions:
+      - {type: "dq_check", dq_function: "isnull" , id: "is_null" , columns: ${null_check_cols} }
+      - {type: "dq_check", dq_function: "check_empty" , id: "is_empty" , columns: ${empty_check_cols}}
+      - {type: "dq_check", dq_function: "date_format_check" , id: "date_check" , options: [${date_format}] , columns: ${date_check_cols} }
+    #  Below commented tag can be used to call custom dq function, which can be registered in Spark registry and called by parameter substitution
+    # - {type: "dq_check", dq_function: ${custom_function}, , id: "custom_check" , options: ${custom_options} , columns: ${custom_check_cols}}

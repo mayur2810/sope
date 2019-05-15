@@ -476,12 +476,16 @@ package object action {
     private val DQColumnListSuffix = "dq_failed_columns"
 
     override def transformFunction(dataframes: DataFrame*): DFFunc = {
-      Transform(columns.map(column => s"${column}_${id}_$DQStatusSuffix" -> getMultiArgFunction(dqFunction)(col(column) +:
-        functionOptions.fold(Nil: Seq[Column])(_.map(lit)))): _*) +
-        Transform {
-          val dqColumns = columns.map(column => when(col(s"${column}_${id}_$DQStatusSuffix") === true, lit(column)).otherwise(lit(null)))
-          s"${id}_$DQColumnListSuffix" -> concat_ws(",", dqColumns: _*)
-        }
+      columns match {
+        case Nil => NoOp()
+        case _ =>
+          Transform(columns.map(column => s"${column}_${id}_$DQStatusSuffix" -> getMultiArgFunction(dqFunction)(col(column) +:
+            functionOptions.fold(Nil: Seq[Column])(_.map(lit)))): _*) +
+            Transform {
+              val dqColumns = columns.map(column => when(col(s"${column}_${id}_$DQStatusSuffix") === true, lit(column)).otherwise(lit(null)))
+              s"${id}_$DQColumnListSuffix" -> concat_ws(",", dqColumns: _*)
+            }
+      }
     }
   }
 

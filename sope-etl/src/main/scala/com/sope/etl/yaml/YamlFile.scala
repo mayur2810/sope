@@ -57,7 +57,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     */
   def serialize: T = Try {
     val yamlStr = getText
-    logDebug(s"Parsing $getYamlFileName YAML file :-\n $yamlStr")
+    logInfo(s"Parsing $getYamlFileName YAML file :-\n $yamlStr")
     parseYAML(yamlStr, modelClass)
   } match {
     case Success(t) => logInfo(s"Successfully parsed $getYamlFileName YAML File"); t
