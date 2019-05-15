@@ -22,6 +22,8 @@ package object etl extends Logging {
 
   val MainYamlFileSubstitutionsOption = "substitutions"
 
+  val MainYamlFileSubstitutionFilesOption = "substitution_files"
+
   val UDFRegistrationClassProperty = "sope.etl.udf.class"
 
   val TransformationRegistrationClassProperty = "sope.etl.transformation.class"

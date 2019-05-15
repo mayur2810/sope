@@ -14,7 +14,7 @@ import org.apache.spark.sql.DataFrame
   * @param substitutions Substitutions if any
   * @author mbadgujar
   */
-case class IntermediateYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
+case class IntermediateYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
   extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutSourceTarget]) {
 
   /**

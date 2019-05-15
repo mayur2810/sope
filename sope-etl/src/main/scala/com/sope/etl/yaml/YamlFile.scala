@@ -11,7 +11,7 @@ import scala.util.{Failure, Success, Try}
   *
   * @author mbadgujar
   */
-abstract class YamlFile[T](yamlPath: String, substitutions: Option[Seq[Any]] = None, modelClass: Class[T])
+abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, Any]] = None, modelClass: Class[T])
   extends Logging {
 
   protected val model: T = serialize
@@ -21,8 +21,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Seq[Any]] = N
    */
   private def updatePlaceHolders(): String = {
     substitutions.get
-      .zipWithIndex
-      .map { case (value, index) => "$" + (index + 1) -> convertToYaml(value) }
+      .map { case (placeholder, substitution) => "${" + placeholder.trim + "}" -> s""""${convertToYaml(substitution).trim}""""}
       .foldLeft(readYamlFile(yamlPath)) { case (yamlStr, (key, value)) => yamlStr.replace(key, value) }
   }
 
@@ -57,12 +56,11 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Seq[Any]] = N
     * @return T
     */
   def serialize: T = Try {
-    parseYAML(getText, modelClass)
+    val yamlStr = getText
+    logDebug(s"Parsing $getYamlFileName YAML file :-\n $yamlStr")
+    parseYAML(yamlStr, modelClass)
   } match {
-    case Success(t) =>
-      logInfo("Successfully parsed YAML File")
-      logDebug(s"Parsed YAML file :-\n $getText")
-      t
+    case Success(t) => logInfo(s"Successfully parsed $getYamlFileName YAML File"); t
     case Failure(e) => e match {
       case e: JsonMappingException =>
         Option(e.getLocation) match {

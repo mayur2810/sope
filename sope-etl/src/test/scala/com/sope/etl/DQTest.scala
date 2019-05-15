@@ -16,7 +16,7 @@ class DQTest extends FlatSpec with Matchers {
 
   import sqlContext.implicits._
 
-  val TransactionData = Seq(
+  private val transactionData = Seq(
     Transactions(1, "pune", "tshirt", "2018-01-01"),
     Transactions(2, "Pune", "jeans", "2018-01-02"),
     Transactions(3, "mumbAi", "shirt", "2018-01-03"),
@@ -27,8 +27,9 @@ class DQTest extends FlatSpec with Matchers {
   )
 
   private val dqResult = {
-    val transactionsDF = TransactionData.toDF
-    IntermediateYaml("templates/data_quality_template.yaml", Some(Seq(Seq("product"), Seq("product", "loc"), Seq("date"))))
+    val transactionsDF = transactionData.toDF
+    IntermediateYaml("templates/data_quality_template.yaml", Some(Map("null_check_cols" -> Seq("product"),
+      "empty_check_cols" ->  Seq("product", "loc"), "  date_check_cols  " -> Seq("date"))))
       .getTransformedDFs(transactionsDF).toMap
   }
 

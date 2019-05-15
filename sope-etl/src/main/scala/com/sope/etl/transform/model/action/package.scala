@@ -434,7 +434,7 @@ package object action {
   case class YamlAction(@JsonProperty(value = "yaml_file", required = true) yamlFile: String,
                         @JsonProperty(value = "input_aliases", required = false) inputs: Option[Seq[String]],
                         @JsonProperty(value = "output_alias", required = true) outputAlias: String,
-                        @JsonProperty(value = "substitutions", required = false) substitutions: Option[Seq[Any]])
+                        @JsonProperty(value = "substitutions", required = false) substitutions: Option[Map[String, Any]])
     extends SingleOutputTransform(Actions.Yaml) {
 
     override def transformFunction(dataframes: DataFrame*): DFFunc =
@@ -513,7 +513,7 @@ package object action {
     extends MultiOutputTransform(Actions.Router) {
     override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] =
       conditions.map { condition => (df: DataFrame) => df.filter(condition) } :+ {
-        (df: DataFrame) => df.filter(conditions.map { condition => not(expr(condition)) }.reduce(_ and _))
+        df: DataFrame => df.filter(conditions.map { condition => not(expr(condition)) }.reduce(_ and _))
       }
   }
 

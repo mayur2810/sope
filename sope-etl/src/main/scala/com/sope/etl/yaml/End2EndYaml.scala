@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
   * @param substitutions Substitutions if any
   * @author mbadgujar
   */
-case class End2EndYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
+case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
   extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget]) {
 
   /* Add the provided configurations to Spark context */
