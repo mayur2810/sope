@@ -69,4 +69,8 @@ object YamlParserUtil {
     }
   }
 
+  def convertToYaml2(obj: Any): String = {
+    mapper.writeValueAsString(obj)
+  }
+
 }
