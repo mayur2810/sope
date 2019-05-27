@@ -54,23 +54,34 @@ object YamlParserUtil {
     }
   }
 
+  /*
+      Converts Scala collection types to Java type
+   */
+  private def mapVal(any: Any): Any = any match {
+    case map: Map[_, _] => map.mapValues(mapVal).asJava
+    case seq: Seq[_] => seq.map(mapVal).asJava
+    case _ => any
+  }
+
   /**
-    * Convert provided object to YAML
+    * Convert provided object to YAML using SnakeYaml dumper
     *
     * @param obj object
     * @return YAML string
     */
   def convertToYaml(obj: Any): String = {
     obj match {
-      case _ :: _ => yaml.dump(obj.asInstanceOf[List[_]].asJava)
-      case _: Map[_, _] => yaml.dump(obj.asInstanceOf[Map[_, _]].asJava)
       case str: String => "\"" + yaml.dump(str).trim + "\""
-      case _ => yaml.dump(obj)
+      case _ => yaml.dump(mapVal(obj))
     }
   }
 
-  def convertToYaml2(obj: Any): String = {
-    mapper.writeValueAsString(obj)
-  }
+  /**
+    * Convert provided object to YAML using Jackson Mapper
+    *
+    * @param obj object
+    * @return Yaml String
+    */
+  def convertToYaml2(obj: Any): String = mapper.writeValueAsString(obj)
 
 }

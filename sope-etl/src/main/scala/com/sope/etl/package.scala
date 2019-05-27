@@ -51,7 +51,7 @@ package object etl extends Logging {
     * Get Scala 'Object' instance from class name with provided classloader
     *
     * @param classloader Classloader to use
-    * @param clsName Class Name
+    * @param clsName     Class Name
     * @tparam A Object Type
     * @return Option of type A
     */
@@ -105,6 +105,21 @@ package object etl extends Logging {
     substitutionOption.setArgs(1)
     substitutionOption.setRequired(false)
     substitutionOption
+  }
+
+  /**
+    * Get SQL Literal Expression for value to substituted in SQL
+    *
+    * @param value Any value
+    * @return String
+    */
+  def sqlLiteralExpr(value: Any): String = value match {
+    case list: List[_] =>
+      list
+        .map(elem => if (elem.isInstanceOf[String]) s"'${elem.toString}'" else elem)
+        .mkString(",")
+    case str: String => s"'${str.toString}'"
+    case _ => value.toString
   }
 
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInf
 import com.sope.etl.annotations.SqlExpr
 import com.sope.etl.register.TransformationRegistration
 import com.sope.etl.scd.DimensionTable
+import com.sope.etl.sqlLiteralExpr
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.yaml.{IntermediateYaml, YamlParserUtil}
 import com.sope.spark.sql._
@@ -112,6 +113,12 @@ package object action {
 
     def inputAliases: Seq[String] = Nil
 
+    /**
+      * Modifies any SQL expression which have placeholders at Runtime.
+      * Internally converts to Yaml and reconstructs the action instance
+      *
+      * @return [[TransformActionRoot]]
+      */
     def runtimeModifier: TransformActionRoot = {
       import YamlParserUtil._
       val mirror = runtimeMirror(this.getClass.getClassLoader)
@@ -122,20 +129,16 @@ package object action {
         case m: MethodSymbol if m.isCaseAccessor && m.annotations.exists(_.tree.tpe =:= typeOf[SqlExpr]) =>
           m.name.toString -> objMirror.reflectField(m).get
       }.toMap
-      logDebug("Checking Action: " + this.getClass.toString)
-      logDebug("SQL Expr Map: " + expressionMap)
       if (expressionMap.nonEmpty && collectedValues.nonEmpty) {
-        logDebug("Updating collected values")
-        logDebug("Collect Expr Map: " + collectedValues)
         val ymlString = convertToYaml2(this)
-        logDebug(ymlString)
         val updatedYmlStr = collectedValues.foldLeft(ymlString) {
-          case (ymlStr, (placeholder, expression)) => ymlStr.replace("${" + placeholder + "}", expression.toString)
+          case (ymlStr, (placeholder, expression)) =>
+            val find = "${" + placeholder + "}"
+            val replaceWith = sqlLiteralExpr(expression)
+            logInfo(s"Substituting placeholder: $find with value: $replaceWith")
+            ymlStr.replace(find, replaceWith)
         }
-        logDebug(updatedYmlStr)
-        val modifiedAction = YamlParserUtil.parseYAML(updatedYmlStr, classOf[TransformActionRoot])
-        logDebug(modifiedAction.toString)
-        return modifiedAction
+        return parseYAML(updatedYmlStr, classOf[TransformActionRoot])
       }
       this
     }
@@ -422,7 +425,12 @@ package object action {
     override def transformFunction(dataframes: DataFrame*): DFFunc = Unstruct(column)
   }
 
-  case class CollectAction(@JsonProperty(required = true) reference: String,
+
+  /*
+      Collect action, This action is a NoOp. It causes a side effect where the collected values
+      are stored for future reference
+   */
+  case class CollectAction(@JsonProperty(required = true) placeholder: String,
                            @JsonProperty(required = true) alias: String,
                            @JsonProperty(required = true) column: String)
     extends SingleOutputTransform(Actions.Collect) {
@@ -430,7 +438,7 @@ package object action {
     import CollectAction._
 
     override def transformFunction(dataframes: DataFrame*): DFFunc = {
-      mutableRef += (reference -> dataframes.head.select(column).collect.map(_.get(0)).toSeq)
+      mutableRef += (placeholder -> dataframes.head.select(column).collect.map(_.get(0)).toSeq)
       NoOp()
     }
 
@@ -442,7 +450,7 @@ package object action {
 
     def getCollectedValues: Map[String, Any] = {
       mutableRef
-        .mapValues { arr => if (arr.size == 1) arr.head else arr }
+        .mapValues { arr => if (arr.size == 1) arr.head else arr.toList }
         .toMap
     }
   }
