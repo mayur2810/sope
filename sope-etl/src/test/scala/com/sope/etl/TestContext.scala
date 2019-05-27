@@ -1,20 +1,20 @@
 package com.sope.etl
 
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{SQLContext, SparkSession}
 
 /**
   * Context for Unit test cases
   *
   * @author mbadgujar
   */
-//noinspection ScalaDeprecation
 object TestContext {
 
-  private val sparkContext = new SparkContext(new SparkConf().setMaster("local[*]").setAppName("UnitTest")
-    .set("spark.driver.allowMultipleContexts", "true"))
-
-  private val sqlContext = new SQLContext(sparkContext)
-  def getSQlContext: SQLContext = sqlContext
-
+  def getSQlContext: SQLContext = {
+    System.setProperty(UDFRegistrationClassProperty, "com.sope.etl.custom.CustomUDF")
+    System.setProperty(TransformationRegistrationClassProperty, "com.sope.etl.custom.CustomTransformation")
+    SparkSession.builder()
+      .master("local[*]")
+      .appName("SopeUnitTest")
+      .getOrCreate().sqlContext
+  }
 }

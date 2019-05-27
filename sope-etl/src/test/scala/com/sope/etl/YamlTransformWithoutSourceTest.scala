@@ -51,8 +51,6 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
   )
 
   private val transformedResult = {
-    System.setProperty(UDFRegistrationClassProperty, "com.sope.etl.custom.CustomUDF")
-    System.setProperty(TransformationRegistrationClassProperty, "com.sope.etl.custom.CustomTransformation")
     val transactionsDF = transactionData.toDF
     val productDF = productData.toDF
     val dateDF = dateData.toDF
