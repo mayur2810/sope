@@ -34,7 +34,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           case (inputs, action) =>
             val (isJoinAction, joinColumns) =
               action match {
-                case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
+                case ja: JoinAction if !ja.expressionBased => (true, Some(ja.joinColumns))
                 case _ => (false, None)
               }
             inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
@@ -114,14 +114,15 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
             val transformedSingleAction = actions
               .take(actions.size - 1)
               .foldLeft(NoOp()) {
-                (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
+                (transformed, transformAction) => transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*).head
               }
             multiOutAction
               .apply(multiOutAction.inputAliases.map(getDF): _*)
               .map(action => transformedSingleAction + action --> sourceDF)
           case (_, _) =>
             Nil :+ actions.foldLeft(NoOp()) {
-              (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
+              (transformed, transformAction) =>
+                transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*).head
             } --> sourceDF
         }
       } match {
@@ -130,7 +131,6 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           logError(s"Transformation failed for alias(es): ${transformAliases.mkString(", ")} in $file file")
           throw e
       }
-
       // Add alias to dataframe
       dfTransform.persistLevel.fold(transformedDF)(level => {
         logInfo(s"Transformation ${transformAliases.mkString(",")} is configured to be persisted at level: $level")

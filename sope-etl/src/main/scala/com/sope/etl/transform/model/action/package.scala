@@ -5,12 +5,17 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInf
 import com.sope.etl.annotations.SqlExpr
 import com.sope.etl.register.TransformationRegistration
 import com.sope.etl.scd.DimensionTable
+import com.sope.etl.sqlLiteralExpr
 import com.sope.etl.transform.exception.YamlDataTransformException
-import com.sope.etl.yaml.IntermediateYaml
+import com.sope.etl.yaml.{IntermediateYaml, YamlParserUtil}
 import com.sope.spark.sql._
-import com.sope.spark.sql.dsl._
+import com.sope.spark.sql.dsl.{Select => Select1, _}
+import com.sope.utils.Logging
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Column, DataFrame}
+
+import scala.collection.mutable
+import scala.reflect.runtime.universe._
 
 /**
   * Package contains YAML Transformer Action (transform) construct mappings and definitions
@@ -55,6 +60,7 @@ package object action {
     final val Router = "router"
     final val Coalesce = "coalesce"
     final val Repartition = "repartition"
+    final val Collect = "collect"
   }
 
   /**
@@ -98,14 +104,44 @@ package object action {
     new Type(value = classOf[PartitionAction], name = Actions.Partition),
     new Type(value = classOf[RouterAction], name = Actions.Router),
     new Type(value = classOf[CoalesceAction], name = Actions.Coalesce),
-    new Type(value = classOf[RepartitionAction], name = Actions.Repartition)
+    new Type(value = classOf[RepartitionAction], name = Actions.Repartition),
+    new Type(value = classOf[CollectAction], name = Actions.Collect)
   ))
-  abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) {
+  abstract class TransformActionRoot(@JsonProperty(value = "type", required = true) id: String) extends Logging {
 
     def apply(dataframes: DataFrame*): Seq[DFFunc]
 
     def inputAliases: Seq[String] = Nil
 
+    /**
+      * Modifies any SQL expression which have placeholders at Runtime.
+      * Internally converts to Yaml and reconstructs the action instance
+      *
+      * @return [[TransformActionRoot]]
+      */
+    def runtimeModifier: TransformActionRoot = {
+      import YamlParserUtil._
+      val mirror = runtimeMirror(this.getClass.getClassLoader)
+      val clazz = mirror.staticClass(this.getClass.getCanonicalName)
+      val objMirror = mirror.reflect(this)
+      val collectedValues = CollectAction.getCollectedValues
+      val expressionMap = clazz.selfType.members.collect {
+        case m: MethodSymbol if m.isCaseAccessor && m.annotations.exists(_.tree.tpe =:= typeOf[SqlExpr]) =>
+          m.name.toString -> objMirror.reflectField(m).get
+      }.toMap
+      if (expressionMap.nonEmpty && collectedValues.nonEmpty) {
+        val ymlString = convertToYaml2(this)
+        val updatedYmlStr = collectedValues.foldLeft(ymlString) {
+          case (ymlStr, (placeholder, expression)) =>
+            val find = "${" + placeholder + "}"
+            val replaceWith = sqlLiteralExpr(expression)
+            logInfo(s"Substituting placeholder: $find with value: $replaceWith")
+            ymlStr.replace(find, replaceWith)
+        }
+        return parseYAML(updatedYmlStr, classOf[TransformActionRoot])
+      }
+      this
+    }
 
     /**
       * Get the Multi arg function that is registered in Spark Function registry
@@ -168,7 +204,7 @@ package object action {
                                @JsonProperty(required = false) columns: Option[Seq[String]]) extends SingleOutputTransform(Actions.Repartition) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = (df: DataFrame) => {
       (numPartitions, columns) match {
-        case (0, None) => df    /* do nothing */
+        case (0, None) => df /* do nothing */
         case (0, Some(cols)) => df.repartition(cols.map(expr): _*)
         case (number, None) => df.repartition(number)
         case (number, Some(cols)) => df.repartition(number, cols.map(expr): _*)
@@ -231,14 +267,14 @@ package object action {
       case "full" => joinFunc <> _
     }
 
-    def isExpressionBased: Boolean = {
+    def expressionBased: Boolean = {
       if (joinCondition == null && joinColumns == null)
         throw new YamlDataTransformException("Please provide either 'condition' or 'columns' option in join action definition")
       joinCondition != null
     }
 
     override def transformFunction(dataframes: DataFrame*): DFFunc = {
-      if (isExpressionBased)
+      if (expressionBased)
         joinTypeFunc(Join(Option(broadcastHint), expr(joinCondition)))(dataframes.head)
       else
         joinTypeFunc(Join(Option(broadcastHint), joinColumns: _*))(dataframes.head)
@@ -280,7 +316,7 @@ package object action {
    */
   case class SelectAction(@SqlExpr @JsonProperty(required = true) columns: Seq[String])
     extends SingleOutputTransform(Actions.Select) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = Select(columns: _*)
+    override def transformFunction(dataframes: DataFrame*): DFFunc = Select1(columns: _*)
   }
 
   /*
@@ -291,7 +327,7 @@ package object action {
                                    @JsonProperty(value = "skip_columns") skipColumns: Option[Seq[String]])
     extends SingleOutputTransform(Actions.SelectAlias) {
     override def transformFunction(dataframes: DataFrame*): DFFunc =
-      Select(dataframes.head, alias, includeColumns.getOrElse(Nil), skipColumns.getOrElse(Nil))
+      Select1(dataframes.head, alias, includeColumns.getOrElse(Nil), skipColumns.getOrElse(Nil))
   }
 
   /*
@@ -299,7 +335,7 @@ package object action {
    */
   case class SelectWithReorderedAction(@JsonProperty(required = true) alias: String)
     extends SingleOutputTransform(Actions.SelectReorder) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = Select(dataframes.head)
+    override def transformFunction(dataframes: DataFrame*): DFFunc = Select1(dataframes.head)
 
     override def inputAliases: Seq[String] = Seq(alias)
   }
@@ -387,6 +423,36 @@ package object action {
   case class UnstructAction(@JsonProperty(required = true) column: String)
     extends SingleOutputTransform(Actions.Unstruct) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = Unstruct(column)
+  }
+
+
+  /*
+      Collect action, This action is a NoOp. It causes a side effect where the collected values
+      are stored for future reference
+   */
+  case class CollectAction(@JsonProperty(required = true) placeholder: String,
+                           @JsonProperty(required = true) alias: String,
+                           @JsonProperty(required = true) column: String)
+    extends SingleOutputTransform(Actions.Collect) {
+
+    import CollectAction._
+
+    override def transformFunction(dataframes: DataFrame*): DFFunc = {
+      mutableRef += (placeholder -> dataframes.head.select(column).collect.map(_.get(0)).toSeq)
+      NoOp()
+    }
+
+    override def inputAliases: Seq[String] = Seq(alias)
+  }
+
+  object CollectAction {
+    private val mutableRef: mutable.Map[String, Seq[Any]] = mutable.Map()
+
+    def getCollectedValues: Map[String, Any] = {
+      mutableRef
+        .mapValues { arr => if (arr.size == 1) arr.head else arr.toList }
+        .toMap
+    }
   }
 
   /*

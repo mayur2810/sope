@@ -92,6 +92,8 @@ transformations :
       input: "transactions"
       actions:
       - {type: transform, list: {upper_loc : "custom_upper(loc)"}}
+      - {type: collect, placeholder: ids, alias: grp_by, column: "p_cnt"}
+      - {type: filter, condition: "id in (${ids})"}
     - alias: "custom_transform_call_test"
       input: "transactions"
       actions:
