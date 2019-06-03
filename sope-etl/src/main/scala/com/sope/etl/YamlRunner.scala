@@ -30,7 +30,7 @@ object YamlRunner extends Logging {
       .map(parseYAML(_, classOf[Map[String, Any]]))
     // Get Substitutions from files
     val substitutionsFromFiles = optionMap.get(MainYamlFileSubstitutionFilesOption)
-      .fold(Map[String, Any]()) { _.split(",").map(new MapYaml[String, Any](_).getMap).reduce(_ ++ _).toMap}
+      .fold(Map[String, Any]()) { _.split(",").map(file => new MapYaml[String, Any](file.trim).getMap).reduce(_ ++ _).toMap}
     // Merge Substitutions
     val substitutions = substitutionsFromCmdLine.getOrElse(Map.empty) ++ substitutionsFromFiles
     logInfo(s"Substitutions provided :- \n${substitutions.mkString("\n")}")

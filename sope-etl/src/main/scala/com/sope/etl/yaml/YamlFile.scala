@@ -14,15 +14,16 @@ import scala.util.{Failure, Success, Try}
 abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, Any]] = None, modelClass: Class[T])
   extends Logging {
 
-  protected val model: T = serialize
+  protected val model: T = deserialize
 
   /*
      Updates Placeholders with values provided for Substitution
    */
   private def updatePlaceHolders(): String = {
     substitutions.get
-      .map { case (placeholder, substitution) => "${" + placeholder.trim + "}" -> convertToYaml(substitution).trim }
-      .foldLeft(readYamlFile(yamlPath)) { case (yamlStr, (key, value)) => yamlStr.replace(key, value) }
+      .map { case (placeholder, substitution) => "\"*\\s*\\$\\{" + placeholder.trim + "\\}\\s*\"*" -> convertToYaml(substitution).trim }
+      .foldLeft(readYamlFile(yamlPath)) { case (yamlStr, (key, value)) => yamlStr.replaceAll(key, s" $value")
+      }
   }
 
   /*
@@ -51,11 +52,11 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
   def getText: String = substitutions.fold(readYamlFile(yamlPath))(_ => updatePlaceHolders())
 
   /**
-    * Serialize the YAML to provided Type
+    * Deserialize the YAML to provided Type
     *
     * @return T
     */
-  def serialize: T = Try {
+  def deserialize: T = Try {
     val yamlStr = getText
     logInfo(s"Parsing $getYamlFileName YAML file :-\n $yamlStr")
     parseYAML(yamlStr, modelClass)
