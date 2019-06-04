@@ -108,6 +108,19 @@ package object etl extends Logging {
   }
 
   /**
+    * Builds Optional Command line options
+    *
+    * @param optionName options
+    * @return [[cli.Option]]
+    */
+  def buildRequiredCmdLineOption(optionName: String): cli.Option = {
+    val substitutionOption = OptionBuilder.create(optionName)
+    substitutionOption.setArgs(1)
+    substitutionOption.setRequired(true)
+    substitutionOption
+  }
+
+  /**
     * Get SQL Literal Expression for value to substituted in SQL
     *
     * @param value Any value
