@@ -2,20 +2,32 @@ package com.sope.etl.utils
 
 import java.io.File
 
-import com.sope.etl.MainYamlFileOption
-import com.sope.etl.buildRequiredCmdLineOption
-import org.apache.commons.cli.{BasicParser, Options}
+import com.sope.etl.{MainYamlFileOption, SubstitutionFilesOption, SubstitutionsOption}
+
+import scala.collection.mutable
 
 /**
+  * Sope Spark Wrapper Utility. The purpose of the utility is to generate the appropriate Spark-submit
+  * settings for adding Yaml files to Driver classpath. THe Utility accepts the yaml folder containing the
+  * yaml file and based on the cluster mode, it creates the respective spark settings.
+  *
   * @author mbadgujar
   */
 object WrapperUtil {
 
-  val YamlFolder = "yaml_folder"
-  val SparkProperties = "spark_property_file"
-  val ClusterMode = "cluster_mode"
+  private val YamlFolder = "yaml_folder"
+  private val ClusterMode = "cluster_mode"
 
-  def getFiles(directory: String): List[File] = {
+  // Configuration Model
+  case class WrapperConfig(yamlFolder: String = "",
+                           mainYamlFile: String = "",
+                           isClusterMode: Boolean = false,
+                           substitutionsFromCmdLine: String = "",
+                           substitutionsFromFiles: String = "")
+
+  // Gets files from the given directory
+  // TODO : Handle prefixes. HDFS, files etc
+  private def getFiles(directory: String): List[File] = {
     val dir = new File(directory)
     if (dir.exists && dir.isDirectory) {
       dir.listFiles.filter(_.isFile).toList
@@ -23,27 +35,84 @@ object WrapperUtil {
       Nil
   }
 
-  def main(args: Array[String]): Unit = {
+  /*
+     Custom Option Parser. The parser get the unknown options and instead of printing warnings, collects them
+     internally.
+   */
+  class WrapperConfigParser extends scopt.OptionParser[WrapperConfig]("Sope-ETL Spark Wrapper") {
+    val UnknownOptionMsg = "Unknown option"
+    val UnknownArgMsg = "Unknown argument"
+    private val unknownOptions = mutable.MutableList[String]()
 
-    val options = new Options()
-      .addOption(buildRequiredCmdLineOption(YamlFolder))
-      .addOption(buildRequiredCmdLineOption(MainYamlFileOption))
-      .addOption(buildRequiredCmdLineOption(SparkProperties))
-      .addOption(buildRequiredCmdLineOption(ClusterMode))
+    head("Sope-ETL")
 
-    val cmdLine = new BasicParser().parse(options, args, true)
-    val optionMap = cmdLine.getOptions.map(option => option.getOpt.trim -> option.getValue.trim).toMap
-    val yamlFolder = optionMap(YamlFolder)
-    val yamlFiles = getFiles(yamlFolder).map(_.getAbsoluteFile)
-    val isClusterMode = optionMap(ClusterMode).toBoolean
+    opt[String](ClusterMode)
+      .required()
+      .action((value, config) => config.copy(isClusterMode = value.toBoolean))
+      .text("Whether the job is to deployed in Cluster mode (true/false). " +
+            "\n Note: You do not need to provide the 'deploy-mode' spark option, it is provided internally by the wrapper")
 
-    val sparkProps = if (isClusterMode) {
-      "--deploy-mode cluster --files" + s""""${yamlFiles.mkString(",")}""""
-    } else {
-      "--deploy-mode client  --driver-class-path=" + s""""${optionMap(YamlFolder)}""""
+    opt[String](YamlFolder)
+      .required()
+      .action((value, config) => config.copy(yamlFolder = value))
+      .text("Folder Path containing all the Sope Yaml Files")
+
+    opt[String](MainYamlFileOption)
+      .required()
+      .action((value, config) => config.copy(mainYamlFile = value))
+      .text("Entry point yaml file")
+
+    opt[String](SubstitutionsOption)
+      .optional()
+      .action((value, config) => config.copy(substitutionsFromCmdLine = s"--$SubstitutionsOption=$value"))
+      .text("(Optional) Yaml Map containing key, value pairs for substitutions")
+
+    opt[String](SubstitutionFilesOption)
+      .optional()
+      .action((value, config) => config.copy(substitutionsFromFiles = s"--$SubstitutionFilesOption=$value"))
+      .text("(Optional) Comma separated list of Substitution files")
+
+    help("help").text("help menu")
+
+    override def showUsageOnError: Boolean = true
+
+    override def errorOnUnknownArgument: Boolean = false
+
+    //TODO This is bad hack for now. Need to check alternative approach
+    override def reportWarning(msg: String): Unit = {
+      msg.trim match {
+        case option if option.startsWith(UnknownOptionMsg) =>
+          unknownOptions += option.replace(UnknownOptionMsg, "").trim
+        case arg if arg.startsWith(UnknownArgMsg) =>
+          unknownOptions += arg.replace(UnknownArgMsg, "").replace("'", "").trim
+        case other => unknownOptions += other
+      }
     }
-    val sopeProps = s"--$MainYamlFileOption ${optionMap(MainYamlFileOption)}"
-    println(s"$sparkProps\n$sopeProps")
+
+    def getUnknownOptions: Seq[String] = unknownOptions
   }
 
+  def main(args: Array[String]): Unit = {
+
+    val delimiter = "|"
+    val parser = new WrapperConfigParser()
+
+    // Gets the passed options and prints the output to console, which is processed by Bash script.
+    parser.parse(args, WrapperConfig()) match {
+      case Some(config) =>
+        val yamlFiles = getFiles(config.yamlFolder).map(_.getAbsoluteFile)
+        val sparkProps = {
+          if (config.isClusterMode)
+            Seq("--deploy-mode=cluster", s"--files=${yamlFiles.mkString(",")}")
+          else
+            Seq("--deploy-mode=client", s"--driver-class-path=${config.yamlFolder}")
+        } ++ parser.getUnknownOptions
+        val sopeProps = Seq(s"--$MainYamlFileOption=${config.mainYamlFile}", config.substitutionsFromCmdLine,
+          config.substitutionsFromFiles).filterNot(_.isEmpty)
+
+        println(s"${sparkProps.mkString(delimiter)}\n${sopeProps.mkString(delimiter)}")
+      case None =>
+        throw new Exception("Invalid options provided")
+    }
+  }
 }

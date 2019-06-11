@@ -37,6 +37,7 @@
         <eclipse.plugin.version>2.10</eclipse.plugin.version>
         <scoverage.plugin.version>1.3.0</scoverage.plugin.version>
         <bigquery.connector.version>hadoop3-0.13.11</bigquery.connector.version>
+        <scopt.version>3.7.1</scopt.version>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +77,11 @@
                         <artifactId>jackson-core</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.scopt</groupId>
+                <artifactId>scopt_${scala.version.tag}</artifactId>
+                <version>${scopt.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.cloud.bigdataoss</groupId>

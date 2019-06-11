@@ -42,6 +42,10 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.scopt</groupId>
+            <artifactId>scopt_${scala.version.tag}</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud.bigdataoss</groupId>
             <artifactId>bigquery-connector</artifactId>
             <scope>provided</scope>

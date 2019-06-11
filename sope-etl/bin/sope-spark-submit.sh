@@ -43,3 +43,19 @@ LAUNCH_CLASSPATH="$CMD_DIR/lib/*:$LAUNCH_CLASSPATH"
 
 
 "$RUNNER" -Xmx128m -cp "$LAUNCH_CLASSPATH" com.sope.etl.utils.WrapperUtil "$@"
+status=$?
+if [ $status -ne 0 ]
+then
+ exit -1
+fi
+
+OPT_ARR=()
+while IFS= read -r line; do
+    OPT_ARR+=( "$line" )
+done < <( "$RUNNER" -Xmx128m -cp "$LAUNCH_CLASSPATH" com.sope.etl.utils.WrapperUtil "$@" )
+IFS='|' read -r -a SPARK_OPTS <<< ${OPT_ARR[0]}
+IFS='|' read -r -a SOPE_OPTS <<< ${OPT_ARR[1]}
+
+
+SPARK_CMD=(${SPARK_HOME}/bin/spark-submit  "${SPARK_OPTS[@]}" --class  com.sope.etl.YamlRunner  $CMD_DIR/lib/sope-etl*.jar "${SOPE_OPTS[@]}")
+exec "${SPARK_CMD[@]}"
