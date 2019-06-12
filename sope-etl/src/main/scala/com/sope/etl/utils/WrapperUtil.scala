@@ -15,11 +15,11 @@ import scala.collection.mutable
   */
 object WrapperUtil {
 
-  private val YamlFolder = "yaml_folder"
+  private val YamlFolders = "yaml_folders"
   private val ClusterMode = "cluster_mode"
 
   // Configuration Model
-  case class WrapperConfig(yamlFolder: String = "",
+  case class WrapperConfig(yamlFolders: Seq[String] = Nil,
                            mainYamlFile: String = "",
                            isClusterMode: Boolean = false,
                            substitutionsFromCmdLine: String = "",
@@ -52,10 +52,10 @@ object WrapperUtil {
       .text("Whether the job is to deployed in Cluster mode (true/false). " +
             "\n Note: You do not need to provide the 'deploy-mode' spark option, it is provided internally by the wrapper")
 
-    opt[String](YamlFolder)
+    opt[String](YamlFolders)
       .required()
-      .action((value, config) => config.copy(yamlFolder = value))
-      .text("Folder Path containing all the Sope Yaml Files")
+      .action((value, config) => config.copy(yamlFolders = value.split(",").map(_.trim)))
+      .text("Comma separated list of folder paths containing all the Sope Yaml Files")
 
     opt[String](MainYamlFileOption)
       .required()
@@ -100,12 +100,12 @@ object WrapperUtil {
     // Gets the passed options and prints the output to console, which is processed by Bash script.
     parser.parse(args, WrapperConfig()) match {
       case Some(config) =>
-        val yamlFiles = getFiles(config.yamlFolder).map(_.getAbsoluteFile)
+        val yamlFiles = config.yamlFolders.flatMap(getFiles).map(_.getAbsolutePath)
         val sparkProps = {
           if (config.isClusterMode)
             Seq("--deploy-mode=cluster", s"--files=${yamlFiles.mkString(",")}")
           else
-            Seq("--deploy-mode=client", s"--driver-class-path=${config.yamlFolder}")
+            Seq("--deploy-mode=client", s"--driver-class-path=${config.yamlFolders.mkString(File.pathSeparator)}")
         } ++ parser.getUnknownOptions
         val sopeProps = Seq(s"--$MainYamlFileOption=${config.mainYamlFile}", config.substitutionsFromCmdLine,
           config.substitutionsFromFiles).filterNot(_.isEmpty)
