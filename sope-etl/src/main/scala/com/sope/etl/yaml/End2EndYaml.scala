@@ -34,14 +34,15 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
     */
   def dynamicUDFDefined: Boolean = model.udfs.isDefined && model.udfs.get.nonEmpty
 
-  private val udfMap = if (dynamicUDFDefined) UDFBuilder.buildDynamicUDFs(model.udfs.get) else Map()
+  private val udfMap = if (dynamicUDFDefined) UDFBuilder.buildDynamicUDFs(model.udfs.get) else Map.empty
 
   /*
      Registers the UDF provided in YAML file
    */
-  private def registerDynamicUDFs(sqlContext: SQLContext): Unit = {
-    logInfo("Registering dynamic udfs..")
-    udfMap.foreach { case (udfName, udfInst) => sqlContext.udf.register(udfName, udfInst) }
+  private def registerDynamicUDFs(sqlContext: SQLContext): Unit =  udfMap.foreach {
+    case (udfName, udfInst) =>
+      logInfo(s"Registering Dynamic UDF :- $udfName")
+      sqlContext.udf.register(udfName, udfInst)
   }
 
 
@@ -59,6 +60,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
     if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
     val sourceDFMap = model.sources
       .map(source => {
+        val sourceAlias = source.getSourceName
         val sourceDF = Try {
           source.apply(sqlContext)
         } match {
@@ -67,17 +69,18 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
             logError(s"Failed to create dataframe from source: ${source.getSourceName}")
             throw exception
         }
-
         if (testingMode) {
           val fraction = SopeETLConfig.TestingDataFraction
           logWarning(s"Sampling ${fraction * 100} percent data from source: $source")
-          source.getSourceName -> sourceDF
-            .sample(withReplacement = true, SopeETLConfig.TestingDataFraction)
-            .alias(source.getSourceName)
+          sourceAlias -> {
+            val sampledDF = sourceDF
+              .sample(withReplacement = true, SopeETLConfig.TestingDataFraction)
+            sampledDF.createOrReplaceTempView(sourceAlias)
+            sampledDF.alias(sourceAlias)
+          }
         }
         else
-          source.getSourceName -> {
-            val sourceAlias = source.getSourceName
+          sourceAlias -> {
             sourceDF.createOrReplaceTempView(sourceAlias)
             sourceDF.alias(sourceAlias)
           }
