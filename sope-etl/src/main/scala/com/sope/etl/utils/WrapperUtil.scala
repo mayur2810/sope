@@ -17,13 +17,24 @@ object WrapperUtil {
 
   private val YamlFolders = "yaml_folders"
   private val ClusterMode = "cluster_mode"
+  private val CustomUDFSClass = "custom_udfs_class"
+  private val CustomTransformationsClass = "custom_transformations_class"
+  private val AutoPersistMode = "auto_persist"
+  private val TestingMode = "testing_mode"
+  private val TestingDataFraction = "testing_data_fraction"
+
 
   // Configuration Model
   case class WrapperConfig(yamlFolders: Seq[String] = Nil,
                            mainYamlFile: String = "",
                            isClusterMode: Boolean = false,
                            substitutionsFromCmdLine: String = "",
-                           substitutionsFromFiles: String = "")
+                           substitutionsFromFiles: String = "",
+                           customUDFsClass: String = "",
+                           customTransformationsClass: String = "",
+                           autoPersistMode: Boolean = true,
+                           testingMode: Boolean = false,
+                           testingDataFraction: Double = 0.0)
 
   // Gets files from the given directory
   // TODO : Handle prefixes. HDFS, files etc
@@ -50,7 +61,7 @@ object WrapperUtil {
       .required()
       .action((value, config) => config.copy(isClusterMode = value.toBoolean))
       .text("Whether the job is to deployed in Cluster mode (true/false). " +
-            "\n Note: You do not need to provide the 'deploy-mode' spark option, it is provided internally by the wrapper")
+        "\n Note: You do not need to provide the 'deploy-mode' spark option, it is provided internally by the wrapper")
 
     opt[String](YamlFolders)
       .required()
@@ -71,6 +82,32 @@ object WrapperUtil {
       .optional()
       .action((value, config) => config.copy(substitutionsFromFiles = s"--$SubstitutionFilesOption=$value"))
       .text("(Optional) Comma separated list of Substitution files")
+
+    opt[String](CustomUDFSClass)
+      .optional()
+      .action((value, config) => config.copy(customUDFsClass = value))
+      .text("(Optional) Fully qualified class name containing custom UDFs")
+
+    opt[String](CustomTransformationsClass)
+      .optional()
+      .action((value, config) => config.copy(customTransformationsClass = value))
+      .text("(Optional) Fully qualified class name containing custom Transformations")
+
+    opt[String](AutoPersistMode)
+      .optional()
+      .action((value, config) => config.copy(autoPersistMode = value.toBoolean))
+      .text("(Optional) Enable/Disable Auto Persist Mode (true/false)")
+
+    opt[String](TestingMode)
+      .optional()
+      .action((value, config) => config.copy(testingMode = value.toBoolean))
+      .text("(Optional) Enable/Disable Testing Mode (true/false)")
+
+    opt[String](TestingDataFraction)
+      .optional()
+      .action((value, config) => config.copy(testingDataFraction = value.toDouble))
+      .text("(Optional) Testing data fraction, if Testing mode is enabled")
+
 
     help("help").text("help menu")
 
@@ -101,12 +138,23 @@ object WrapperUtil {
     parser.parse(args, WrapperConfig()) match {
       case Some(config) =>
         val yamlFiles = config.yamlFolders.flatMap(getFiles).map(_.getAbsolutePath)
+
+        val sopeJavaOptions =
+          (if (config.customUDFsClass.isEmpty) Nil else Nil :+ s"-Dsope.etl.udf.class=${config.customUDFsClass}") ++
+            (if (config.customTransformationsClass.isEmpty) Nil else Nil :+ s"-Dsope.etl.transformation.class=${config.customTransformationsClass}") ++
+            (if (!config.testingMode) Nil else Nil :+ s"-Dsope.testing.mode.enabled=${config.testingMode}") ++
+            (if (config.testingDataFraction == 0.0) Nil else Nil :+ s"-Dsope.testing.data.fraction=${config.testingDataFraction}") :+
+            s"-Dsope.auto.persist.enabled=${config.autoPersistMode}"
+
+        // Spark Configurations. Also contains sope configurations passed as java options to driver
         val sparkProps = {
           if (config.isClusterMode)
             Seq("--deploy-mode=cluster", s"--files=${yamlFiles.mkString(",")}")
           else
             Seq("--deploy-mode=client", s"--driver-class-path=${config.yamlFolders.mkString(File.pathSeparator)}")
-        } ++ parser.getUnknownOptions
+        } ++ parser.getUnknownOptions :+ s"--driver-java-options=${sopeJavaOptions.mkString(" ")}"
+
+        // Sope Configurations passed as command line options
         val sopeProps = Seq(s"--$MainYamlFileOption=${config.mainYamlFile}", config.substitutionsFromCmdLine,
           config.substitutionsFromFiles).filterNot(_.isEmpty)
 
