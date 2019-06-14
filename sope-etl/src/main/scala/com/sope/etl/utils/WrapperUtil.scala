@@ -2,7 +2,7 @@ package com.sope.etl.utils
 
 import java.io.File
 
-import com.sope.etl.{MainYamlFileOption, SubstitutionFilesOption, SubstitutionsOption}
+import com.sope.etl._
 
 import scala.collection.mutable
 
@@ -140,11 +140,12 @@ object WrapperUtil {
         val yamlFiles = config.yamlFolders.flatMap(getFiles).map(_.getAbsolutePath)
 
         val sopeJavaOptions =
-          (if (config.customUDFsClass.isEmpty) Nil else Nil :+ s"-Dsope.etl.udf.class=${config.customUDFsClass}") ++
-            (if (config.customTransformationsClass.isEmpty) Nil else Nil :+ s"-Dsope.etl.transformation.class=${config.customTransformationsClass}") ++
-            (if (!config.testingMode) Nil else Nil :+ s"-Dsope.testing.mode.enabled=${config.testingMode}") ++
-            (if (config.testingDataFraction == 0.0) Nil else Nil :+ s"-Dsope.testing.data.fraction=${config.testingDataFraction}") :+
-            s"-Dsope.auto.persist.enabled=${config.autoPersistMode}"
+          (if (config.customUDFsClass.isEmpty) Nil else Nil :+ s"-D$UDFRegistrationClassProperty=${config.customUDFsClass}") ++
+            (if (config.customTransformationsClass.isEmpty) Nil else
+              Nil :+ s"-D$TransformationRegistrationClassProperty=${config.customTransformationsClass}") ++
+            (if (!config.testingMode) Nil else Nil :+ s"-D$TestingModeProperty=${config.testingMode}") ++
+            (if (config.testingDataFraction == 0.0) Nil else Nil :+ s"-D$TestingDataFractionProperty=${config.testingDataFraction}") :+
+            s"-D$AutoPersistProperty=${config.autoPersistMode}"
 
         // Spark Configurations. Also contains sope configurations passed as java options to driver
         val sparkProps = {
