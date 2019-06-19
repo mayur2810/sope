@@ -55,10 +55,10 @@ package object etl extends Logging {
     * @tparam A Object Type
     * @return Option of type A
     */
-  def getObjectInstance[A](classloader: ClassLoader, clsName: String): Option[A] = {
+  def getObjectInstance[A](classloader: ClassLoader, clsName: String): A = {
     val mirror = runtimeMirror(classloader)
     val module = mirror.staticModule(clsName)
-    Some(mirror.reflectModule(module).instance.asInstanceOf[A])
+    mirror.reflectModule(module).instance.asInstanceOf[A]
   }
 
 

@@ -90,11 +90,11 @@ package object model {
     val isMultiOutputTransform: Boolean = aliases.isDefined
 
     /**
-      * Get Transformation alias. If not provided, defaults for source name
+      * Get Transformation alias.
       *
       * @return alias
       */
-    def getAliases: Seq[String] = if (isMultiOutputTransform) aliases.get else alias.getOrElse(source) +: Nil
+    def getAliases: Seq[String] = if (isMultiOutputTransform) aliases.getOrElse(Nil) else alias.getOrElse(source) +: Nil
 
 
     /**

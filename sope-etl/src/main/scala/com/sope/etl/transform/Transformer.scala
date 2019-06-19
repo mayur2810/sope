@@ -52,7 +52,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
   private def prePartitionColumns(alias: String): Option[Seq[String]] = {
     val joinSources = inputSources
       .filter(source => source.name == alias && source.isUsedForJoin)
-      .map(source => source.joinColumns.get.sorted)
+      .map(source => source.joinColumns.getOrElse(Nil).sorted)
     if (joinSources.nonEmpty && joinSources.size >= 2) Some(joinSources.maxBy(_.mkString(","))) else None
   }
 
@@ -110,6 +110,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           case (true, _) =>
             Nil :+ sourceDF.sqlContext.sql(dfTransform.sql.get)
           case (_, true) =>
+            // TODO currently considers multi action as last, can be anywhere?
             val multiOutAction = actions.last
             val transformedSingleAction = actions
               .take(actions.size - 1)

@@ -10,7 +10,7 @@ import org.apache.spark.sql.expressions.UserDefinedFunction
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.IMain
 
-object UDFBuilder extends Logging {
+object  UDFBuilder extends Logging {
 
   val DefaultClassLocation = "/tmp/sope/dynamic/"
   val DefaultJarLocation = "/tmp/sope/sope-dynamic-udf.jar"
@@ -48,7 +48,7 @@ object UDFBuilder extends Logging {
           logError("Failed to compile UDF code")
           throw new YamlDataTransformException(s"Failed to build $udfName UDF")
         }
-        val instance = getObjectInstance[Any](eval.classLoader, "com.sope.etl.dynamic." + udfName).get
+        val instance = getObjectInstance[Any](eval.classLoader, "com.sope.etl.dynamic." + udfName)
         udfName -> instance.getClass.getDeclaredMethod("getUDF").invoke(instance).asInstanceOf[UserDefinedFunction]
     }
     eval.close()
