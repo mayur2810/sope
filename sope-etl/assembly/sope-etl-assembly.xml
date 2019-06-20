@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
-<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
-
+<assembly>
     <id>sope-etl-assembly</id>
-
     <formats>
         <format>zip</format>
     </formats>
-
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/bin</directory>
             <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <lineEnding>lf</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/templates</directory>
+            <outputDirectory>templates</outputDirectory>
             <fileMode>0755</fileMode>
             <lineEnding>lf</lineEnding>
         </fileSet>
