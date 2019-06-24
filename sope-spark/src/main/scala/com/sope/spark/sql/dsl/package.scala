@@ -49,7 +49,8 @@ package object dsl {
     def apply[_: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.select(columns: _*)
 
     /**
-      * Select columns from given dataframe
+      * Select columns from given dataframe. The Dataframe on which this function is called should contain all columns from the
+      * dataframe used for re-ordering. Useful for doing a 'Union' operation.
       *
       * @param reorderDF [[DataFrame]] which has the ordered columns
       * @return [[DFFunc]]
@@ -57,14 +58,17 @@ package object dsl {
     def apply(reorderDF: DataFrame): DFFunc = (df: DataFrame) => df.select(reorderDF.getColumns: _*)
 
     /**
-      * Select columns from given dataframe which are aliased
+      * Select columns from a dataframe which was joined using aliased dataframes.
+      * Useful if you want to get a structure of pre-joined dataframe and include some join columns from opposite side of join.
       *
-      * @param joinedDF [[DataFrame]] which has aliased columns
-      * @param alias    DF alias
+      * @param priorDF        [[DataFrame]] from which columns will be referred
+      * @param alias          alias to be selected
+      * @param includeColumns Any columns to be included from the opposite side of join. Should not conflict with aliased columns.
+      * @param excludeColumns Any columns to be excluded from alias columns to selected
       * @return [[DFFunc]]
       */
-    def apply(joinedDF: DataFrame, alias: String, includeColumns: Seq[String] = Nil, excludeColumns: Seq[String] = Nil): DFFunc =
-      (df: DataFrame) => df.select(joinedDF.getColumns(alias, excludeColumns) ++ includeColumns.map(col): _*)
+    def apply(priorDF: DataFrame, alias: String, includeColumns: Seq[String] = Nil, excludeColumns: Seq[String] = Nil): DFFunc =
+      (df: DataFrame) => df.select(priorDF.getColumns(alias, excludeColumns) ++ includeColumns.map(col): _*)
   }
 
 
