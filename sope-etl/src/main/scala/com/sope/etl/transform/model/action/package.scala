@@ -135,8 +135,11 @@ package object action {
           case (ymlStr, (placeholder, expression)) =>
             val find = "${" + placeholder + "}"
             val replaceWith = sqlLiteralExpr(expression)
-            logInfo(s"Substituting placeholder: $find with value: $replaceWith")
-            ymlStr.replace(find, replaceWith)
+            if (ymlStr.contains(find)) {
+              logInfo(s"Substituting placeholder: $find with value: $replaceWith")
+              ymlStr.replace(find, replaceWith)
+            }
+            else ymlStr
         }
         return parseYAML(updatedYmlStr, classOf[TransformActionRoot])
       }
@@ -328,6 +331,8 @@ package object action {
     extends SingleOutputTransform(Actions.SelectAlias) {
     override def transformFunction(dataframes: DataFrame*): DFFunc =
       Select1(dataframes.head, alias, includeColumns.getOrElse(Nil), skipColumns.getOrElse(Nil))
+
+    override def inputAliases: Seq[String] = Seq(alias)
   }
 
   /*
