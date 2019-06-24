@@ -207,4 +207,16 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     val transformedDF = transformedResult("repartition_test")
     transformedDF.rdd.partitions.length should be(10)
   }
+
+  "select_with_alias_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("select_with_alias_test")
+    transformedDF.show
+    transformedDF.columns should contain allOf("product", "location")
+  }
+
+  "select_with_reorder" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("select_with_reorder_test")
+    transformedDF.show
+    transformedDF.columns should contain inOrder ("product_id", "product")
+  }
 }

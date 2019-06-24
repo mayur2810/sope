@@ -110,3 +110,14 @@ transformations :
       input: "transactions"
       actions:
       - {type: repartition, columns: [lower(loc)], num_partitions: 10}
+    - input: product_filtered
+      alias: select_with_alias_test
+      actions:
+        - {type: join, with: product_filtered1,  condition: "product_filtered.product_id = product_filtered1.product_id" , join_type: inner, broadcast_hint: right}
+        - {type: transform, list: {location: "'pune'"}}
+        - {type: select_alias, alias: product_filtered, skip_columns:[product_id], include_columns: [location]}
+    - input: product_filtered
+      alias: select_with_reorder_test
+      actions:
+        - {type: select, columns: [product, product_id]}
+        - {type: select_reorder, alias: product_filtered}
