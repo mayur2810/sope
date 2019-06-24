@@ -20,8 +20,8 @@ The details about the Transformer constructs are provided in the following docum
 
 The transformer supports both end-to-end and intermediate mode.
   - End-to-End mode:
-        The YAML file has input sources and output targets information along with the transformation that will happen on the inputs.
-        Supported input/output formats: hive, orc, parquet, avro, text, csv, json, bigquery, kafka and any custom input supporting Spark SQL input specification.
+        The YAML file has input sources and output configurations along with the transformations that will happen on the inputs.
+        Supported input/output formats: hive, orc, parquet, avro, text, csv, json, bigquery, kafka and any custom input supporting Spark SQL input/output specification.
         Following is a sample yaml file which reads and writes to hive:
 
     ```yaml
@@ -48,23 +48,21 @@ The transformer supports both end-to-end and intermediate mode.
         - {type: hive, input: product_filtered, mode: append, db: stage, table: temp_product}
         - {type: hive, input: transactions_transformed, mode: append, db: stage, table: transformed_transaction}
     ```
-
-    The yaml file can be submitted for execution using spark-submit command as follows:
-
-    - Cluster mode:
-
-     ```shell
-     spark-submit  --master yarn  --deploy-mode cluster  --class  com.sope.etl.YamlRunner  --files="entry.yaml, scd.yaml" sope-etl-x.x.jar --main_yaml_file entry.yaml
-     ```
-
-    - Client mode with substitutions:
-
-     ```shell
-     spark-submit  --master yarn  --deploy-mode client  --class  com.sope.etl.YamlRunner  --driver-class-path="/yaml-folder/" sope-etl-x.x.jar --main_yaml_file entry.yaml --substitutions "[sub1, {k1: v1, k2: v2}]"
-     ```
-
-*NOTE*: It is mandatory that all the yaml files are in the spark driver classpath. The main_yaml_file argument only specifies the enrty point yaml file.
-
+    The Yaml file can be executed using the provided utility shell script **sope-spark-submit.sh**. Run 'sope-spark-submit.sh --help' for details on the parameter options.
+    Apart from the utility arguments, the standard spark-submit options are to be mentioned with the script itself. These are passed to the spark-submit invocation internally. 
+    Note: The spark-submit option for --class and --deploy-mode are not required for the utility script, since they are handled internally.
+    Following shows a example usage of the script:
+    
+    - Client mode:
+    ```shell
+    ./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files,/home/user/conf-files" --main_yaml_file demo.yaml --cluster_mode false  --name sope_etl_demo --master yarn  --substitution_files="demo-conf1.yaml, demo-conf2.yaml"
+    ```
+    
+    - Client mode:
+    ```shell
+    ./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files,/home/user/conf-files" --main_yaml_file demo.yaml --cluster_mode true  --name sope_etl_demo --master yarn  --substitution_files="demo-conf1.yaml, demo-conf2.yaml"
+    ```
+    
    -   Intermediate mode:
         This mode allows using yaml file in Scala/Java code. Multiple dataframes can be provided as input and the final output will give references to transformed dataframes for all transformation aliases.
 
@@ -118,13 +116,14 @@ The transformer supports both end-to-end and intermediate mode.
         ```
 
 #### Optimizations:
-The Yaml Transformer will try to figure out if there are any transformations that are being reused and persist them using MEMORY_ONLY mode. This may be useful if you do not want to explicitly tag the transformation for persistence and let the transformer decide on it.
+The Yaml Transformer will try to figure out if there are any transformations that are being reused and persist them using MEMORY_ONLY mode. 
+This may be useful if you do not want to explicitly tag the transformation for persistence and let the transformer decide on it.
 
 Also, if the transformation to be persisted is being used for multiple joins, it will be pre-partitioned on the join columns that are involved in most joins.
-This feature is enabled by default. To deactivate auto-persist set *sope.auto.persist.enabled=false* using --driver-java-options.
+This feature is enabled by default. To deactivate auto-persist set the 'auto_persist' option to false through the utility shell.
 
 #### Streaming support:
-The transformer also supports Structured streaming mode. The input and output specification for streaming mode can be found in the
+The Transformer also supports Structured streaming mode. The input and output specification for streaming mode can be found in the
 transformer constructs page. Following shows a sample use of streaming mode:
 
 ```yaml
@@ -149,7 +148,7 @@ There are some etl specific templates that are provided for reference:
 
 #### Custom User Defined Functions:
 An interface 'com.sope.etl.register.UDFRegistration' is provided for registering custom UDFs for use in the Transformer.
-You can create a jar for custom UDFs and register with Transformer using system property: sope.etl.udf.class
+You can create a jar for custom UDFs and register with Transformer using 'custom_udfs_class' option on the utility shell.
 There is also a way to provide Scala UDFs in the YAML file itself. Following sample shows how to provide dynamic UDFs:
 
 ```yaml
@@ -169,21 +168,28 @@ There is also a way to provide Scala UDFs in the YAML file itself. Following sam
           ....
 ```
 
-#### Custom Transformation:
-If there is a need to call some complex/pre-built logic developed in using Scala/Java SparkSQl API's, they can be integrated by calling the 'named_transform' action construct.
-For integration, you need to implement the 'com.sope.etl.register.TransformationRegistration' trait and define the 'registerTransformations' which return a Map of transformation name and transformation function (DataFrame*) => DataFrame.
-The jar needs to be added to Spark's classpath and the class is to be registered using the following system property: sope.etl.transformation.class
-
-example:
+Example invocation for registering custom udfs jar:
 
 ```shell
-spark-submit  --master yarn  --deploy-mode cluster  --class  com.sope.etl.YamlRunner  --driver-java-options "-Dsope.etl.transformation.class=com.custom.CustomTranformations -Dsope.etl.udf.class=com.custom.CustomUDFs"  --files="entry.yaml, scd.yaml" --jars "custom.jar" sope-etl-x.x.jar --main_yaml_file entry.yaml
+./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files" --main_yaml_file demo.yaml --cluster_mode true  --custom_udfs_class=com.custom.CustomUDFs --name sope_etl_demo --master yarn --jars custom_udf.jar
 ```
 
+#### Custom Transformation:
+If there is a need to call some complex/pre-built logic developed in using Scala/Java SparkSQl API's, they can be integrated by calling the 'named_transform' action construct.
+For integration, you need to implement the 'com.sope.etl.register.TransformationRegistration' trait and define the 'registerTransformations' which returns a Map of transformation name and transformation function (DataFrame*) => DataFrame.
+The jar needs to be added to Spark's classpath and the class is to be registered using the utility shell option 'custom_transformations_class'
+
+Example invocation for registering transformations jar: 
+```shell
+./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files" --main_yaml_file demo.yaml --cluster_mode true  --custom_transformations_class=com.custom.CustomTranformations --name sope_etl_demo --master yarn --jars custom_transformations.jar
+```
 
 #### Testing mode:
 The testing mode allows sampling of data for all sources at once, without the need to edit the Yaml transformation file.
 This is helpful if you need to test the transformation pipeline on a small subset of data.
-To enable testing mode, set following system properties using *driver-java-options* property.
-1. sope.testing.mode.enabled=true
-2. sope.testing.data.fraction=0.5 (Optional, if not provided defaults to 0.1)
+To enable testing mode, set the 'testing_mode' during invocation using the utility shell. You can also control the data fraction using the 'testing_data_fraction' option (Optional, if not provided defaults to 0.1).
+
+Example:
+```shell
+./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files" --main_yaml_file demo.yaml --cluster_mode true  --testing_mode=true --testing_data_fraction=0.2 --name sope_etl_demo --master yarn
+```
