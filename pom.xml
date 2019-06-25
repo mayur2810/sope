@@ -31,12 +31,16 @@
         <jackson.yaml.version>2.6.5</jackson.yaml.version>
         <project.ver>${project.version}</project.ver>
         <maven.shade.version>3.0.0</maven.shade.version>
+        <bigquery.connector.version>hadoop3-0.13.11</bigquery.connector.version>
+        <scopt.version>3.7.1</scopt.version>
+        <!-- Plugin versions -->
         <scalatest.plugin.version>2.0.0</scalatest.plugin.version>
         <scala.plugin.version>3.3.2</scala.plugin.version>
         <surfire.plugin.version>2.7</surfire.plugin.version>
         <eclipse.plugin.version>2.10</eclipse.plugin.version>
         <scoverage.plugin.version>1.3.0</scoverage.plugin.version>
-        <bigquery.connector.version>hadoop3-0.13.11</bigquery.connector.version>
+        <assembly.plugin.version>3.1.0</assembly.plugin.version>
+        <git-id.plugin.version>2.2.4</git-id.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +80,11 @@
                         <artifactId>jackson-core</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.scopt</groupId>
+                <artifactId>scopt_${scala.version.tag}</artifactId>
+                <version>${scopt.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.cloud.bigdataoss</groupId>
@@ -177,6 +186,41 @@
                     <configuration>
                         <scalaVersion>${scala.version}</scalaVersion>
                         <aggregate>true</aggregate>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <!-- Assembly Plugin  -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${assembly.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <!-- Version Plugin  -->
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>${git-id.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>get-version-info</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>revision</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                        <prefix>git</prefix>
+                        <verbose>false</verbose>
+                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                        <generateGitPropertiesFilename>${project.build.directory}/git.properties
+                        </generateGitPropertiesFilename>
+                        <format>properties</format>
+                        <gitDescribe>
+                            <skip>false</skip>
+                            <always>false</always>
+                            <dirty>-dirty</dirty>
+                        </gitDescribe>
                     </configuration>
                 </plugin>
             </plugins>

@@ -14,7 +14,7 @@ import org.apache.spark.sql.DataFrame
   * @param substitutions Substitutions if any
   * @author mbadgujar
   */
-case class IntermediateYaml(yamlPath: String, substitutions: Option[Seq[Any]] = None)
+case class IntermediateYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
   extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutSourceTarget]) {
 
   /**
@@ -26,7 +26,10 @@ case class IntermediateYaml(yamlPath: String, substitutions: Option[Seq[Any]] = 
   def getTransformedDFs(dataFrames: DataFrame*): Seq[(String, DataFrame)] = {
     if (model.sources.size != dataFrames.size)
       throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
-    performRegistrations(dataFrames.head.sqlContext)
+    val sqlContext = dataFrames.headOption.getOrElse{
+      throw new YamlDataTransformException("Empty Dataframe List")
+    }.sqlContext
+    performRegistrations(sqlContext)
     val sourceDFMap = model.sources.zip(dataFrames).map {
       case (source, df) => (source, {
         df.createOrReplaceTempView(source)

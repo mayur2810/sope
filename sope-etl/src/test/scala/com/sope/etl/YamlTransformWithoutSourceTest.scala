@@ -18,7 +18,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
 
   import sqlContext.implicits._
 
-  val TransactionData = Seq(
+  private val transactionData = Seq(
     Transactions(1, "pune", "tshirt", "2018-01-01"),
     Transactions(2, "Pune", "jeans", "2018-01-02"),
     Transactions(3, "mumbAi", "shirt", "2018-01-03"),
@@ -26,7 +26,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     Transactions(5, "chennai", "shirt", "2018-01-03")
   )
 
-  val productData = Seq(
+  private val productData = Seq(
     Product(1, "tshirt", 3, 4, "popular"),
     Product(2, "jeans", 5, 1, "not-popular"),
     Product(3, "shirt", 6, 8, "popular"),
@@ -34,7 +34,7 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     Product(6, "cap", 2, 9, "not-popular")
   )
 
-  val productDimData = Seq(
+  private val productDimData = Seq(
     ProductDim(1l, -1, "N.A.", 0, 0, "not-available", SDate.valueOf("2018-01-01")),
     ProductDim(2l, 0, "N.A.", 0, 0, "not-available", SDate.valueOf("2018-01-01")),
     ProductDim(3l, 1, "tshirt", 3, 4, "not-available", SDate.valueOf("2018-01-01")),
@@ -44,16 +44,14 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
     ProductDim(7l, 5, "kurta", 4, 4, "not-available", SDate.valueOf("2018-01-01"))
 
   )
-  val dateData = Seq(
+  private val dateData = Seq(
     Date(1, "2018-01-01"),
     Date(2, "2018-01-02"),
     Date(3, "2018-01-03")
   )
 
   private val transformedResult = {
-    System.setProperty(UDFRegistrationClassProperty, "com.sope.etl.custom.CustomUDF")
-    System.setProperty(TransformationRegistrationClassProperty, "com.sope.etl.custom.CustomTransformation")
-    val transactionsDF = TransactionData.toDF
+    val transactionsDF = transactionData.toDF
     val productDF = productData.toDF
     val dateDF = dateData.toDF
     val productDimDF = productDimData.toDF
@@ -208,5 +206,17 @@ class YamlTransformWithoutSourceTest extends FlatSpec with Matchers {
   "repartition_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("repartition_test")
     transformedDF.rdd.partitions.length should be(10)
+  }
+
+  "select_with_alias_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("select_with_alias_test")
+    transformedDF.show
+    transformedDF.columns should contain allOf("product", "location")
+  }
+
+  "select_with_reorder" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("select_with_reorder_test")
+    transformedDF.show
+    transformedDF.columns should contain inOrder ("product_id", "product")
   }
 }

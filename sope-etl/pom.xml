@@ -42,6 +42,10 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.scopt</groupId>
+            <artifactId>scopt_${scala.version.tag}</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud.bigdataoss</groupId>
             <artifactId>bigquery-connector</artifactId>
             <scope>provided</scope>
@@ -67,7 +71,33 @@
                 <groupId>org.scoverage</groupId>
                 <artifactId>scoverage-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.basedir}\target</outputDirectory>
+                    <finalName>sope-etl</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>assembly/sope-etl-assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sope-etl-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>

@@ -2,7 +2,7 @@ package com.sope.etl.yaml
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml
+import com.fasterxml.jackson.dataformat.yaml.snakeyaml.{DumperOptions, Yaml}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.sope.etl.transform.exception.YamlDataTransformException
 
@@ -17,7 +17,9 @@ import scala.io.Source
 object YamlParserUtil {
 
   private val mapper = new ObjectMapper(new YAMLFactory())
-  private val yaml = new Yaml()
+  private val yamlOptions = new DumperOptions
+  yamlOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.FLOW)
+  private val yaml = new Yaml(yamlOptions)
 
   /**
     * Parses the yaml string to provided class T
@@ -52,18 +54,34 @@ object YamlParserUtil {
     }
   }
 
+  /*
+      Converts Scala collection types to Java type
+   */
+  private def mapVal(any: Any): Any = any match {
+    case map: Map[_, _] => map.mapValues(mapVal).asJava
+    case seq: Seq[_] => seq.map(mapVal).asJava
+    case _ => any
+  }
+
   /**
-    * Convert provided object to YAML
+    * Convert provided object to YAML using SnakeYaml dumper
     *
     * @param obj object
     * @return YAML string
     */
   def convertToYaml(obj: Any): String = {
     obj match {
-      case _ :: _ => yaml.dump(obj.asInstanceOf[List[_]].asJava)
-      case _: Map[_, _] => yaml.dump(obj.asInstanceOf[Map[_, _]].asJava)
-      case _ => yaml.dump(obj)
+      case str: String => "\"" + yaml.dump(str).trim + "\""
+      case _ => yaml.dump(mapVal(obj))
     }
   }
+
+  /**
+    * Convert provided object to YAML using Jackson Mapper
+    *
+    * @param obj object
+    * @return Yaml String
+    */
+  def convertToYaml2(obj: Any): String = mapper.writeValueAsString(obj)
 
 }

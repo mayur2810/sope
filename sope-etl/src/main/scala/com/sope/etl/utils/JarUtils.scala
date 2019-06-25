@@ -1,6 +1,7 @@
 package com.sope.etl.utils
 
 import java.io._
+import java.nio.file.Files
 import java.util.jar.{JarEntry, JarOutputStream}
 
 /**
@@ -25,42 +26,28 @@ object JarUtils {
 
   // adds files to jar
   private def add(folder: String, target: JarOutputStream, replacement: String): Unit = {
-    var in: BufferedInputStream = null
-    try {
-      val source = new File(folder)
-      if (source.isDirectory) {
-        var name = source.getPath.replace("\\", "/")
-        if (!name.isEmpty) {
-          if (!name.endsWith("/")) name += "/"
-          val entry = new JarEntry(name)
-          entry.setTime(source.lastModified)
-          target.putNextEntry(entry)
-          target.closeEntry()
-        }
-
-        for (nestedFile <- source.listFiles) {
-          add(nestedFile.getAbsolutePath, target, replacement)
-        }
-        return
+    val source = new File(folder)
+    if (source.isDirectory) {
+      val name = source.getPath.replace("\\", "/")
+      if (!name.isEmpty) {
+        val folderName = if (!name.endsWith("/")) name + "/" else name
+        val entry = new JarEntry(folderName)
+        entry.setTime(source.lastModified)
+        target.putNextEntry(entry)
+        target.closeEntry()
       }
-
+      for (nestedFile <- source.listFiles) {
+        add(nestedFile.getAbsolutePath, target, replacement)
+      }
+    } else {
       val entry = new JarEntry(source.getPath
         .replace("\\", "/")
         .replace(replacement, ""))
       entry.setTime(source.lastModified)
       target.putNextEntry(entry)
-      in = new BufferedInputStream(new FileInputStream(source))
-      val buffer = new Array[Byte](1024)
-      var count: Int = 0
-      while (count != -1) {
-        count = in.read(buffer)
-        if (count != -1)
-          target.write(buffer, 0, count)
-      }
+      val byteArray = Files.readAllBytes(source.toPath)
+      target.write(byteArray)
       target.closeEntry()
-    }
-    finally {
-      if (in != null) in.close()
     }
   }
 }

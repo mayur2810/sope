@@ -11,11 +11,12 @@ transformations :
         - {type: rename, list: {product_desc: "product"}}
         - {type: select, columns: ["product_id", "product"]}
     - input: "transactions"
+      alias: "trxn"
       actions:
-         - {type: rename, list: {id: "trxn_id" , loc: "location"}}
+         - {!unroll type: rename, list: {id: "trxn_id" , loc: "location"}}
          - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER (PARTITION BY location order by date desc)"}}
          - {type: join, columns: ["product"] , join_type: inner, with: "product_filtered"}
          - {type: join, columns: ["date"], join_type: inner, with: "date"}
          - {type: sequence, sk_source: "transactions", sk_column: "id"}
 outputs:
-    - {type: csv, input: "transactions", mode: overwrite, path: "/tmp/yt/result.csv"}
+    - {type: csv, input: "trxn", mode: overwrite, path: "/tmp/yt/result.csv"}

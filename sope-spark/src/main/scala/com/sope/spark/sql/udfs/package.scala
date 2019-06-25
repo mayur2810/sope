@@ -136,10 +136,11 @@ package object udfs {
 
   def dateFormatCheckUdf: UserDefinedFunction = udf(checkDateFormat(_: String, _: String))
 
+  // TODO Merge functions
+  /*
   def mergeUDF[T](orderingDateColumn: String, orderingColumnType: Class[T], outputStructure: StructType): UserDefinedFunction = {
-     //udf(mergeFunc(orderingDateColumn, _: Seq[Row]), groupedSchema, col(groupedColumn))
-    null
-   }
+       udf(mergeFunc(orderingDateColumn, _: Seq[Row]), groupedSchema, col(groupedColumn))
+     }*/
 
 
   def registerUDFs(sqlContext: SQLContext): Unit = {

@@ -5,7 +5,7 @@ import java.util.Properties
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.spark.sql.DFFunc2
-import com.sope.etl.yaml.SchemaYaml
+import com.sope.etl.yaml.{ParallelizeYaml, SchemaYaml}
 import com.sope.spark.utils.google.BigQueryReader
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
@@ -31,7 +31,8 @@ package object input {
     new Type(value = classOf[JsonSource], name = "json"),
     new Type(value = classOf[JDBCSource], name = "jdbc"),
     new Type(value = classOf[BigQuerySource], name = "bigquery"),
-    new Type(value = classOf[CustomSource], name = "custom")
+    new Type(value = classOf[CustomSource], name = "custom"),
+    new Type(value = classOf[LocalSource], name = "local")
   ))
   abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
                                 alias: String,
@@ -156,6 +157,17 @@ package object input {
 
     def apply: DFFunc2 = (sqlContext: SQLContext) => new BigQueryReader(sqlContext, bqDataset).load()
   }
+
+
+  /*
+   Local Source
+ */
+  case class LocalSource(@JsonProperty(required = true) alias: String,
+                         @JsonProperty(value = "yaml_file", required = true) yamlFile: String)
+    extends SourceTypeRoot("local", alias, None, None, None) {
+    def apply: DFFunc2 = (sqlContext: SQLContext) => ParallelizeYaml(yamlFile).parallelize(sqlContext)
+  }
+
 
   /*
    Custom Source

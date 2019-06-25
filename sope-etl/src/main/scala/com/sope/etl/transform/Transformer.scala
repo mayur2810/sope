@@ -34,7 +34,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           case (inputs, action) =>
             val (isJoinAction, joinColumns) =
               action match {
-                case ja: JoinAction if !ja.isExpressionBased => (true, Some(ja.joinColumns))
+                case ja: JoinAction if !ja.expressionBased => (true, Some(ja.joinColumns))
                 case _ => (false, None)
               }
             inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
@@ -52,7 +52,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
   private def prePartitionColumns(alias: String): Option[Seq[String]] = {
     val joinSources = inputSources
       .filter(source => source.name == alias && source.isUsedForJoin)
-      .map(source => source.joinColumns.get.sorted)
+      .map(source => source.joinColumns.getOrElse(Nil).sorted)
     if (joinSources.nonEmpty && joinSources.size >= 2) Some(joinSources.maxBy(_.mkString(","))) else None
   }
 
@@ -110,18 +110,20 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           case (true, _) =>
             Nil :+ sourceDF.sqlContext.sql(dfTransform.sql.get)
           case (_, true) =>
+            // TODO currently considers multi action as last, can be anywhere?
             val multiOutAction = actions.last
             val transformedSingleAction = actions
               .take(actions.size - 1)
               .foldLeft(NoOp()) {
-                (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
+                (transformed, transformAction) => transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*).head
               }
             multiOutAction
               .apply(multiOutAction.inputAliases.map(getDF): _*)
               .map(action => transformedSingleAction + action --> sourceDF)
           case (_, _) =>
             Nil :+ actions.foldLeft(NoOp()) {
-              (transformed, transformAction) => transformed + transformAction(transformAction.inputAliases.map(getDF): _*).head
+              (transformed, transformAction) =>
+                transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*).head
             } --> sourceDF
         }
       } match {
@@ -130,7 +132,6 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           logError(s"Transformation failed for alias(es): ${transformAliases.mkString(", ")} in $file file")
           throw e
       }
-
       // Add alias to dataframe
       dfTransform.persistLevel.fold(transformedDF)(level => {
         logInfo(s"Transformation ${transformAliases.mkString(",")} is configured to be persisted at level: $level")

@@ -1,0 +1,4 @@
+[
+{name: sherlock, roll_no: 123, weight: 65.043, arr: [1,2,3,4], map_data: {t1: 12, t2: "dsd", im: {im1: 123}}},
+{name: john , roll_no: 234, weight: 45.343, arr: [4], map_data: {t1: 12, t2: "dsd", im: {im1: 123}}}
+]

@@ -90,11 +90,11 @@ package object model {
     val isMultiOutputTransform: Boolean = aliases.isDefined
 
     /**
-      * Get Transformation alias. If not provided, defaults for source name
+      * Get Transformation alias.
       *
       * @return alias
       */
-    def getAliases: Seq[String] = if (isMultiOutputTransform) aliases.get else alias.getOrElse(source) +: Nil
+    def getAliases: Seq[String] = if (isMultiOutputTransform) aliases.getOrElse(Nil) else alias.getOrElse(source) +: Nil
 
 
     /**
@@ -104,7 +104,10 @@ package object model {
 
       // parser with Dummy Conf
       val parser = new SparkSqlParser(new SQLConf)
-      val check = parser.parseExpression _
+      val check = (expr: String) => {
+        // Skip check if expr has placeholders
+        if(".*\\$\\{.*?\\}.*".r.findAllIn(expr).nonEmpty) Unit else parser.parseExpression _
+      }
 
       def checkExpr(expr: Any): Unit = expr match {
         case m: Map[_, _] => m.asInstanceOf[Map[String, String]].values.foreach(check)

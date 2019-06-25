@@ -24,7 +24,7 @@ transformations :
     - input : "product"
       alias: "final_dim_out"
       actions:
-        - {type: yaml, yaml_file: "templates/scd_template.yaml", substitutions: ["product_key", ["product_id"], ["derived_attr"], ["last_updated_date"]], input_aliases: ["dim_product"], output_alias: "scd_result"}
+        - {type: yaml, yaml_file: "templates/scd_template.yaml", substitutions: { sk_key: product_key, natural_keys: [product_id], derived_cols: [derived_attr], meta_cols: ["last_updated_date"]}, input_aliases: ["dim_product"], output_alias: "scd_result"}
     - input: "final_dim_out"
       alias: "distinct_test"
       actions:
@@ -92,6 +92,8 @@ transformations :
       input: "transactions"
       actions:
       - {type: transform, list: {upper_loc : "custom_upper(loc)"}}
+      - {type: collect, placeholder: ids, alias: grp_by, column: "p_cnt"}
+      - {type: filter, condition: "id in (${ids})"}
     - alias: "custom_transform_call_test"
       input: "transactions"
       actions:
@@ -108,3 +110,14 @@ transformations :
       input: "transactions"
       actions:
       - {type: repartition, columns: [lower(loc)], num_partitions: 10}
+    - input: product_filtered
+      alias: select_with_alias_test
+      actions:
+        - {type: join, with: product_filtered1,  condition: "product_filtered.product_id = product_filtered1.product_id" , join_type: inner, broadcast_hint: right}
+        - {type: transform, list: {location: "'pune'"}}
+        - {type: select_alias, alias: product_filtered, skip_columns:[product_id], include_columns: [location]}
+    - input: product_filtered
+      alias: select_with_reorder_test
+      actions:
+        - {type: select, columns: [product, product_id]}
+        - {type: select_reorder, alias: product_filtered}

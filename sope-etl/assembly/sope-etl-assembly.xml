@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<assembly>
+    <id>sope-etl-assembly</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <lineEnding>lf</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources/templates</directory>
+            <outputDirectory>templates</outputDirectory>
+            <fileMode>0755</fileMode>
+            <lineEnding>lf</lineEnding>
+        </fileSet>
+    </fileSets>
+    <files>
+        <file>
+            <source>${project.basedir}/target/sope-etl-${project.version}.jar</source>
+            <outputDirectory>lib</outputDirectory>
+        </file>
+        <file>
+            <source>${project.build.directory}/git.properties</source>
+            <destName>version</destName>
+            <outputDirectory>.</outputDirectory>
+            <lineEnding>lf</lineEnding>
+        </file>
+    </files>
+</assembly>

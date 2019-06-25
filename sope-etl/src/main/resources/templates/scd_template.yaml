@@ -3,10 +3,10 @@
 # Performs scd comparison for provided Dimension table
 
 # Placeholders:
-# 1 -> Surrogate Key Column
-# 2 -> Primary key Columns
-# 3 -> Derived columns (Will be skipped for SCD comparisons, but values will stay intact for Update & NCD records
-# 4 -> Meta Columns (e.g. date columns identifying updates. This will be skipped for SCD comparison. Make sure to
+# sk_key -> Surrogate Key Column
+# natural_keys -> Primary key Columns
+# derived_cols -> Derived columns (Will be skipped for SCD comparisons, but values will stay intact for Update & NCD records
+# meta_cols -> Meta Columns (e.g. date columns identifying updates. This will be skipped for SCD comparison. Make sure to
 #       Update this template to set new values for Meta columns in case for Insert/Update records.
 # The Output from this template can then be used to perform Type 1/Type 2 SCD as desired.
 #
@@ -22,14 +22,14 @@ transformations :
       alias: "scd_product"
       persist: "memory_only"
       actions:
-        - {type: "scd", dim_table: "dimension", sk_column: $1 , natural_keys: $2 , derived_columns: $3 , meta_columns: $4}
+        - {type: "scd", dim_table: "dimension", sk_column: ${sk_key} , natural_keys: ${natural_keys} , derived_columns: ${derived_cols} , meta_columns: ${meta_cols}}
     #Filter insert/updates and adds 'last_updated_date' column, Note: Update the name of the column is required
     - input: "scd_product"
       alias: "insert_update"
       actions:
         - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
         - {type: transform, list: {last_updated_date: "current_date"}}
-        - {type: sequence, sk_source: "dimension", sk_column: $1}
+        - {type: sequence, sk_source: "dimension", sk_column: ${sk_key}}
     - input: "scd_product"
       alias: "ncd"
       actions:
