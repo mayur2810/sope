@@ -4,8 +4,6 @@ import com.sope.etl.register.TransformationRegistration._
 import com.sope.etl.register.UDFRegistration._
 import com.sope.spark.sql.udfs.registerUDFs
 import com.sope.utils.Logging
-import org.apache.commons.cli
-import org.apache.commons.cli.OptionBuilder
 import org.apache.spark.sql.SQLContext
 
 import scala.reflect.runtime.universe._
@@ -91,33 +89,6 @@ package object etl extends Logging {
     registerUDFs(sqlContext) // Register sope utility udfs
     registerCustomUDFs(sqlContext) // Register custom udfs if provided
     registerTransformations() // Register custom transformations
-  }
-
-
-  /**
-    * Builds Optional Command line options
-    *
-    * @param optionName options
-    * @return [[cli.Option]]
-    */
-  def buildOptionalCmdLineOption(optionName: String): cli.Option = {
-    val substitutionOption = OptionBuilder.create(optionName)
-    substitutionOption.setArgs(1)
-    substitutionOption.setRequired(false)
-    substitutionOption
-  }
-
-  /**
-    * Builds Optional Command line options
-    *
-    * @param optionName options
-    * @return [[cli.Option]]
-    */
-  def buildRequiredCmdLineOption(optionName: String): cli.Option = {
-    val substitutionOption = OptionBuilder.create(optionName)
-    substitutionOption.setArgs(1)
-    substitutionOption.setRequired(true)
-    substitutionOption
   }
 
   /**
