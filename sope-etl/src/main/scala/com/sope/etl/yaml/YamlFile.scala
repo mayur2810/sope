@@ -21,8 +21,8 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
    */
   private def updatePlaceHolders(): String = {
     substitutions.get
-      .map { case (placeholder, substitution) => "\"*\\s*\\$\\{" + placeholder.trim + "\\}\\s*\"*" -> convertToYaml(substitution).trim }
-      .foldLeft(readYamlFile(yamlPath)) { case (yamlStr, (key, value)) => yamlStr.replaceAll(key, s" $value")
+      .map { case (placeholder, substitution) => "\\$\\{" + placeholder.trim + "\\}" -> convertToYaml(substitution).trim }
+      .foldLeft(readYamlFile(yamlPath)) { case (yamlStr, (key, value)) => yamlStr.replaceAll(key, value)
       }
   }
 
