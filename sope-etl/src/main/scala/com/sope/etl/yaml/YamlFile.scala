@@ -1,6 +1,8 @@
 package com.sope.etl.yaml
 
 import com.fasterxml.jackson.databind.JsonMappingException
+import com.sope.etl.transform.exception.YamlDataTransformException
+import com.sope.etl.transform.model.Failed
 import com.sope.etl.yaml.YamlParserUtil._
 import com.sope.utils.Logging
 
@@ -68,7 +70,15 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
           case Some(location) =>
             val errorMessage = getParseErrorMessage(location.getLineNr, location.getColumnNr)
             logError(errorMessage + s"\n${e.getMessage}")
-          case None =>
+          case None => e.getCause match {
+            case YamlDataTransformException(_, failures) =>
+              failures.foreach {
+                case Failed(msg, line, index) =>
+                  val errorMessage = getParseErrorMessage(line, index)
+                  logError(errorMessage + s"\n$msg")
+              }
+            case _ =>
+          }
         }
         throw e
       case _ => throw e

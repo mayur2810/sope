@@ -58,7 +58,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
     registerDynamicUDFs(sqlContext)
     val testingMode = SopeETLConfig.TestingModeConfig
     if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
-    val sourceDFMap = model.sources
+    val sourceDFMap = model.sources.data
       .map(source => {
         val sourceAlias = source.getSourceName
         val sourceDF = Try {
@@ -90,7 +90,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
     val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
 
     // Write transformed dataframes to output targets
-    model.targets.foreach(target => {
+    model.targets.data.foreach(target => {
       logInfo(s"Outputting transformation: ${target.getInput} to target: ${target.getId}")
       logInfo(s"Start time: ${Calendar.getInstance().getTime}")
       target(transformationResult(target.getInput))
