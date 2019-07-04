@@ -16,6 +16,7 @@ import scala.util.{Failure, Success, Try}
 abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, Any]] = None, modelClass: Class[T])
   extends Logging {
 
+  protected val text: String = getText
   protected val model: T = deserialize
 
   /*
@@ -32,7 +33,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     Gets Parse error message
    */
   private def getParseErrorMessage(errorLine: Int, errorColumn: Int): String = {
-    val lines = getText.split("\\R+").zipWithIndex
+    val lines = text.split("\\R+").zipWithIndex
     val errorLocation = lines.filter(_._2 == errorLine - 1)
     s"Encountered issue while parsing Yaml File : $getYamlFileName. Error Line No. : $errorLine:$errorColumn\n" +
       errorLocation(0)._1 + s"\n${(1 until errorColumn).map(_ => " ").mkString("")}^"
@@ -59,7 +60,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     * @return T
     */
   def deserialize: T = Try {
-    val yamlStr = getText
+    val yamlStr = text
     logInfo(s"Parsing $getYamlFileName YAML file :-\n $yamlStr")
     parseYAML(yamlStr, modelClass)
   } match {
