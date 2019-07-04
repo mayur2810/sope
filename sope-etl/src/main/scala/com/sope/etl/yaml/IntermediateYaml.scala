@@ -24,13 +24,14 @@ case class IntermediateYaml(yamlPath: String, substitutions: Option[Map[String, 
     * @return Transformed [[DataFrame]]
     */
   def getTransformedDFs(dataFrames: DataFrame*): Seq[(String, DataFrame)] = {
-    if (model.sources.size != dataFrames.size)
+    val sources = model.sources.data
+    if (sources.size != dataFrames.size)
       throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
-    val sqlContext = dataFrames.headOption.getOrElse{
+    val sqlContext = dataFrames.headOption.getOrElse {
       throw new YamlDataTransformException("Empty Dataframe List")
     }.sqlContext
     performRegistrations(sqlContext)
-    val sourceDFMap = model.sources.zip(dataFrames).map {
+    val sourceDFMap = sources.zip(dataFrames).map {
       case (source, df) => (source, {
         df.createOrReplaceTempView(source)
         df.alias(source)
