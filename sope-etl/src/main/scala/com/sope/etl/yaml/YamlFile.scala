@@ -3,6 +3,7 @@ package com.sope.etl.yaml
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.transform.model.Failed
+import com.sope.etl.utils.RedactUtil
 import com.sope.etl.yaml.YamlParserUtil._
 import com.sope.utils.Logging
 
@@ -16,7 +17,8 @@ import scala.util.{Failure, Success, Try}
 abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, Any]] = None, modelClass: Class[T])
   extends Logging {
 
-  protected val text: String = getText
+  private val text: String = getText
+  protected val redactedText: String = RedactUtil.redact(text)
   protected val model: T = deserialize
 
   /*
@@ -33,7 +35,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     Gets Parse error message
    */
   private def getParseErrorMessage(errorLine: Int, errorColumn: Int): String = {
-    val lines = text.split("\\R+").zipWithIndex
+    val lines = redactedText.split("\\R+").zipWithIndex
     val errorLocation = lines.filter(_._2 == errorLine - 1)
     s"Encountered issue while parsing Yaml File : $getYamlFileName. Error Line No. : $errorLine:$errorColumn\n" +
       errorLocation(0)._1 + s"\n${(1 until errorColumn).map(_ => " ").mkString("")}^"
@@ -52,7 +54,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     *
     * @return [[String]]
     */
-  def getText: String = substitutions.fold(readYamlFile(yamlPath))(_ => updatePlaceHolders())
+  private def getText: String = substitutions.fold(readYamlFile(yamlPath))(_ => updatePlaceHolders())
 
   /**
     * Deserialize the YAML to provided Type
@@ -61,7 +63,7 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     */
   def deserialize: T = Try {
     val yamlStr = text
-    logInfo(s"Parsing $getYamlFileName YAML file :-\n $yamlStr")
+    logInfo(s"Parsing $getYamlFileName YAML file :-\n $redactedText")
     parseYAML(yamlStr, modelClass)
   } match {
     case Success(t) => logInfo(s"Successfully parsed $getYamlFileName YAML File"); t
