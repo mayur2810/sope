@@ -162,8 +162,9 @@ package object model {
                                             @JsonDeserialize(using = classOf[TargetDeserializer])
                                             @JsonProperty(required = true, value = "outputs") targets: MList[TargetTypeRoot],
                                             configs: Option[Map[String, String]],
-                                            udfs: Option[Map[String, String]]) extends TransformModel {
-
+                                            udfs: Option[Map[String, String]],
+                                            @JsonProperty(value = "udf_files") udfFiles: Option[Seq[String]])
+    extends TransformModel {
     checkFailure()
   }
 

@@ -3,9 +3,9 @@ package com.sope.etl.yaml
 import java.util.Calendar
 
 import com.sope.etl.register.UDFBuilder
-import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
+import com.sope.etl.{SopeETLConfig, _}
 import org.apache.spark.sql.SQLContext
 
 import scala.util.{Failure, Success, Try}
@@ -27,19 +27,26 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       .foreach { case (k, v) => sqlContext.setConf(k, v) }
   }
 
+  // Get the UDF definitions
+  private val udfs = model.udfs.getOrElse(Map.empty)
+  private val udfFiles = model.udfFiles.getOrElse(Nil)
+
   /**
     * Flag indicating Dynamic UDFs are provided in the Yaml file
     *
     * @return Boolean
     */
-  def dynamicUDFDefined: Boolean = model.udfs.isDefined && model.udfs.get.nonEmpty
+  def dynamicUDFDefined: Boolean = udfs.nonEmpty || udfFiles.nonEmpty
 
-  private val udfMap = if (dynamicUDFDefined) UDFBuilder.buildDynamicUDFs(model.udfs.get) else Map.empty
+  private val udfMap = if (dynamicUDFDefined) {
+    val udfMap = udfFiles.map(new MapYaml(_).getMap).reduce(_ ++ _) ++ udfs
+    UDFBuilder.buildDynamicUDFs(udfMap)
+  } else Map.empty
 
   /*
      Registers the UDF provided in YAML file
    */
-  private def registerDynamicUDFs(sqlContext: SQLContext): Unit =  udfMap.foreach {
+  private def registerDynamicUDFs(sqlContext: SQLContext): Unit = udfMap.foreach {
     case (udfName, udfInst) =>
       logInfo(s"Registering Dynamic UDF :- $udfName")
       sqlContext.udf.register(udfName, udfInst)
