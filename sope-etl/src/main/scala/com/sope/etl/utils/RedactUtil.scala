@@ -14,14 +14,7 @@ object RedactUtil {
     keys.foldLeft(input) {
       case (redacted, key) =>
         val regex = s"(?i)$key:\\s+(.*?)(,\\B|\\}\\B|\\n|\\r|\\z)".r
-        // find all matches for the key
-        val matches = regex.findAllMatchIn(redacted)
-        // Redact all matches for the key
-        matches
-          .map(_.group(1))
-          .foldLeft(redacted) {
-            (str, replacement) => str.replaceAll(replacement, replacement.map(_ => '*'))
-          }
+        regex.replaceAllIn(redacted, m => s"$key: ${m.group(1).map(_ => '*')}")
     }
   }
 
