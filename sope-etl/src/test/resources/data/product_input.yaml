@@ -1,0 +1,7 @@
+[
+{product_id: 1,   product_desc: "tshirt",  size: 3, color: 4, derived_attr: "popular"},
+{product_id: 2, product_desc: "jeans",   size: 5, color: 1, derived_attr: "not-popular"},
+{product_id: 3, product_desc: "shirt",   size: 6, color: 8, derived_attr: "popular"},
+{product_id: 4, product_desc: "trouser", size: 3, color: 5, derived_attr: "popular"},
+{product_id: 6, product_desc: "cap",     size: 2, color: 9, derived_attr: "not-popular"}
+]

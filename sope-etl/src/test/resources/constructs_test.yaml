@@ -1,4 +1,8 @@
-inputs: ["transactions", "product", "date", "dim_product"]
+inputs:
+  - {type: local, alias: "transactions", yaml_file: "data/transactions.yaml"}
+  - {type: local, alias: "product", yaml_file: "data/product_input.yaml" }
+  - {type: local, alias: "dim_product", yaml_file: "data/product_dim.yaml", schema_file: "data/product_dim_schema.yaml"}
+  - {type: local, alias: "date",  yaml_file: "data/date_dim.yaml", schema_file: "data/date_dim_schema.yaml"}
 transformations :
     - input: "product"
       alias: "product_filtered"
@@ -121,3 +125,4 @@ transformations :
       actions:
         - {type: select, columns: [product, product_id]}
         - {type: select_reorder, alias: product_filtered}
+outputs: []

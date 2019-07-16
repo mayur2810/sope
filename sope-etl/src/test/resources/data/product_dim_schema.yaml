@@ -1,0 +1,4 @@
+{
+  product_key: bigint,
+  last_updated_date: date
+}
