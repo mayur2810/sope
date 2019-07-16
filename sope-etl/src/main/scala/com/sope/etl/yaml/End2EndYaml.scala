@@ -6,7 +6,7 @@ import com.sope.etl.register.UDFBuilder
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
 import com.sope.etl.{SopeETLConfig, _}
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 import scala.util.{Failure, Success, Try}
 
@@ -52,14 +52,13 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       sqlContext.udf.register(udfName, udfInst)
   }
 
-
   /**
-    * Performs end to end transformations - Reading sources and writing transformation result to provided targets
-    * The source yaml file should contains source and target information.
+    * Get transformed Dataframe references
     *
-    * @param sqlContext Spark [[SQLContext]]
+    * @param sqlContext Spark's SQL Context
+    * @return Map of Alias and Transformed Dataframe
     */
-  def performTransformations(sqlContext: SQLContext): Unit = {
+  def getTransformedDFs(sqlContext: SQLContext): Map[String, DataFrame] = {
     addConfigurations(sqlContext)
     performRegistrations(sqlContext)
     registerDynamicUDFs(sqlContext)
@@ -94,13 +93,22 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       }).toMap
 
     // Apply transformations
-    val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
+    new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
+  }
 
+  /**
+    * Performs end to end transformations - Reading sources and writing transformation result to provided targets
+    * The source yaml file should contains source and target information.
+    *
+    * @param sqlContext Spark [[SQLContext]]
+    */
+  def performTransformations(sqlContext: SQLContext): Unit = {
+    val transformations = getTransformedDFs(sqlContext)
     // Write transformed dataframes to output targets
     model.targets.data.foreach(target => {
       logInfo(s"Outputting transformation: ${target.getInput} to target: ${target.getId}")
       logInfo(s"Start time: ${Calendar.getInstance().getTime}")
-      target(transformationResult(target.getInput))
+      target(transformations(target.getInput))
       logInfo(s"End time: ${Calendar.getInstance().getTime}")
     })
   }
