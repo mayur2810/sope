@@ -163,9 +163,10 @@ package object input {
    Local Source
  */
   case class LocalSource(@JsonProperty(required = true) alias: String,
-                         @JsonProperty(value = "yaml_file", required = true) yamlFile: String)
-    extends SourceTypeRoot("local", alias, None, None, None) {
-    def apply: DFFunc2 = (sqlContext: SQLContext) => ParallelizeYaml(yamlFile).parallelize(sqlContext)
+                         @JsonProperty(value = "yaml_file", required = true) yamlFile: String,
+                         @JsonProperty(value = "schema_file") schemaFile: Option[String])
+    extends SourceTypeRoot("local", alias, None, None, schemaFile) {
+    def apply: DFFunc2 = (sqlContext: SQLContext) => ParallelizeYaml(yamlFile).parallelize(sqlContext, getSchema)
   }
 
 
