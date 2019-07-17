@@ -39,7 +39,11 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
   def dynamicUDFDefined: Boolean = udfs.nonEmpty || udfFiles.nonEmpty
 
   private val udfMap = if (dynamicUDFDefined) {
-    val udfMap = udfFiles.map(new MapYaml(_).getMap).reduce(_ ++ _) ++ udfs
+    val udfMap = {
+      udfFiles
+        .map(new MapYaml(_).getMap)
+        .fold(Map.empty)(_ ++ _)
+    } ++ udfs
     UDFBuilder.buildDynamicUDFs(udfMap)
   } else Map.empty
 
