@@ -47,9 +47,9 @@ class YamlConstructsTest extends FlatSpec with Matchers {
     val transformedDF = transformedResult("final_dim_out")
     transformedDF.show(false)
     transformedDF.count should be(8)
-    transformedDF.filter("scd_status = 'NCD'").count should be(5)
-    transformedDF.filter("scd_status = 'INSERT'").count should be(1)
-    transformedDF.filter("scd_status = 'UPDATE'").count should be(2)
+    transformedDF.filter("change_status = 'NCD'").count should be(5)
+    transformedDF.filter("change_status = 'INSERT'").count should be(1)
+    transformedDF.filter("change_status = 'UPDATE'").count should be(2)
   }
 
   "distinct_test" should "generate the transformation Dataframe correctly" in {

@@ -1,4 +1,4 @@
-package com.sope.etl.scd
+package com.sope.spark.utils.etl
 
 import com.sope.utils.Logging
 import org.apache.spark.SparkException
@@ -16,7 +16,7 @@ import org.apache.spark.sql.{Column, DataFrame}
   * @param metaColumns    [[Seq[String]] List of meta columns for the Dimension table. Meta columns will not be considered for SCD
   *                       Meta columns will be null for the insert and update records
   */
-class DimensionTable(dimensionDF: DataFrame,
+case class DimensionTable(dimensionDF: DataFrame,
                      surrogateKey: String,
                      naturalKeys: Seq[String],
                      derivedColumns: Seq[String] = Seq(),
@@ -74,7 +74,7 @@ class DimensionTable(dimensionDF: DataFrame,
       case SourceAlias => metaColumns.map(columnName => lit(null).as(columnName))
     }
 
-    columnList ++ derivedColumnList ++ metaColumnList :+ $"$SCDStatus"
+    columnList ++ derivedColumnList ++ metaColumnList :+ $"$ChangeStatus"
   }
 
   /**
@@ -115,23 +115,23 @@ class DimensionTable(dimensionDF: DataFrame,
       $"$MD5SourceKeyValueColumn" === $"$MD5TargetKeyValueColumn", FullJoinType)
       .persist()
 
-    val dimensionChangesDF = joinedMD5.withColumn(SCDStatus, udf(identifyChanges _).apply($"$MD5SourceKeyValueColumn",
+    val dimensionChangesDF = joinedMD5.withColumn(ChangeStatus, udf(identifyChanges _).apply($"$MD5SourceKeyValueColumn",
       $"$MD5SourceNonKeyValueColumn", $"$MD5TargetKeyValueColumn", $"$MD5TargetNonKeyValueColumn", lit(incrementalLoad)))
 
     // Insert records
-    val insertRecords = dimensionChangesDF.filter($"$SCDStatus" === Insert)
+    val insertRecords = dimensionChangesDF.filter($"$ChangeStatus" === Insert)
       .select(getColumnsList(SourceAlias, sourceData.columns): _*)
 
     // Update records
-    val updateRecords = dimensionChangesDF.filter($"$SCDStatus" === Update)
+    val updateRecords = dimensionChangesDF.filter($"$ChangeStatus" === Update)
       .select(getColumnsList(SourceAlias, sourceData.columns): _*)
 
     // NCD records
-    val noChangeDeleteRecords = dimensionChangesDF.filter($"$SCDStatus" === NoChangeDelete)
+    val noChangeDeleteRecords = dimensionChangesDF.filter($"$ChangeStatus" === NoChangeDelete)
       .select(getColumnsList(TargetAlias): _*)
 
     // NCD records
-    val invalidRecords = dimensionChangesDF.filter($"$SCDStatus" === Invalid)
+    val invalidRecords = dimensionChangesDF.filter($"$ChangeStatus" === Invalid)
       .select(getColumnsList(TargetAlias): _*)
 
     DimensionChangeSet(insertRecords, updateRecords, noChangeDeleteRecords, invalidRecords)
@@ -147,7 +147,7 @@ object DimensionTable {
   val MD5TargetKeyValueColumn = "md5_key_value_target"
   val MD5SourceNonKeyValueColumn = "md5_nonkey_value_source"
   val MD5TargetNonKeyValueColumn = "md5_nonkey_value_target"
-  val SCDStatus = "scd_status"
+  val ChangeStatus = "change_status"
   val SourceAlias = "source"
   val TargetAlias = "target"
   val FullJoinType = "full"

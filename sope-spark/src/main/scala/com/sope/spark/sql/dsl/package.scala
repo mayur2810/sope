@@ -1,5 +1,6 @@
 package com.sope.spark.sql
 
+import com.sope.spark.utils.etl.DimensionTable
 import com.sope.utils.Logging
 import org.apache.spark.sql.functions.{broadcast, col, desc, expr}
 import org.apache.spark.sql.{Column, DataFrame}
@@ -553,6 +554,38 @@ package object dsl {
       * @return [[DFFunc]]
       */
     def apply(valueMap: Map[String, Any]): DFFunc = (df: DataFrame) => df.na.fill(valueMap)
+  }
+
+
+  /*
+      Get Dimension Change Set
+   */
+  object DimensionChangeSet {
+    /**
+      * Get the dimension change set for the provided input data.
+      * The resultant dataframe will contain a columns named 'change_status' containing the
+      * change statuses: INSERT, UPDATE, NCD, INVALID
+      *
+      * @param dimensionDF     [[DataFrame]] Dimension table dataframe
+      * @param surrogateKey    [[String]] Surrogate key column name
+      * @param naturalKeys     [[Seq[String]] List of natural key columns for the Dimension
+      * @param derivedColumns  [[Seq[String]] List of derived columns for the Dimension. Derived columns will not be considered for SCD
+      *                        For update records, If source has the derived columns then source value will be considered else target values
+      * @param metaColumns     [[Seq[String]] List of meta columns for the Dimension table. Meta columns will not be considered for SCD
+      *                        Meta columns will be null for the insert and update records
+      * @param incrementalLoad Flag denoting whether it is a incremental load or full load
+      * @return [[DFFunc]]
+      */
+    def apply(dimensionDF: DataFrame,
+              surrogateKey: String,
+              naturalKeys: Seq[String],
+              derivedColumns: Seq[String] = Seq(),
+              metaColumns: Seq[String] = Seq(),
+              incrementalLoad: Boolean = true): DFFunc = {
+      inputData: DataFrame =>
+        DimensionTable(dimensionDF, surrogateKey, naturalKeys, derivedColumns, metaColumns)
+          .getDimensionChangeSet(inputData, incrementalLoad).getUnion
+    }
   }
 
 

@@ -1,8 +1,8 @@
 package com.sope.etl
 
 import com.sope.etl.TestContext.getSQlContext
-import com.sope.etl.scd.DimensionTable
 import com.sope.etl.yaml.{ParallelizeYaml, SchemaYaml}
+import com.sope.spark.utils.etl.DimensionTable
 import org.apache.spark.SparkException
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType

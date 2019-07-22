@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
 import com.sope.etl.annotations.SqlExpr
 import com.sope.etl.register.TransformationRegistration
-import com.sope.etl.scd.DimensionTable
 import com.sope.etl.sqlLiteralExpr
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.yaml.{IntermediateYaml, YamlParserUtil}
@@ -481,9 +480,8 @@ package object action {
                        @JsonProperty(value = "meta_columns", required = true) metaColumns: Seq[String],
                        @JsonProperty(value = "incremental_load", required = false) incrementalLoad: Option[Boolean])
     extends SingleOutputTransform(Actions.SCD) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = (scdInput: DataFrame) =>
-      new DimensionTable(dataframes.head, surrogateKey, naturalKeys, derivedColumns, metaColumns)
-        .getDimensionChangeSet(scdInput, incrementalLoad.getOrElse(true)).getUnion
+    override def transformFunction(dataframes: DataFrame*): DFFunc = DimensionChangeSet(dataframes.head, surrogateKey,
+      naturalKeys, derivedColumns, metaColumns, incrementalLoad.getOrElse(true))
 
     override def inputAliases: Seq[String] = Seq(dimTable)
   }
