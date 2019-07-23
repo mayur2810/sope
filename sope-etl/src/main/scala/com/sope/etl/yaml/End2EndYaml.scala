@@ -108,11 +108,14 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
     */
   def performTransformations(sqlContext: SQLContext): Unit = {
     val transformations = getTransformedDFs(sqlContext)
+    val sc = sqlContext.sparkContext
     // Write transformed dataframes to output targets
     model.targets.data.foreach(target => {
       logInfo(s"Outputting transformation: ${target.getInput} to target: ${target.getId}")
       logInfo(s"Start time: ${Calendar.getInstance().getTime}")
+      sc.setCallSite(s"$getYamlFileName::${target.getInput} => ${target.getId}")
       target(transformations(target.getInput))
+      sc.clearCallSite()
       logInfo(s"End time: ${Calendar.getInstance().getTime}")
     })
   }
