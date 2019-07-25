@@ -16,7 +16,7 @@ class DQTest extends FlatSpec with Matchers {
 
   private val dqResult = {
     val transactionsDF = transactionData
-    IntermediateYaml("templates/data_quality_template.yaml", Some(Map("null_check_cols" -> Seq("product"),
+    IntermediateYaml("data_quality_template.yaml", Some(Map("null_check_cols" -> Seq("product"),
       "date_format" -> "yyyy-mm-dd", "empty_check_cols" ->  Seq("product", "loc"), "  date_check_cols  " -> Seq("date"))))
       .getTransformedDFs(transactionsDF).toMap
   }

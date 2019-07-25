@@ -12,7 +12,7 @@
             <lineEnding>lf</lineEnding>
         </fileSet>
         <fileSet>
-            <directory>${project.basedir}/src/main/resources/templates</directory>
+            <directory>${project.basedir}/templates</directory>
             <outputDirectory>templates</outputDirectory>
             <fileMode>0755</fileMode>
             <lineEnding>lf</lineEnding>
