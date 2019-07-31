@@ -2,7 +2,7 @@ package com.sope.spark.sql
 
 import com.sope.spark.utils.etl.DimensionTable
 import com.sope.utils.Logging
-import org.apache.spark.sql.functions.{broadcast, col, desc, expr}
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Column, DataFrame}
 
 import scala.reflect.ClassTag
@@ -47,7 +47,7 @@ package object dsl {
       * @param columns Column objects
       * @return [[DFFunc]]
       */
-    def apply[_: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.select(columns: _*)
+    def apply[T: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.select(columns: _*)
 
     /**
       * Select columns from given dataframe. The Dataframe on which this function is called should contain all columns from the
@@ -117,7 +117,7 @@ package object dsl {
       * @param filterCondition [[Column]] filter condition
       * @return [[DFFunc]]
       */
-    def apply[_: ClassTag](filterCondition: Column): DFFunc = (df: DataFrame) => df.filter(filterCondition)
+    def apply[T: ClassTag](filterCondition: Column): DFFunc = (df: DataFrame) => df.filter(filterCondition)
   }
 
 
@@ -181,7 +181,7 @@ package object dsl {
       * @param tuples column name and column expressions tuple
       * @return [[DFFunc]]
       */
-    def apply[_: ClassTag](tuples: (String, Column)*): DFFunc = (df: DataFrame) => df.applyColumnExpressions(tuples.toMap)
+    def apply[T: ClassTag](tuples: (String, Column)*): DFFunc = (df: DataFrame) => df.applyColumnExpressions(tuples.toMap)
 
     /**
       * Apply a column expression to provided columns
@@ -221,7 +221,7 @@ package object dsl {
       * @param columns    List of resultant column name and source column names/expressions to which the function is to be applied
       * @return [[DFFunc]]
       */
-    def apply[_: ClassTag](columnFunc: MultiColFunc, columns: (String, Seq[String])*): DFFunc = (df: DataFrame) =>
+    def apply[T: ClassTag](columnFunc: MultiColFunc, columns: (String, Seq[String])*): DFFunc = (df: DataFrame) =>
       df.applyColumnExpressions(columns.map { case (colName, column) => colName -> columnFunc(column.map(expr)) }.toMap)
   }
 
@@ -328,7 +328,7 @@ package object dsl {
       * @param aggregateExprs Column expressions for aggregation
       * @return [[DFFunc]]
       */
-    def apply[_: ClassTag](aggregateExprs: Column*): DFFunc = (df: DataFrame) => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
+    def apply[T: ClassTag](aggregateExprs: Column*): DFFunc = (df: DataFrame) => df.agg(aggregateExprs.head, aggregateExprs.tail: _*)
   }
 
   /*
@@ -352,7 +352,7 @@ package object dsl {
       * @param pivotColumn  pivot column
       * @return [[DFGroupFunc]]
       */
-    def apply[_: ClassTag](groupColumns: Column*)(pivotColumn: Option[String]): DFGroupFunc =
+    def apply[T: ClassTag](groupColumns: Column*)(pivotColumn: Option[String]): DFGroupFunc =
       (df: DataFrame, columns: Seq[Column]) => {
         val grouped = df.groupBy(groupColumns: _*)
         pivotColumn match {
@@ -426,7 +426,7 @@ package object dsl {
       * @param columns [[Column]] objects
       * @return [[DFFunc]]
       */
-    def apply[_: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.orderBy(columns: _*)
+    def apply[T: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.orderBy(columns: _*)
   }
 
   /*
@@ -488,7 +488,7 @@ package object dsl {
       * @param groupColumns Group column Expressions
       * @return [[DFGroupFunc]]
       */
-    def apply[_: ClassTag](groupColumns: Column*): DFGroupFunc =
+    def apply[T: ClassTag](groupColumns: Column*): DFGroupFunc =
       (df: DataFrame, columns: Seq[Column]) =>
         df.cube(groupColumns: _*).agg(columns.head, columns.tail: _*)
   }
@@ -589,6 +589,30 @@ package object dsl {
   }
 
 
+  object Routes {
+    def apply(routingConditions: Column*): DFFuncSeq = routingConditions
+      .map { condition => (df: DataFrame) => df.filter(condition) } :+ {
+      df: DataFrame => df.filter(routingConditions.map { condition => not(condition) }.reduce(_ and _))
+    }
+
+    def apply[T: ClassTag](routingConditions: String*): DFFuncSeq = apply(routingConditions.map(expr): _*)
+
+    def apply(routingConditions: (String, Column)*): DFFuncMap = routingConditions
+      .unzip match {
+      case (names, conditions) => (names :+ "default", apply(conditions: _*)).zipped.toMap
+    }
+
+    def apply[T: ClassTag](routingConditions: (String, String)*): DFFuncMap = apply(
+      routingConditions.map { case (name, condition) => (name, expr(condition)) }: _*
+    )
+  }
+
+  object Partition {
+    def apply(condition: Column): DFFuncSeq = Routes(condition)
+
+    def apply(condition: String): DFFuncSeq = apply(expr(condition))
+  }
+
   /*
       Dataframe Implicit methods
    */
@@ -630,6 +654,55 @@ package object dsl {
       * @return [[DFFunc]]
       */
     def +(rightDFFunc: DFFunc): DFFunc = dfFunc andThen rightDFFunc
+
+    def +(rightDFFuncSeq: DFFuncSeq): DFFuncSeq = rightDFFuncSeq.map(dfFunc + _)
+
+    def +(rightDFFuncMap: DFFuncMap): DFFuncMap = rightDFFuncMap.map {
+      case (name, rightFunc) => name -> (dfFunc + rightFunc)
+    }
+
+    def +(dfFuncMapSelectiveLeft: DFFuncMapSelective): DFFuncMap = dfFuncMapSelectiveLeft match {
+      case (name, dfFuncMap) => dfFuncMap.map {
+        case (key, rightFunc) => if (name == key) key -> (dfFunc + rightFunc) else key -> rightFunc
+      }
+    }
+  }
+
+  implicit class SeqDFFuncImplicits(dfFuncSeq: DFFuncSeq) {
+
+    def using(df: DataFrame): Seq[DataFrame] = dfFuncSeq.map(_ using df)
+
+    def -->(df: DataFrame): Seq[DataFrame] = using(df)
+
+    def +(rightDFFunc: DFFunc): DFFuncSeq = dfFuncSeq.map(_ + rightDFFunc)
+
+    def +(rightDFFuncs: DFFuncSeq): DFFuncSeq = dfFuncSeq.flatMap(left => rightDFFuncs.map(left + _))
+  }
+
+  implicit class MapDFFuncImplicits(dfFuncMap: DFFuncMap) {
+
+    def using(df: DataFrame): Map[String, DataFrame] = dfFuncMap.mapValues(_ using df)
+
+    def -->(df: DataFrame): Map[String, DataFrame] = using(df)
+
+    def +(rightDFFunc: DFFunc): DFFuncMap = dfFuncMap.mapValues(_ + rightDFFunc)
+
+    def +(name: String, rightDFFunc: DFFunc): DFFuncMap = dfFuncMap.map {
+      case (key, func) => if (name == key) key -> (func + rightDFFunc) else key -> func
+    }
+
+    def +(rightDFFuncs: DFFuncMap): DFFuncMap = dfFuncMap.flatMap {
+      case (leftKey, leftFunc) =>
+        rightDFFuncs.map { case (rightKey, rightFunc) => (leftKey + rightKey) -> (leftFunc + rightFunc) }
+    }
+  }
+
+  implicit class MapDFFuncSelectiveImplicits(dfFuncMapSelective: DFFuncMapSelective) {
+    def +(rightDFFunc: DFFunc): DFFuncMap = dfFuncMapSelective match {
+      case (name, dfFuncMap) => dfFuncMap.map {
+        case (key, func) => if (name == key) key -> (func + rightDFFunc) else key -> func
+      }
+    }
   }
 
 
@@ -721,7 +794,7 @@ package object dsl {
       * @param aggExprs Aggregation String expressions
       * @return [[DFFunc]]
       */
-    def ^[_: ClassTag](aggExprs: String*): DFFunc = dfGFunc(_: DataFrame, aggExprs.map(expr))
+    def ^[T: ClassTag](aggExprs: String*): DFFunc = dfGFunc(_: DataFrame, aggExprs.map(expr))
   }
 
 }

@@ -2,8 +2,8 @@ package com.sope
 
 import com.sope.TestContext.getSQlContext
 import com.sope.model.{Class, Student}
-import com.sope.spark.sql.dsl._
 import com.sope.spark.sql._
+import com.sope.spark.sql.dsl._
 import org.apache.spark.sql.functions._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -20,6 +20,8 @@ class DSLTest extends FlatSpec with Matchers {
   private val studentDF = Seq(
     Student("Sherlock", "Holmes", 1, 10),
     Student("John", "Watson", 2, 10),
+    Student("Tony", "Stark", 3, 9),
+    Student("Steve", "Rogers", 4, 9),
     Student("N.A.", "N.A.", -1, -1)
   ).toDF
 
@@ -74,7 +76,7 @@ class DSLTest extends FlatSpec with Matchers {
   }
 
   "Join DSL" should "generate the transformations correctly" in {
-    val innerJoin =  Transform(upper _, FirstName, LastName) + (Join(Some("left") , Cls) inner classDF)
+    val innerJoin = Transform(upper _, FirstName, LastName) + (Join(Some("left"), Cls) inner classDF)
     (innerJoin --> studentDF).count should be(2)
 
     val leftJoin = Transform(upper _) + (Join(None, Cls) left classDF)
@@ -89,6 +91,14 @@ class DSLTest extends FlatSpec with Matchers {
 
   "Aggregate DSL" should "generate the transformations correctly" in {
     (Aggregate("max(cls)") --> classDF).collect().head.getInt(0) should be(10)
+  }
+
+  "MultiOutTest" should "generate the transformations correctly" in {
+    val routes = Routes("suspense" -> "cls = 10", "sci-fi" -> "cls = 9")
+    val lower = Transform("first_name" -> "lower(first_name)")
+    val upper = Transform("last_name" -> "upper(last_name)")
+    val trans = lower + routes + upper --> studentDF
+    trans.foreach { case (name, df) => println(name); df.show() }
   }
 
 }

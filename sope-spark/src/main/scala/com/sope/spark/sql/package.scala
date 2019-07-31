@@ -16,6 +16,9 @@ package object sql {
 
   // Type Aliases
   type DFFunc = DataFrame => DataFrame
+  type DFFuncSeq = Seq[DFFunc]
+  type DFFuncMap = Map[String, DFFunc]
+  type DFFuncMapSelective = (String, DFFuncMap)
   type DFFunc2 = SQLContext => DataFrame
   type MultiDFFunc = Seq[DataFrame] => DataFrame
   type ColFunc = Column => Column
@@ -161,7 +164,7 @@ package object sql {
       * Use if the function return different type and some selection function is to be used
       *
       * @param transformFunctionList Transformation functions
-      * @param selectorFunc Selection function that will generate the dataframe for next function
+      * @param selectorFunc          Selection function that will generate the dataframe for next function
       * @tparam A The return type of transformation function
       * @return Transformed [[DataFrame]]
       */
@@ -306,9 +309,10 @@ package object sql {
     /**
       * Note: Supported for Spark 1.x version, Spark 2.x has this version (function collect_list)
       *
-      *             Group by on Columns and return dataframe as grouped list of row structure of remaining columns
-      *             The returned dataframe has two columns 'grouped_data' which has the grouped data
-      *             and 'grouped_count' which has the element counts in the grouped list
+      * Group by on Columns and return dataframe as grouped list of row structure of remaining columns
+      * The returned dataframe has two columns 'grouped_data' which has the grouped data
+      * and 'grouped_count' which has the element counts in the grouped list
+      *
       * @param groupByColumns     Columns to Group on
       * @param toBeGroupedColumns Optional Columns to be grouped in to List of spark struct, else all columns will be considered
       * @return Grouped [[DataFrame]]
