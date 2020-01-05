@@ -589,6 +589,9 @@ package object dsl {
   }
 
 
+  /*
+      Routes, useful for splitting dataset
+   */
   object Routes {
     def apply(routingConditions: Column*): DFFuncSeq = routingConditions
       .map { condition => (df: DataFrame) => df.filter(condition) } :+ {
@@ -607,10 +610,36 @@ package object dsl {
     )
   }
 
+  /*
+       Splits dataset into binary set
+   */
   object Partition {
     def apply(condition: Column): DFFuncSeq = Routes(condition)
 
     def apply(condition: String): DFFuncSeq = apply(expr(condition))
+  }
+
+  /*
+      DQCheck
+   */
+  object DQCheck {
+    private val DQStatusSuffix = "dq_failed"
+    private val DQColumnListSuffix = "dq_failed_columns"
+
+    def apply(id: String, dqFunction: ColFunc, columns: Seq[Column]): DFFunc = {
+      columns match {
+        case Nil => NoOp()
+        case _ =>
+          Transform(columns.map(column => s"${column}_${id}_$DQStatusSuffix" -> dqFunction(column)): _*) +
+            Transform {
+              val dqColumns = columns.map(column =>
+                when(col(s"${column}_${id}_$DQStatusSuffix") === true, lit(column.toString)).otherwise(lit(null)))
+              s"${id}_$DQColumnListSuffix" -> concat_ws(",", dqColumns: _*)
+            }
+      }
+    }
+
+    def apply[T: ClassTag](id: String, dqFunction: ColFunc, columns: Seq[String]): DFFunc = DQCheck(id, dqFunction, columns.map(col))
   }
 
   /*

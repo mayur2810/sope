@@ -56,7 +56,7 @@ class DSLTest extends FlatSpec with Matchers {
     val transformed = filterCol + filterStr + rename --> studentDF
     println("Filter, Rename Test DF output =>")
     transformed.show(false)
-    transformed.count should be(1)
+    transformed.count should be(3)
     transformed.schema.fields.map(_.name) should contain("name")
     // Rename All test
     val transformed1 = Rename("tmp_") + Rename("_column", prefix = false) --> studentDF
@@ -72,21 +72,21 @@ class DSLTest extends FlatSpec with Matchers {
     println("Transform & Sequence DF output =>")
     transformed.show(false)
     transformed.filter("roll_no = 1").select(FirstName).head.getString(0) should be("SHERLOCK")
-    transformed.maxKeyValue("id") should be(3)
+    transformed.maxKeyValue("id") should be(5)
   }
 
   "Join DSL" should "generate the transformations correctly" in {
     val innerJoin = Transform(upper _, FirstName, LastName) + (Join(Some("left"), Cls) inner classDF)
-    (innerJoin --> studentDF).count should be(2)
+    (innerJoin --> studentDF).count should be(4)
 
     val leftJoin = Transform(upper _) + (Join(None, Cls) left classDF)
-    (leftJoin --> studentDF).count should be(3)
+    (leftJoin --> studentDF).count should be(5)
 
     val rightJoin = Join(Some("left"), $"$Cls" === $"class") right (Rename((Cls, "class")) --> classDF)
-    (rightJoin --> studentDF).count should be(4)
+    (rightJoin --> studentDF).count should be(5)
 
     val fullJoin = Join(None, $"$Cls" === $"class") full (Rename((Cls, "class")) --> classDF)
-    (fullJoin --> studentDF).count should be(5)
+    (fullJoin --> studentDF).count should be(6)
   }
 
   "Aggregate DSL" should "generate the transformations correctly" in {

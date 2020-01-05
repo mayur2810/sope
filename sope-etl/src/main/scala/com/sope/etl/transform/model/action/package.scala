@@ -153,6 +153,18 @@ package object action {
       */
     protected def getMultiArgFunction(name: String): MultiColFunc = (columns: Seq[Column]) => callUDF(name, columns: _*)
 
+
+    /**
+      * Applies know arguments to MultiArg Function in order provided and returns
+      * a single arg function to which the actual column can be provided
+      *
+      * @param multiArgFunc Multi Argument Column Function
+      * @param columns      Columns to be applied
+      * @return [[ColFunc]]
+      */
+    protected def multiArgToSingleArgFunc(multiArgFunc: MultiColFunc, columns: Seq[Column]): ColFunc =
+      (column: Column) => multiArgFunc(column +: columns)
+
     /**
       * Get the Single Arg Function that is registered in Spark Function registry
       *
@@ -541,20 +553,10 @@ package object action {
                            @JsonProperty(required = true) columns: Seq[String])
     extends SingleOutputTransform(Actions.DQCheck) {
 
-    private val DQStatusSuffix = "dq_failed"
-    private val DQColumnListSuffix = "dq_failed_columns"
-
     override def transformFunction(dataframes: DataFrame*): DFFunc = {
-      columns match {
-        case Nil => NoOp()
-        case _ =>
-          Transform(columns.map(column => s"${column}_${id}_$DQStatusSuffix" -> getMultiArgFunction(dqFunction)(col(column) +:
-            functionOptions.fold(Nil: Seq[Column])(_.map(lit)))): _*) +
-            Transform {
-              val dqColumns = columns.map(column => when(col(s"${column}_${id}_$DQStatusSuffix") === true, lit(column)).otherwise(lit(null)))
-              s"${id}_$DQColumnListSuffix" -> concat_ws(",", dqColumns: _*)
-            }
-      }
+      val multiArgFunction = getMultiArgFunction(dqFunction)
+      val commonMultiArgs = functionOptions.fold(Nil: Seq[Column])(_.map(lit))
+      DQCheck(id, multiArgToSingleArgFunc(multiArgFunction, commonMultiArgs), columns)
     }
   }
 
