@@ -49,6 +49,18 @@ package object dsl {
       */
     def apply[T: ClassTag](columns: Column*): DFFunc = (df: DataFrame) => df.select(columns: _*)
 
+
+    /**
+      * Select columns based on provided pattern
+      *
+      * @param pattern A regular expression to match and select the columns
+      * @return [[DFFunc]]
+      */
+    def apply(pattern: String): DFFunc = (df: DataFrame) => {
+      val columnsToSelect = df.columns.filter(_.matches(pattern))
+      df.selectExpr(columnsToSelect: _*)
+    }
+
     /**
       * Select columns from given dataframe. The Dataframe on which this function is called should contain all columns from the
       * dataframe used for re-ordering. Useful for doing a 'Union' operation.
@@ -125,6 +137,14 @@ package object dsl {
       Rename Transform
     */
   object Rename {
+
+    private val appendFunction = (prefix: Boolean, append: String, columns: Seq[String]) => {
+      if (prefix)
+        columns.map(column => column -> s"$append$column")
+      else
+        columns.map(column => column -> s"$column$append")
+    }.toMap
+
     /**
       * Rename columns function
       *
@@ -140,12 +160,42 @@ package object dsl {
       * @param prefix is true adds as prefix else suffix
       * @return [[DFFunc]]
       */
-    def apply(append: String, prefix: Boolean = true): DFFunc =
-      (df: DataFrame) =>
-        if (prefix)
-          df.renameColumns(df.columns.map(col => col -> s"$append$col").toMap)
-        else
-          df.renameColumns(df.columns.map(col => col -> s"$col$append").toMap)
+    def apply(append: String, prefix: Boolean, columns: String*): DFFunc =
+      (df: DataFrame) => {
+        val columnsToRename = if (columns.isEmpty) df.columns.toSeq else columns
+        df.renameColumns(appendFunction(prefix, append, columnsToRename))
+      }
+
+    /**
+      * Append prefix or suffix to columns which match the provided pattern
+      *
+      * @param append  String to append to column name
+      * @param prefix  is true adds as prefix else suffix
+      * @param pattern pattern to match the columns
+      * @return [[DFFunc]]
+      */
+    def apply(append: String, prefix: Boolean, pattern: String): DFFunc =
+      (df: DataFrame) => {
+        val columnsToRename = df.columns.filter(_.matches(pattern))
+        df.renameColumns(appendFunction(prefix, append, columnsToRename))
+      }
+
+    /**
+      * Rename columns with replacing text with provided replacement text
+      *
+      * @param pattern Pattern to find the columns
+      * @param find    Text to replace within column name
+      * @param replace Replacement text
+      * @return [[DFFunc]]
+      */
+    def apply(pattern: String, find: String, replace: String): DFFunc =
+      (df: DataFrame) => {
+        val columnsToRename = df.columns
+          .filter(_.matches(pattern))
+          .map(columnName => columnName -> columnName.replaceAll(find, replace))
+          .toMap
+        df.renameColumns(columnsToRename)
+      }
   }
 
 
@@ -195,7 +245,21 @@ package object dsl {
 
 
     /**
-      * Apply a single argument column expression to provided columns. Use if a new column is to be derived for each for transformation
+      * Apply a column expression to columns which match provided pattern
+      *
+      * @param columnFunc column expression
+      * @param pattern    regular expression to select the columns to which transformation will be applied
+      * @return [[DFFunc]]
+      */
+    def apply(columnFunc: ColFunc, pattern: String): DFFunc = (df: DataFrame) => {
+      val columnToTransform = df.columns.filter(_.matches(pattern))
+      df.applyColumnExpressions(columnToTransform.map(column => column -> columnFunc(expr(column))).toMap)
+    }
+
+
+    /**
+      * Apply a single argument column expression to provided columns.
+      * Use if a new column is to be derived for each for transformation
       *
       * @param suffix     suffix to append to for the new columns
       * @param columnFunc column expression
@@ -204,6 +268,21 @@ package object dsl {
       */
     def apply(suffix: String, columnFunc: ColFunc, columns: String*): DFFunc = (df: DataFrame) =>
       df.applyColumnExpressions(columns.map(column => s"$column$suffix" -> columnFunc(expr(column))).toMap)
+
+
+    /**
+      * Apply a single argument column expression to columns which match the provided pattern.
+      * Use if a new column is to be derived for each for transformation
+      *
+      * @param suffix     suffix to append to for the new columns
+      * @param columnFunc column expression
+      * @param pattern    regular expression to select the columns to which transformation will be applied
+      * @return [[DFFunc]]
+      */
+    def apply(suffix: String, columnFunc: ColFunc, pattern: String): DFFunc = (df: DataFrame) => {
+      val columnToTransform = df.columns.filter(_.matches(pattern))
+      df.applyColumnExpressions(columnToTransform.map(column => s"$column$suffix" -> columnFunc(expr(column))).toMap)
+    }
 
     /**
       * Applies single argument column expression to all columns in dataframe
@@ -593,18 +672,47 @@ package object dsl {
       Routes, useful for splitting dataset
    */
   object Routes {
+
+    /**
+      * Returns a list of [[DFFunc]] that will each filter on the respective conditions
+      * A non-matching condition is returned as the last [[DFFunc]]
+      *
+      * @param routingConditions [[Column]] conditions
+      * @return [[DFFuncSeq]]
+      */
     def apply(routingConditions: Column*): DFFuncSeq = routingConditions
       .map { condition => (df: DataFrame) => df.filter(condition) } :+ {
       df: DataFrame => df.filter(routingConditions.map { condition => not(condition) }.reduce(_ and _))
     }
 
+    /**
+      * Returns a list of [[DFFunc]] that will each filter on the respective string expressions
+      * A non-matching condition is returned as the last [[DFFunc]]
+      *
+      * @param routingConditions [[String]] String expressions
+      * @return [[DFFuncSeq]]
+      */
     def apply[T: ClassTag](routingConditions: String*): DFFuncSeq = apply(routingConditions.map(expr): _*)
 
+    /**
+      * Returns a Map of identifier and [[DFFunc]] that will each filter on the respective conditions
+      * A non-matching condition is returned by an identifier named "default"
+      *
+      * @param routingConditions [[Column]] conditions
+      * @return [[DFFuncMap]]
+      */
     def apply(routingConditions: (String, Column)*): DFFuncMap = routingConditions
       .unzip match {
       case (names, conditions) => (names :+ "default", apply(conditions: _*)).zipped.toMap
     }
 
+    /**
+      * Returns a Map of identifier and [[DFFunc]] that will each filter on the respective string expressions
+      * A non-matching condition is returned by an identifier named "default"
+      *
+      * @param routingConditions String expressions
+      * @return [[DFFuncMap]]
+      */
     def apply[T: ClassTag](routingConditions: (String, String)*): DFFuncMap = apply(
       routingConditions.map { case (name, condition) => (name, expr(condition)) }: _*
     )
@@ -614,8 +722,20 @@ package object dsl {
        Splits dataset into binary set
    */
   object Partition {
+    /**
+      * Partition based on provided column condition. The first set is for the matching criteria
+      *
+      * @param condition Column condition
+      * @return [[DFFuncSeq]]
+      */
     def apply(condition: Column): DFFuncSeq = Routes(condition)
 
+    /**
+      * Partition based on provided string expression. The first set is for the matching criteria
+      *
+      * @param condition String expression
+      * @return [[DFFuncSeq]]
+      */
     def apply(condition: String): DFFuncSeq = apply(expr(condition))
   }
 
@@ -626,6 +746,16 @@ package object dsl {
     private val DQStatusSuffix = "dq_failed"
     private val DQColumnListSuffix = "dq_failed_columns"
 
+    /**
+      * Applies Data Quality Check. A new column will be created with {original_column_name}_dq_failed
+      * which will contain the failed status. Another column with {id}_dq_failed_columns lists all the
+      * columns names that failed the check for the overall data row.
+      *
+      * @param id         the data check id
+      * @param dqFunction [[ColFunc]] data check function
+      * @param columns    Columns on which DQ is to be applied
+      * @return [[DFFunc]]
+      */
     def apply(id: String, dqFunction: ColFunc, columns: Seq[Column]): DFFunc = {
       columns match {
         case Nil => NoOp()
@@ -639,7 +769,60 @@ package object dsl {
       }
     }
 
+    /**
+      * Applies Data Quality Check. A new column will be created with {original_column_name}_dq_failed
+      * which will contain the failed status. Another column with {id}_dq_failed_columns lists all the
+      * columns names that failed the check for the overall data row.
+      *
+      * @param id         the data check id
+      * @param dqFunction [[ColFunc]] data check function
+      * @param columns    Columns on which DQ is to be applied
+      * @return [[DFFunc]]
+      */
     def apply[T: ClassTag](id: String, dqFunction: ColFunc, columns: Seq[String]): DFFunc = DQCheck(id, dqFunction, columns.map(col))
+  }
+
+
+  object Repartition {
+
+    /**
+      * Applies repartitioning
+      *
+      * @param numPartitions Number of partitions, optional
+      * @param columns       [[Column]]s to partition on
+      * @return [[DFFunc]]
+      */
+    def apply(numPartitions: Option[Int], columns: Column*): DFFunc = (df: DataFrame) => {
+      (numPartitions, columns) match {
+        case (None, Nil) => df /* do nothing */
+        case (Some(0), Nil) => df /* do nothing */
+        case (None, cols) => df.repartition(cols: _*)
+        case (Some(0), cols) => df.repartition(cols: _*)
+        case (Some(number), Nil) => df.repartition(number)
+        case (Some(number), cols) => df.repartition(number, cols: _*)
+      }
+    }
+
+    /**
+      * Applies repartitioning
+      *
+      * @param numPartitions Number of partitions, optional
+      * @param columns       String expressions to partition on
+      * @return [[DFFunc]]
+      */
+    def apply[T: ClassTag](numPartitions: Option[Int], columns: String*): DFFunc =
+      apply(numPartitions, columns.map(expr): _*)
+  }
+
+
+  object Coalesce {
+    /**
+      * Applies Coalesce
+      *
+      * @param numPartitions number of partitions
+      * @return [[DFFunc]]
+      */
+    def apply(numPartitions: Int): DFFunc = (df: DataFrame) => df.coalesce(numPartitions)
   }
 
   /*
@@ -660,13 +843,6 @@ package object dsl {
     [[DFFunc]] implicits
    */
   implicit class DFFuncImplicits(dfFunc: DFFunc) {
-    /**
-      * Apply Transformation function to passed [[DataFrame]]
-      *
-      * @param df dataframe
-      * @return [[DataFrame]]
-      */
-    def -->(df: DataFrame): DataFrame = df.transform(dfFunc)
 
     /**
       * Apply Transformation function to passed [[DataFrame]]
@@ -677,6 +853,14 @@ package object dsl {
     def using(df: DataFrame): DataFrame = df.transform(dfFunc)
 
     /**
+      * Apply Transformation function to passed [[DataFrame]]
+      *
+      * @param df dataframe
+      * @return [[DataFrame]]
+      */
+    def -->(df: DataFrame): DataFrame = using(df)
+
+    /**
       * Compose [[DFFunc]] transformations
       *
       * @param rightDFFunc [[DFFunc]] transformation
@@ -684,12 +868,30 @@ package object dsl {
       */
     def +(rightDFFunc: DFFunc): DFFunc = dfFunc andThen rightDFFunc
 
+    /**
+      * Compose [[DFFuncSeq]] transformations.
+      *
+      * @param rightDFFuncSeq [[DFFuncSeq]] transformation
+      * @return [[DFFuncSeq]]
+      */
     def +(rightDFFuncSeq: DFFuncSeq): DFFuncSeq = rightDFFuncSeq.map(dfFunc + _)
 
+    /**
+      * Compose [[DFFuncMap]] transformations
+      *
+      * @param rightDFFuncMap [[DFFuncMap]] transformation
+      * @return [[DFFuncMap]]
+      */
     def +(rightDFFuncMap: DFFuncMap): DFFuncMap = rightDFFuncMap.map {
       case (name, rightFunc) => name -> (dfFunc + rightFunc)
     }
 
+    /**
+      * Compose [[DFFuncMapSelective]] transformations
+      *
+      * @param dfFuncMapSelectiveLeft [[DFFuncMapSelective]] transformation
+      * @return [[DFFuncMap]]
+      */
     def +(dfFuncMapSelectiveLeft: DFFuncMapSelective): DFFuncMap = dfFuncMapSelectiveLeft match {
       case (name, dfFuncMap) => dfFuncMap.map {
         case (key, rightFunc) => if (name == key) key -> (dfFunc + rightFunc) else key -> rightFunc
@@ -697,36 +899,106 @@ package object dsl {
     }
   }
 
+  /*
+    [[DFFuncSeq]] implicits
+   */
   implicit class SeqDFFuncImplicits(dfFuncSeq: DFFuncSeq) {
 
+    /**
+      * Apply all transformations in the [[DFFuncSeq]] to passed [[DataFrame]]
+      *
+      * @param df dataframe
+      * @return [[Seq]] of [[DataFrame]]
+      */
     def using(df: DataFrame): Seq[DataFrame] = dfFuncSeq.map(_ using df)
 
+    /**
+      * Apply all transformations in the [[DFFuncSeq]] to passed [[DataFrame]]
+      *
+      * @param df dataframe
+      * @return [[Seq]] of [[DataFrame]]
+      */
     def -->(df: DataFrame): Seq[DataFrame] = using(df)
 
+    /**
+      * Compose [[DFFunc]] transformations
+      *
+      * @param rightDFFunc [[DFFunc]] transformation
+      * @return [[DFFunc]]
+      */
     def +(rightDFFunc: DFFunc): DFFuncSeq = dfFuncSeq.map(_ + rightDFFunc)
 
+    /**
+      * Compose [[DFFuncSeq]] transformations
+      *
+      * @param rightDFFuncs [[DFFuncSeq]] transformation
+      * @return [[DFFuncSeq]]
+      */
     def +(rightDFFuncs: DFFuncSeq): DFFuncSeq = dfFuncSeq.flatMap(left => rightDFFuncs.map(left + _))
   }
 
+  /*
+    [[DFFuncMap]] implicits
+   */
   implicit class MapDFFuncImplicits(dfFuncMap: DFFuncMap) {
 
+    /**
+      * Apply all transformations in the [[DFFuncMap]] to passed [[DataFrame]]
+      *
+      * @param df dataframe
+      * @return Map of identifier as key and [[DataFrame]] as value
+      */
     def using(df: DataFrame): Map[String, DataFrame] = dfFuncMap.mapValues(_ using df)
 
+    /**
+      * Apply all transformations in the [[DFFuncMap]] to passed [[DataFrame]]
+      *
+      * @param df dataframe
+      * @return Map of identifier as key and [[DataFrame]] as value
+      */
     def -->(df: DataFrame): Map[String, DataFrame] = using(df)
 
+    /**
+      * Compose [[DFFunc]] transformations
+      *
+      * @param rightDFFunc [[DFFunc]] transformation
+      * @return [[DFFunc]]
+      */
     def +(rightDFFunc: DFFunc): DFFuncMap = dfFuncMap.mapValues(_ + rightDFFunc)
 
+    /**
+      * Compose [[DFFunc]] transformations on provided identifier
+      *
+      * @param rightDFFunc [[DFFunc]] transformation
+      * @return [[DFFunc]]
+      */
     def +(name: String, rightDFFunc: DFFunc): DFFuncMap = dfFuncMap.map {
       case (key, func) => if (name == key) key -> (func + rightDFFunc) else key -> func
     }
 
+    /**
+      * Compose [[DFFuncMap]] transformations
+      *
+      * @param rightDFFuncs [[DFFuncMap]] transformation
+      * @return [[DFFuncMap]]
+      */
     def +(rightDFFuncs: DFFuncMap): DFFuncMap = dfFuncMap.flatMap {
       case (leftKey, leftFunc) =>
         rightDFFuncs.map { case (rightKey, rightFunc) => (leftKey + rightKey) -> (leftFunc + rightFunc) }
     }
   }
 
+  /*
+    [[DFFuncMapSelective]] implicits
+   */
   implicit class MapDFFuncSelectiveImplicits(dfFuncMapSelective: DFFuncMapSelective) {
+
+    /**
+      * Compose [[DFFunc]] transformation
+      *
+      * @param rightDFFunc [[DFFunc]] transformation
+      * @return [[DFFuncMap]]
+      */
     def +(rightDFFunc: DFFunc): DFFuncMap = dfFuncMapSelective match {
       case (name, dfFuncMap) => dfFuncMap.map {
         case (key, func) => if (name == key) key -> (func + rightDFFunc) else key -> func

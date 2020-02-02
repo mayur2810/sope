@@ -40,13 +40,16 @@ class DSLTest extends FlatSpec with Matchers {
   "Select DSL" should "generate the transformations correctly" in {
     val selectStr = Select(FirstName, LastName)
     val selectCol = Select($"$LastName", $"$FirstName")
-    val transformed = selectStr + selectCol --> studentDF
-    println("Select Test DF output =>")
+    val selectPattern = Select(".*name")
+    val transformed = selectStr + selectCol + selectPattern --> studentDF
+    println("Select Tests DF output =>")
     transformed.show(false)
-    transformed.schema.fields.map(_.name) should contain allOf(FirstName, LastName)
+    transformed.columns should contain allOf(FirstName, LastName)
+
+    // Select Not
     val transformed1 = SelectNot(Cls) --> studentDF
     transformed1.show(false)
-    transformed1.schema.fields.map(_.name) should contain allOf(FirstName, LastName, RollNo)
+    transformed1.columns should contain allOf(FirstName, LastName, RollNo)
   }
 
   "Filter and Rename DSL" should "generate the transformations correctly" in {
@@ -57,11 +60,26 @@ class DSLTest extends FlatSpec with Matchers {
     println("Filter, Rename Test DF output =>")
     transformed.show(false)
     transformed.count should be(3)
-    transformed.schema.fields.map(_.name) should contain("name")
+    transformed.columns should contain("name")
     // Rename All test
-    val transformed1 = Rename("tmp_") + Rename("_column", prefix = false) --> studentDF
+    val transformed1 = Rename("tmp_", prefix = true) + Rename("_column", prefix = false) --> studentDF
     transformed1.show(false)
-    assert(transformed1.schema.fields.map(_.name).forall(_.startsWith("tmp_")))
+    assert(transformed1.columns.forall(_.startsWith("tmp_")))
+
+    // Rename Selected test
+    val transformed2 = Rename("_tmp", prefix = false, FirstName, LastName) --> studentDF
+    transformed2.show(false)
+    transformed2.columns should contain allOf("first_name_tmp", "last_name_tmp")
+
+    // Rename pattern test
+    val transformed3 = Rename("tmp_", prefix = true, ".*name") --> studentDF
+    transformed3.show(false)
+    transformed3.columns should contain allOf("tmp_first_name", "tmp_last_name")
+
+    // Rename pattern test
+    val transformed4 = Rename(".*name", "tmp_", "") --> transformed3
+    transformed4.show(false)
+    transformed4.columns should contain allOf(FirstName, LastName)
   }
 
 
@@ -73,6 +91,22 @@ class DSLTest extends FlatSpec with Matchers {
     transformed.show(false)
     transformed.filter("roll_no = 1").select(FirstName).head.getString(0) should be("SHERLOCK")
     transformed.maxKeyValue("id") should be(5)
+
+    // Transform select
+    val transformed1 = Transform(upper _, FirstName, LastName) --> studentDF
+    transformed1.show()
+    transformed1.filter("roll_no = 1")
+      .select(FirstName, LastName).head
+      .toSeq should contain inOrder("SHERLOCK", "HOLMES")
+
+    // Transform select
+    val transformed2 = Transform(upper _, ".*name") --> studentDF
+    transformed2.show()
+    transformed2.filter("roll_no = 1")
+      .select(FirstName, LastName).head
+      .toSeq should contain inOrder("SHERLOCK", "HOLMES")
+
+
   }
 
   "Join DSL" should "generate the transformations correctly" in {
@@ -97,8 +131,22 @@ class DSLTest extends FlatSpec with Matchers {
     val routes = Routes("suspense" -> "cls = 10", "sci-fi" -> "cls = 9")
     val lower = Transform("first_name" -> "lower(first_name)")
     val upper = Transform("last_name" -> "upper(last_name)")
-    val trans = lower + routes + upper --> studentDF
-    trans.foreach { case (name, df) => println(name); df.show() }
+    val trans = lower + routes + ("suspense", upper) --> studentDF
+    trans.foreach {
+      case ("suspense", df) =>
+        df.show
+        df.filter("roll_no = 1")
+          .select(FirstName, LastName).head
+          .toSeq should contain inOrder("sherlock", "HOLMES")
+      case ("sci-fi", df) =>
+        df.show
+        df.filter("roll_no = 3")
+          .select(FirstName, LastName).head
+          .toSeq should contain inOrder("tony", "Stark")
+      case ("default", df) =>
+        df.show
+        df.count should be(1)
+    }
   }
 
 }

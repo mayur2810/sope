@@ -207,7 +207,7 @@ package object action {
       Coalesce
    */
   case class CoalesceAction(@JsonProperty(required = true, value = "num_partitions") numPartitions: Int) extends SingleOutputTransform(Actions.Coalesce) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = (df: DataFrame) => df.coalesce(numPartitions)
+    override def transformFunction(dataframes: DataFrame*): DFFunc = Coalesce(numPartitions)
   }
 
 
@@ -216,14 +216,8 @@ package object action {
    */
   case class RepartitionAction(@JsonProperty(required = false, value = "num_partitions") numPartitions: Int,
                                @JsonProperty(required = false) columns: Option[Seq[String]]) extends SingleOutputTransform(Actions.Repartition) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = (df: DataFrame) => {
-      (numPartitions, columns) match {
-        case (0, None) => df /* do nothing */
-        case (0, Some(cols)) => df.repartition(cols.map(expr): _*)
-        case (number, None) => df.repartition(number)
-        case (number, Some(cols)) => df.repartition(number, cols.map(expr): _*)
-      }
-    }
+    override def transformFunction(dataframes: DataFrame*): DFFunc =
+      Repartition(Some(numPartitions), columns.getOrElse(Nil):_*)
   }
 
   /*
@@ -575,9 +569,7 @@ package object action {
   */
   case class PartitionAction(@SqlExpr @JsonProperty(required = true) condition: String)
     extends MultiOutputTransform(Actions.Partition) {
-    override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] =
-      Seq((df: DataFrame) => df.partition(expr(condition))._1,
-        (df: DataFrame) => df.partition(expr(condition))._2)
+    override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] = Partition(condition)
   }
 
 
@@ -586,10 +578,7 @@ package object action {
    */
   case class RouterAction(@SqlExpr @JsonProperty(required = true) conditions: Seq[String])
     extends MultiOutputTransform(Actions.Router) {
-    override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] =
-      conditions.map { condition => (df: DataFrame) => df.filter(condition) } :+ {
-        df: DataFrame => df.filter(conditions.map { condition => not(expr(condition)) }.reduce(_ and _))
-      }
+    override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] = Routes(conditions :_*)
   }
 
 }
