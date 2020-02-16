@@ -93,14 +93,14 @@ class DSLTest extends FlatSpec with Matchers {
     transformed.maxKeyValue("id") should be(5)
 
     // Transform select
-    val transformed1 = Transform(upper _, FirstName, LastName) --> studentDF
+    val transformed1 = Transform(upper _, None, FirstName, LastName) --> studentDF
     transformed1.show()
     transformed1.filter("roll_no = 1")
       .select(FirstName, LastName).head
       .toSeq should contain inOrder("SHERLOCK", "HOLMES")
 
     // Transform select
-    val transformed2 = Transform(upper _, ".*name") --> studentDF
+    val transformed2 = Transform(upper _, None, ".*name") --> studentDF
     transformed2.show()
     transformed2.filter("roll_no = 1")
       .select(FirstName, LastName).head
@@ -110,10 +110,10 @@ class DSLTest extends FlatSpec with Matchers {
   }
 
   "Join DSL" should "generate the transformations correctly" in {
-    val innerJoin = Transform(upper _, FirstName, LastName) + (Join(Some("left"), Cls) inner classDF)
+    val innerJoin = Transform(upper _, None, FirstName, LastName) + (Join(Some("left"), Cls) inner classDF)
     (innerJoin --> studentDF).count should be(4)
 
-    val leftJoin = Transform(upper _) + (Join(None, Cls) left classDF)
+    val leftJoin = Transform(upper _, None) + (Join(None, Cls) left classDF)
     (leftJoin --> studentDF).count should be(5)
 
     val rightJoin = Join(Some("left"), $"$Cls" === $"class") right (Rename((Cls, "class")) --> classDF)

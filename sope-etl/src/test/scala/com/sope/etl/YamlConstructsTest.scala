@@ -119,6 +119,12 @@ class YamlConstructsTest extends FlatSpec with Matchers {
     transformedDF.columns.forall(_.contains("_renamed"))
   }
 
+  "rename_find_replace_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("rename_find_replace_test")
+    transformedDF.show(false)
+    transformedDF.columns.forall(_.contains("_replaced"))
+  }
+
   "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("custom_udf_call_test")
     transformedDF.show(false)

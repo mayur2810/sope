@@ -87,6 +87,10 @@ transformations :
       input: "transactions"
       actions:
           - {type: rename_all, append: "_renamed"}
+    - alias: "rename_find_replace_test"
+      input: "rename_all_test"
+      actions:
+         - {type: rename_replace, pattern: ".*renamed", find: "renamed", replace: "replaced"}
     - alias: "aggregate_test"
       input: "transactions"
       actions:

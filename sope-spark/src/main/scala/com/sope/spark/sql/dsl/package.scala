@@ -181,7 +181,7 @@ package object dsl {
       }
 
     /**
-      * Rename columns with replacing text with provided replacement text
+      * Find columns which match the provided pattern and rename with provided replacement text
       *
       * @param pattern Pattern to find the columns
       * @param find    Text to replace within column name
@@ -237,61 +237,34 @@ package object dsl {
       * Apply a column expression to provided columns
       *
       * @param columnFunc column expression
+      * @param suffix     suffix to add in case new column is to be derived
       * @param columns    column names to which function is to be applied
       * @return [[DFFunc]]
       */
-    def apply(columnFunc: ColFunc, columns: String*): DFFunc = (df: DataFrame) =>
-      df.applyColumnExpressions(columns.map(column => column -> columnFunc(expr(column))).toMap)
-
+    def apply(columnFunc: ColFunc, suffix: Option[String], columns: String*): DFFunc = (df: DataFrame) => {
+      val columnsToTransform = if (columns.isEmpty) df.columns.toSeq else columns
+      df.applyColumnExpressions {
+        columnsToTransform.map(column =>
+          (if (suffix.isDefined) s"$column${suffix.get}" else column) -> columnFunc(expr(column))).toMap
+      }
+    }
 
     /**
       * Apply a column expression to columns which match provided pattern
       *
       * @param columnFunc column expression
+      * @param suffix     suffix to add in case new column is to be derived
       * @param pattern    regular expression to select the columns to which transformation will be applied
       * @return [[DFFunc]]
       */
-    def apply(columnFunc: ColFunc, pattern: String): DFFunc = (df: DataFrame) => {
+    def apply(columnFunc: ColFunc, suffix: Option[String], pattern: String): DFFunc = (df: DataFrame) => {
       val columnToTransform = df.columns.filter(_.matches(pattern))
-      df.applyColumnExpressions(columnToTransform.map(column => column -> columnFunc(expr(column))).toMap)
+      df.applyColumnExpressions {
+        columnToTransform.map(column =>
+          (if (suffix.isDefined) s"$column${suffix.get}" else column) -> columnFunc(expr(column))).toMap
+      }
     }
 
-
-    /**
-      * Apply a single argument column expression to provided columns.
-      * Use if a new column is to be derived for each for transformation
-      *
-      * @param suffix     suffix to append to for the new columns
-      * @param columnFunc column expression
-      * @param columns    List of resultant column and target column names to which function is to be applied
-      * @return [[DFFunc]]
-      */
-    def apply(suffix: String, columnFunc: ColFunc, columns: String*): DFFunc = (df: DataFrame) =>
-      df.applyColumnExpressions(columns.map(column => s"$column$suffix" -> columnFunc(expr(column))).toMap)
-
-
-    /**
-      * Apply a single argument column expression to columns which match the provided pattern.
-      * Use if a new column is to be derived for each for transformation
-      *
-      * @param suffix     suffix to append to for the new columns
-      * @param columnFunc column expression
-      * @param pattern    regular expression to select the columns to which transformation will be applied
-      * @return [[DFFunc]]
-      */
-    def apply(suffix: String, columnFunc: ColFunc, pattern: String): DFFunc = (df: DataFrame) => {
-      val columnToTransform = df.columns.filter(_.matches(pattern))
-      df.applyColumnExpressions(columnToTransform.map(column => s"$column$suffix" -> columnFunc(expr(column))).toMap)
-    }
-
-    /**
-      * Applies single argument column expression to all columns in dataframe
-      *
-      * @param columnFunc column expression
-      * @return [[DFFunc]]
-      */
-    def apply(columnFunc: ColFunc): DFFunc = (df: DataFrame) =>
-      df.applyColumnExpressions(df.columns.map(column => column -> columnFunc(expr(column))).toMap)
 
     /**
       * Apply a multi argument column expression to provided columns.

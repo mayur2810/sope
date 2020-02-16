@@ -29,6 +29,7 @@ package object action {
   object Actions {
     final val Rename = "rename"
     final val RenameAll = "rename_all"
+    final val RenameFindReplace = "rename_replace"
     final val Filter = "filter"
     final val Join = "join"
     final val GroupBy = "group_by"
@@ -36,6 +37,7 @@ package object action {
     final val Transform = "transform"
     final val TransformAll = "transform_all"
     final val Select = "select"
+    final val SelectRegex = "select_regex"
     final val SelectAlias = "select_alias"
     final val SelectReorder = "select_reorder"
     final val SelectNot = "select_not"
@@ -73,6 +75,7 @@ package object action {
     property = "type")
   @JsonSubTypes(Array(
     new Type(value = classOf[RenameAction], name = Actions.Rename),
+    new Type(value = classOf[RenameFindReplace], name = Actions.RenameFindReplace),
     new Type(value = classOf[RenameAllAction], name = Actions.RenameAll),
     new Type(value = classOf[FilterAction], name = Actions.Filter),
     new Type(value = classOf[JoinAction], name = Actions.Join),
@@ -81,6 +84,7 @@ package object action {
     new Type(value = classOf[TransformAction], name = Actions.Transform),
     new Type(value = classOf[TransformAllAction], name = Actions.TransformAll),
     new Type(value = classOf[SelectAction], name = Actions.Select),
+    new Type(value = classOf[SelectWithRegexAction], name = Actions.SelectRegex),
     new Type(value = classOf[SelectWithAliasAction], name = Actions.SelectAlias),
     new Type(value = classOf[SelectWithReorderedAction], name = Actions.SelectReorder),
     new Type(value = classOf[SelectNotAction], name = Actions.SelectNot),
@@ -206,7 +210,8 @@ package object action {
   /*
       Coalesce
    */
-  case class CoalesceAction(@JsonProperty(required = true, value = "num_partitions") numPartitions: Int) extends SingleOutputTransform(Actions.Coalesce) {
+  case class CoalesceAction(@JsonProperty(required = true, value = "num_partitions") numPartitions: Int)
+    extends SingleOutputTransform(Actions.Coalesce) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = Coalesce(numPartitions)
   }
 
@@ -215,32 +220,54 @@ package object action {
      Repartition
    */
   case class RepartitionAction(@JsonProperty(required = false, value = "num_partitions") numPartitions: Int,
-                               @JsonProperty(required = false) columns: Option[Seq[String]]) extends SingleOutputTransform(Actions.Repartition) {
+                               @JsonProperty(required = false) columns: Option[Seq[String]])
+    extends SingleOutputTransform(Actions.Repartition) {
     override def transformFunction(dataframes: DataFrame*): DFFunc =
-      Repartition(Some(numPartitions), columns.getOrElse(Nil):_*)
+      Repartition(Some(numPartitions), columns.getOrElse(Nil): _*)
   }
 
   /*
       Rename
    */
-  case class RenameAction(@JsonProperty(required = true) list: Map[String, String]) extends SingleOutputTransform(Actions.Rename) {
+  case class RenameAction(@JsonProperty(required = true) list: Map[String, String])
+    extends SingleOutputTransform(Actions.Rename) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = Rename(list.toSeq: _*)
   }
 
 
   /*
-     Rename All, supports prefix and suffix
+     Rename All or selected, supports prefix and suffix and searching with pattern
    */
   case class RenameAllAction(@JsonProperty(required = true) append: String,
-                             @JsonProperty(required = false) prefix: Option[Boolean]) extends SingleOutputTransform(Actions.RenameAll) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = Rename(append, prefix.getOrElse(false))
+                             @JsonProperty(required = false) prefix: Option[Boolean],
+                             @JsonProperty(required = false) columns: Option[List[String]],
+                             @JsonProperty(required = false) pattern: Option[String])
+    extends SingleOutputTransform(Actions.RenameAll) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc =
+      (columns, pattern) match {
+        case (_, Some(regex)) => Rename(append, prefix.getOrElse(false), regex)
+        case (Some(cols), None) => Rename(append, prefix.getOrElse(false), cols: _*)
+        case (None, None) => Rename(append, prefix.getOrElse(false))
+      }
+
+  }
+
+  /*
+      Rename columns matching pattern, and replace provided text (find) with replacement text.
+   */
+  case class RenameFindReplace(@JsonProperty(required = true) pattern: String,
+                               @JsonProperty(required = true) find: String,
+                               @JsonProperty(required = true) replace: String)
+    extends SingleOutputTransform(Actions.RenameFindReplace) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc = Rename(pattern, find, replace)
   }
 
 
   /*
      Column Transform
    */
-  case class TransformAction(@SqlExpr @JsonProperty(required = true) list: Map[String, String]) extends SingleOutputTransform(Actions.Transform) {
+  case class TransformAction(@SqlExpr @JsonProperty(required = true) list: Map[String, String])
+    extends SingleOutputTransform(Actions.Transform) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = Transform(list.toSeq: _*)
   }
 
@@ -250,12 +277,16 @@ package object action {
    */
   case class TransformAllAction(@JsonProperty(value = "function", required = true) transformExpr: String,
                                 @JsonProperty(required = false) suffix: Option[String],
-                                @SqlExpr @JsonProperty(required = false) columns: Option[List[String]]) extends SingleOutputTransform(Actions.TransformAll) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = (columns, suffix) match {
-      case (None, None) => Transform(getSingleArgFunction(transformExpr))
-      case (None, Some(colSuffix)) => (df: DataFrame) => df.transform(Transform(colSuffix, getSingleArgFunction(transformExpr), df.columns: _*))
-      case (Some(cols), None) => Transform(getSingleArgFunction(transformExpr), cols: _*)
-      case (Some(cols), Some(colSuffix)) => Transform(colSuffix, getSingleArgFunction(transformExpr), cols: _*)
+                                @SqlExpr @JsonProperty(required = false) columns: Option[List[String]],
+                                @JsonProperty(required = false) pattern: Option[String])
+    extends SingleOutputTransform(Actions.TransformAll) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc = {
+      val transformFunc = getSingleArgFunction(transformExpr)
+      (columns, pattern) match {
+        case (None, None) => Transform(transformFunc, suffix)
+        case (_, Some(regex)) => Transform(transformFunc, suffix, regex)
+        case (Some(cols), None) => Transform(transformFunc, suffix, cols: _*)
+      }
     }
   }
 
@@ -266,7 +297,8 @@ package object action {
                         @JsonProperty(value = "columns", required = false) joinColumns: Seq[String],
                         @JsonProperty(value = "join_type", required = true) joinType: String,
                         @JsonProperty(value = "with", required = true) joinSource: String,
-                        @JsonProperty(value = "broadcast_hint") broadcastHint: String) extends SingleOutputTransform(Actions.Join) {
+                        @JsonProperty(value = "broadcast_hint") broadcastHint: String)
+    extends SingleOutputTransform(Actions.Join) {
 
     private val joinTypeFunc: DFJoinFunc => DataFrame => DFFunc = (joinFunc: DFJoinFunc) => joinType match {
       case "inner" => joinFunc >< _
@@ -325,6 +357,15 @@ package object action {
   case class SelectAction(@SqlExpr @JsonProperty(required = true) columns: Seq[String])
     extends SingleOutputTransform(Actions.Select) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = Select1(columns: _*)
+  }
+
+
+  /*
+    Select using regex
+ */
+  case class SelectWithRegexAction(@JsonProperty(required = true) regex: String)
+    extends SingleOutputTransform(Actions.SelectRegex) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc = Select1(regex)
   }
 
   /*
@@ -578,7 +619,7 @@ package object action {
    */
   case class RouterAction(@SqlExpr @JsonProperty(required = true) conditions: Seq[String])
     extends MultiOutputTransform(Actions.Router) {
-    override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] = Routes(conditions :_*)
+    override def transformFunctions(dataframes: DataFrame*): Seq[DFFunc] = Routes(conditions: _*)
   }
 
 }
