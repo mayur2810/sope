@@ -42,8 +42,7 @@ object WrapperUtil {
     val dir = new File(directory)
     if (dir.exists && dir.isDirectory) {
       dir.listFiles.filter(_.isFile).toList
-    } else
-      Nil
+    } else throw new Exception(s"Yaml Folder $directory not found")
   }
 
   /*

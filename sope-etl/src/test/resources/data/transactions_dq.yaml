@@ -1,0 +1,9 @@
+[
+{id: 1, loc: "pune",   product: "tshirt", date: "2018-01-01"},
+{id: 2, loc: "Pune",   product: "jeans",  date: "2018-01-02"},
+{id: 3, loc: "mumbAi", product: "shirt",  date: "2018-01-03"},
+{id: 4, loc: "",  product: "shirt",  date: "2018-01-03"},
+{id: 5, loc: "Bangalore",  product: "t-shirt",  date: "22018-01-03"},
+{id: 6, loc: "Chennai", product: null,  date: "2018/01/03"},
+{id: 7, loc: null, product: null,  date: "2018-01-"}
+]

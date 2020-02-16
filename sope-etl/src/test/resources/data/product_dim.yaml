@@ -1,0 +1,9 @@
+[
+{product_key: 1, product_id: -1,product_desc:  "N.A.",size:  0,   color: 0, derived_attr: "not-available", last_updated_date: "2018-01-01"},
+{product_key: 2, product_id: 0, product_desc: "N.A.", size: 0,    color: 0, derived_attr: "not-available", last_updated_date: "2018-01-01"},
+{product_key: 3, product_id: 1, product_desc: "tshirt", size: 3,  color: 4, derived_attr: "not-available", last_updated_date: "2018-01-01"},
+{product_key: 4, product_id: 2, product_desc: "jeans",size:  5,   color: 1, derived_attr: "not-available", last_updated_date: "2018-01-01"},
+{product_key: 5, product_id: 3, product_desc: "shirt",size:  6,   color: 7, derived_attr: "not-available", last_updated_date: "2018-01-01"},
+{product_key: 6, product_id: 4, product_desc: "trouser", size: 4, color: 3, derived_attr: "not-available", last_updated_date: "2018-01-01"},
+{product_key: 7, product_id: 5, product_desc: "kurta",size:  4,   color: 4, derived_attr: "not-available", last_updated_date: "2018-01-01"}
+]

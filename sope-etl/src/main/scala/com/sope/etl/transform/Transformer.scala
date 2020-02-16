@@ -24,23 +24,20 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
 
   private val autoPersistSetting = SopeETLConfig.AutoPersistConfig
   private var sourceDFMap: Map[String, DataFrame] = inputMap
-  private val transformations = model.transformations
+  private val transformations = model.transformations.data
 
   // Generate the input sources for the transformation
   private lazy val inputSources = transformations.flatMap { transform =>
-    transform.actions
-      .map { actions =>
-        actions.foldLeft(Nil: Seq[InputSource]) {
-          case (inputs, action) =>
-            val (isJoinAction, joinColumns) =
-              action match {
-                case ja: JoinAction if !ja.expressionBased => (true, Some(ja.joinColumns))
-                case _ => (false, None)
-              }
-            inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
-        } :+ InputSource(transform.source, isUsedForJoin = false, None)
-      }.getOrElse(Nil)
-  } ++ model.targets.map(target => InputSource(target.getInput, isUsedForJoin = false, None)) // add inputs from target information
+    transform.actionList.foldLeft(Nil: Seq[InputSource]) {
+      case (inputs, action) =>
+        val (isJoinAction, joinColumns) =
+          action match {
+            case ja: JoinAction if !ja.expressionBased => (true, Some(ja.joinColumns))
+            case _ => (false, None)
+          }
+        inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
+    } :+ InputSource(transform.source, isUsedForJoin = false, None)
+  } ++ model.targets.data.map(target => InputSource(target.getInput, isUsedForJoin = false, None)) // add inputs from target information
 
   /**
     * Check if the alias that is to be persisted can be
@@ -102,7 +99,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
     inputMap.toSeq ++ transformations.flatMap(dfTransform => {
       val transformAliases = dfTransform.getAliases
       logInfo(s"Applying transformation: ${transformAliases.mkString(",")}")
-      val actions = dfTransform.actions.getOrElse(Nil)
+      val actions = dfTransform.actionList
       val sourceDF = getDF(dfTransform.source)
       // if sql transform apply sql or perform provided action transformation
       val transformedDF = Try {

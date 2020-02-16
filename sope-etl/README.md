@@ -143,8 +143,8 @@ transformer constructs page. Following shows a sample use of streaming mode:
 #### Templates:
 The Transformer supports a 'yaml' action construct which can be used to call another yaml. It also supports substitution to drive the templates using dynamic values.
 There are some etl specific templates that are provided for reference:
-- [SCD Template](src/main/resources/templates/scd_template.yaml)
-- [DQ Template](src/main/resources/templates/data_quality_template.yaml)
+- [SCD Template](templates/scd_template.yaml)
+- [DQ Template](templates/data_quality_template.yaml)
 
 #### Custom User Defined Functions:
 An interface 'com.sope.etl.register.UDFRegistration' is provided for registering custom UDFs for use in the Transformer.

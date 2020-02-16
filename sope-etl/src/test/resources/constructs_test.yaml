@@ -1,4 +1,8 @@
-inputs: ["transactions", "product", "date", "dim_product"]
+inputs:
+  - {type: local, alias: "transactions", yaml_file: "data/transactions.yaml"}
+  - {type: local, alias: "product", yaml_file: "data/product_input.yaml" }
+  - {type: local, alias: "dim_product", yaml_file: "data/product_dim.yaml", schema_file: "data/product_dim_schema.yaml"}
+  - {type: local, alias: "date",  yaml_file: "data/date_dim.yaml", schema_file: "data/date_dim_schema.yaml"}
 transformations :
     - input: "product"
       alias: "product_filtered"
@@ -24,7 +28,7 @@ transformations :
     - input : "product"
       alias: "final_dim_out"
       actions:
-        - {type: yaml, yaml_file: "templates/scd_template.yaml", substitutions: { sk_key: product_key, natural_keys: [product_id], derived_cols: [derived_attr], meta_cols: ["last_updated_date"]}, input_aliases: ["dim_product"], output_alias: "scd_result"}
+        - {type: yaml, yaml_file: "scd_template.yaml", substitutions: { sk_key: product_key, natural_keys: [product_id], derived_cols: [derived_attr], meta_cols: ["last_updated_date"]}, input_aliases: ["dim_product"], output_alias: "scd_result"}
     - input: "final_dim_out"
       alias: "distinct_test"
       actions:
@@ -83,6 +87,10 @@ transformations :
       input: "transactions"
       actions:
           - {type: rename_all, append: "_renamed"}
+    - alias: "rename_find_replace_test"
+      input: "rename_all_test"
+      actions:
+         - {type: rename_replace, pattern: ".*renamed", find: "renamed", replace: "replaced"}
     - alias: "aggregate_test"
       input: "transactions"
       actions:
@@ -121,3 +129,4 @@ transformations :
       actions:
         - {type: select, columns: [product, product_id]}
         - {type: select_reorder, alias: product_filtered}
+outputs: []

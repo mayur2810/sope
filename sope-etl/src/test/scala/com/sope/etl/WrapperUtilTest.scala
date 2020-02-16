@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class WrapperUtilTest extends FlatSpec with Matchers {
 
   "WrapperUtil" should "parse and generate the Spark options correctly" in {
-    val args = Array("--yaml_folders=/yaml_folder/folder1,/yaml_folder/folder2", "--main_yaml_file=demo.yaml", "--cluster_mode=false",
+    val args = Array("--yaml_folders=.", "--main_yaml_file=demo.yaml", "--cluster_mode=false",
       "--name=test_run", "--num-executors=5")
     WrapperUtil.main(args)
   }

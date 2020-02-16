@@ -1,5 +1,8 @@
 package com.sope.etl.register
 
+import java.io.File
+import java.net.URLClassLoader
+
 import com.sope.etl.getObjectInstance
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.utils.JarUtils
@@ -38,7 +41,11 @@ object  UDFBuilder extends Logging {
   private def evalUDF(udfCodeMap: Map[String, String]): Map[String, UserDefinedFunction] = {
     val settings = new Settings
     settings.Yreploutdir.value = DefaultClassLocation
-    settings.usejavacp.value = true
+    val systemClasspath = System.getProperty("java.class.path").split(File.pathSeparator)
+    val contextClasspath = this.getClass.getClassLoader.asInstanceOf[URLClassLoader].getURLs.map(_.toString)
+    val builderClassPath = (systemClasspath ++ contextClasspath).distinct.mkString(File.pathSeparator)
+    logDebug(s"UDF Builder Classpath :- $builderClassPath")
+    settings.classpath.value = builderClassPath
     val eval = new IMain(settings)
     val udfMap = udfCodeMap.map {
       case (udfName, udfCode) =>

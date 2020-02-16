@@ -27,13 +27,13 @@ transformations :
     - input: "scd_product"
       alias: "insert_update"
       actions:
-        - {type: filter, condition: "scd_status = 'INSERT' OR scd_status = 'UPDATE'"}
+        - {type: filter, condition: "change_status = 'INSERT' OR change_status = 'UPDATE'"}
         - {type: transform, list: {last_updated_date: "current_date"}}
         - {type: sequence, sk_source: "dimension", sk_column: ${sk_key}}
     - input: "scd_product"
       alias: "ncd"
       actions:
-        - {type: filter, condition: "scd_status = 'NCD'"}
+        - {type: filter, condition: "change_status = 'NCD'"}
         - {type: coalesce, num_partitions: 200}
     - input: "ncd"
       alias: "scd_result"

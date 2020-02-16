@@ -1,4 +1,0 @@
-dq-checks:
-    - {type: null-check, columns: [loc]}
-    - {type: empty-check, columns: [product]}
-    - {type: date-check, format: "yyyy-MM-dd", columns: [date]}

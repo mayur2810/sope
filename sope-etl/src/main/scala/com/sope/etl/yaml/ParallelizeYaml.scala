@@ -1,8 +1,11 @@
 package com.sope.etl.yaml
 
-import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import java.sql.{Date, Timestamp}
+
+import com.sope.utils.Logging
 import org.apache.spark.sql.catalyst.ScalaReflection
-import org.apache.spark.sql.types.{StructField, StructType}
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
@@ -14,7 +17,7 @@ import scala.reflect.runtime.universe._
   *
   * @author mbadgujar
   */
-case class ParallelizeYaml(dataYamlPath: String) extends ListYaml[Map[String, Any]](dataYamlPath) {
+case class ParallelizeYaml(dataYamlPath: String) extends ListYaml[Map[String, Any]](dataYamlPath) with Logging {
 
   import ParallelizeYaml._
 
@@ -24,14 +27,20 @@ case class ParallelizeYaml(dataYamlPath: String) extends ListYaml[Map[String, An
     * @param sqlContext Spark Context
     * @return Dataframe
     */
-  def parallelize(sqlContext: SQLContext): DataFrame = {
+  def parallelize(sqlContext: SQLContext, schema: Option[StructType] = None): DataFrame = {
     val data = getList
     if (data.isEmpty) return sqlContext.emptyDataFrame
-    val schema = mapToStruct(data.head)
+    val externalSchemaMap = schema.getOrElse(Nil).map(field => field.name -> field).toMap
+    log.debug(s"Provided external schema :- $externalSchemaMap")
+    val sparkSchema = StructType {
+      mapToStruct(data.head)
+        .map(field => externalSchemaMap.getOrElse(field.name, field))
+    }
+    log.debug(s"Schema for file $getYamlFileName :- $sparkSchema")
     val rdd = sqlContext.sparkContext
       .parallelize(data)
-      .map(mapToRow)
-    sqlContext.createDataFrame(rdd, StructType(schema))
+      .map(mapToRow(_, sparkSchema))
+    sqlContext.createDataFrame(rdd, sparkSchema)
   }
 }
 
@@ -57,6 +66,28 @@ object ParallelizeYaml {
   }
 
   /**
+    * Converts the inferred data object to provided type
+    *
+    * @param obj      data
+    * @param dataType Spark Data Type
+    * @return Converted object
+    */
+  def convertType(obj: Any, dataType: DataType): Any = {
+    (dataType, Option(obj).map(_.toString)) match {
+      case (ByteType, Some(str)) => str.toByte
+      case (IntegerType, Some(str)) => str.toInt
+      case (ShortType, Some(str)) => str.toShort
+      case (LongType, Some(str)) => str.toLong
+      case (DoubleType, Some(str)) => str.toDouble
+      case (FloatType, Some(str)) => str.toFloat
+      case (DateType, Some(str)) => Date.valueOf(str)
+      case (_: DecimalType, Some(str)) => BigDecimal(str)
+      case (TimestampType, Some(str)) => Timestamp.valueOf(str)
+      case _ => obj
+    }
+  }
+
+  /**
     * Generates a Spark Struct type schema from given Map
     *
     * @param map Map
@@ -78,10 +109,11 @@ object ParallelizeYaml {
     * @param map Map
     * @return Row
     */
-  def mapToRow(map: Map[_, _]): Row = Row.fromSeq {
-    map.values.map {
-      case innerMap: Map[_, _] => mapToRow(innerMap)
-      case o => o
-    }.toSeq
+  def mapToRow(map: Map[_, _], schema: StructType): Row = Row.fromSeq {
+    map.values.zip(schema)
+      .map {
+        case (innerMap: Map[_, _], field) => mapToRow(innerMap, field.dataType.asInstanceOf[StructType])
+        case (obj, field) => convertType(obj, field.dataType)
+      }.toSeq
   }
 }

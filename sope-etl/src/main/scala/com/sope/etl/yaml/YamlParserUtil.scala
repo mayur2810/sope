@@ -71,7 +71,7 @@ object YamlParserUtil {
     */
   def convertToYaml(obj: Any): String = {
     obj match {
-      case str: String => "\"" + yaml.dump(str).trim + "\""
+      case str: String => str.trim
       case _ => yaml.dump(mapVal(obj))
     }
   }

@@ -3,10 +3,10 @@ package com.sope.etl.yaml
 import java.util.Calendar
 
 import com.sope.etl.register.UDFBuilder
-import com.sope.etl.{SopeETLConfig, _}
 import com.sope.etl.transform.Transformer
 import com.sope.etl.transform.model.TransformModelWithSourceTarget
-import org.apache.spark.sql.SQLContext
+import com.sope.etl.{SopeETLConfig, _}
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 import scala.util.{Failure, Success, Try}
 
@@ -27,38 +27,48 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       .foreach { case (k, v) => sqlContext.setConf(k, v) }
   }
 
+  // Get the UDF definitions
+  private val udfs = model.udfs.getOrElse(Map.empty)
+  private val udfFiles = model.udfFiles.getOrElse(Nil)
+
   /**
     * Flag indicating Dynamic UDFs are provided in the Yaml file
     *
     * @return Boolean
     */
-  def dynamicUDFDefined: Boolean = model.udfs.isDefined && model.udfs.get.nonEmpty
+  def dynamicUDFDefined: Boolean = udfs.nonEmpty || udfFiles.nonEmpty
 
-  private val udfMap = if (dynamicUDFDefined) UDFBuilder.buildDynamicUDFs(model.udfs.get) else Map.empty
+  private val udfMap = if (dynamicUDFDefined) {
+    val udfMap = {
+      udfFiles
+        .map(new MapYaml(_).getMap)
+        .fold(Map.empty)(_ ++ _)
+    } ++ udfs
+    UDFBuilder.buildDynamicUDFs(udfMap)
+  } else Map.empty
 
   /*
      Registers the UDF provided in YAML file
    */
-  private def registerDynamicUDFs(sqlContext: SQLContext): Unit =  udfMap.foreach {
+  private def registerDynamicUDFs(sqlContext: SQLContext): Unit = udfMap.foreach {
     case (udfName, udfInst) =>
       logInfo(s"Registering Dynamic UDF :- $udfName")
       sqlContext.udf.register(udfName, udfInst)
   }
 
-
   /**
-    * Performs end to end transformations - Reading sources and writing transformation result to provided targets
-    * The source yaml file should contains source and target information.
+    * Get transformed Dataframe references
     *
-    * @param sqlContext Spark [[SQLContext]]
+    * @param sqlContext Spark's SQL Context
+    * @return Map of Alias and Transformed Dataframe
     */
-  def performTransformations(sqlContext: SQLContext): Unit = {
+  def getTransformedDFs(sqlContext: SQLContext): Map[String, DataFrame] = {
     addConfigurations(sqlContext)
     performRegistrations(sqlContext)
     registerDynamicUDFs(sqlContext)
     val testingMode = SopeETLConfig.TestingModeConfig
     if (testingMode) logWarning("TESTING MODE IS ENABLED!!")
-    val sourceDFMap = model.sources
+    val sourceDFMap = model.sources.data
       .map(source => {
         val sourceAlias = source.getSourceName
         val sourceDF = Try {
@@ -87,13 +97,25 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       }).toMap
 
     // Apply transformations
-    val transformationResult = new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
+    new Transformer(getYamlFileName, sourceDFMap, model).transform.toMap
+  }
 
+  /**
+    * Performs end to end transformations - Reading sources and writing transformation result to provided targets
+    * The source yaml file should contains source and target information.
+    *
+    * @param sqlContext Spark [[SQLContext]]
+    */
+  def performTransformations(sqlContext: SQLContext): Unit = {
+    val transformations = getTransformedDFs(sqlContext)
+    val sc = sqlContext.sparkContext
     // Write transformed dataframes to output targets
-    model.targets.foreach(target => {
+    model.targets.data.foreach(target => {
       logInfo(s"Outputting transformation: ${target.getInput} to target: ${target.getId}")
       logInfo(s"Start time: ${Calendar.getInstance().getTime}")
-      target(transformationResult(target.getInput))
+      sc.setCallSite(s"$getYamlFileName::${target.getInput} => ${target.getId}")
+      target(transformations(target.getInput))
+      sc.clearCallSite()
       logInfo(s"End time: ${Calendar.getInstance().getTime}")
     })
   }
