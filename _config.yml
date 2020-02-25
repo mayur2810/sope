@@ -1,1 +1,11 @@
 theme: jekyll-theme-cayman
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - README.md
+  - sope-etl/README.md
+  - sope-etl/yaml-tansformer-constructs.md
+  - sope-spark/README.md
