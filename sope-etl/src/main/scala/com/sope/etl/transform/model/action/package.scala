@@ -36,6 +36,7 @@ package object action {
     final val Aggregate = "aggregate"
     final val Transform = "transform"
     final val TransformAll = "transform_all"
+    final val TransformMultiArg = "transform_multi_arg"
     final val Select = "select"
     final val SelectRegex = "select_regex"
     final val SelectAlias = "select_alias"
@@ -83,6 +84,7 @@ package object action {
     new Type(value = classOf[AggregateAction], name = Actions.Aggregate),
     new Type(value = classOf[TransformAction], name = Actions.Transform),
     new Type(value = classOf[TransformAllAction], name = Actions.TransformAll),
+    new Type(value = classOf[TransformAllMultiArgAction], name = Actions.TransformMultiArg),
     new Type(value = classOf[SelectAction], name = Actions.Select),
     new Type(value = classOf[SelectWithRegexAction], name = Actions.SelectRegex),
     new Type(value = classOf[SelectWithAliasAction], name = Actions.SelectAlias),
@@ -287,6 +289,18 @@ package object action {
         case (_, Some(regex)) => Transform(transformFunc, suffix, regex)
         case (Some(cols), None) => Transform(transformFunc, suffix, cols: _*)
       }
+    }
+  }
+
+  /*
+    Column transform for multi-arg function
+  */
+  case class TransformAllMultiArgAction(@JsonProperty(required = true) function: String,
+                                        @SqlExpr @JsonProperty(required = true) list: Map[String, List[String]])
+    extends SingleOutputTransform(Actions.TransformMultiArg) {
+    override def transformFunction(dataframes: DataFrame*): DFFunc = {
+      val transformFunc = getMultiArgFunction(function)
+      Transform(transformFunc, list.toSeq : _*)
     }
   }
 

@@ -27,7 +27,7 @@ object SQLChecker {
     * @param isSQL True if contains SQL , False if contains sql expression.
     */
   def checkSQL(expr: Any, isSQL: Boolean = false): Unit = expr match {
-    case m: Map[_, _] => m.asInstanceOf[Map[String, String]].values.foreach(checkSQLExpr)
+    case m: Map[_, _] => m.asInstanceOf[Map[String, Any]].values.foreach(any => checkSQL(any, isSQL))
     case seq: Seq[_] => seq.asInstanceOf[Seq[String]].foreach(checkSQLExpr)
     case str: String => if (isSQL) parser.parsePlan(str) else checkSQLExpr(str)
     case Some(obj) => checkSQL(obj, isSQL)
