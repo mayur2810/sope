@@ -129,4 +129,9 @@ transformations :
       actions:
         - {type: select, columns: [product, product_id]}
         - {type: select_reorder, alias: product_filtered}
+    - input: transactions
+      alias: transform_multi_arg_test
+      actions:
+        - {type: filter, condition: "date='2018-01-01'"}
+        - {type: transform_multi_arg, function: concat , list: { c1: [upper(loc), product], c2: [product, upper(loc)]}}
 outputs: []

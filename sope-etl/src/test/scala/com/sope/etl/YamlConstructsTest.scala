@@ -180,4 +180,11 @@ class YamlConstructsTest extends FlatSpec with Matchers {
     transformedDF.show
     transformedDF.columns should contain inOrder ("product_id", "product")
   }
+
+  "transform_multi_arg_test" should "generate the transformation Dataframe correctly" in {
+    val transformedDF = transformedResult("transform_multi_arg_test")
+    transformedDF.show
+    transformedDF.select("c1", "c2").collect().map(_.toSeq).head should
+      contain inOrder ("PUNEtshirt", "tshirtPUNE")
+  }
 }
