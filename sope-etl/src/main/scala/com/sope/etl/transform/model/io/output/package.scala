@@ -236,10 +236,8 @@ package object output {
                           options: Option[Map[String, String]])
     extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode) {
     def apply(df: DataFrame): Unit =
-      if (isStreaming.getOrElse(false)) {
-        val query = getStreamWriter(df).format(format).start()
-        query.awaitTermination()
-      }
+      if (isStreaming.getOrElse(false))
+        getStreamWriter(df).format(format).start()
       else
         getWriter(df).format(format).save()
   }

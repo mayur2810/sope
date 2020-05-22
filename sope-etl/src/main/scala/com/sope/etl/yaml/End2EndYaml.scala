@@ -11,12 +11,12 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
 import scala.util.{Failure, Success, Try}
 
 /**
-  * End-to-End model YAML. It should contain source and target information
-  *
-  * @param yamlPath      yaml file path
-  * @param substitutions Substitutions if any
-  * @author mbadgujar
-  */
+ * End-to-End model YAML. It should contain source and target information
+ *
+ * @param yamlPath      yaml file path
+ * @param substitutions Substitutions if any
+ * @author mbadgujar
+ */
 case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
   extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget]) {
 
@@ -32,10 +32,10 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
   private val udfFiles = model.udfFiles.getOrElse(Nil)
 
   /**
-    * Flag indicating Dynamic UDFs are provided in the Yaml file
-    *
-    * @return Boolean
-    */
+   * Flag indicating Dynamic UDFs are provided in the Yaml file
+   *
+   * @return Boolean
+   */
   def dynamicUDFDefined: Boolean = udfs.nonEmpty || udfFiles.nonEmpty
 
   private val udfMap = if (dynamicUDFDefined) {
@@ -57,11 +57,11 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
   }
 
   /**
-    * Get transformed Dataframe references
-    *
-    * @param sqlContext Spark's SQL Context
-    * @return Map of Alias and Transformed Dataframe
-    */
+   * Get transformed Dataframe references
+   *
+   * @param sqlContext Spark's SQL Context
+   * @return Map of Alias and Transformed Dataframe
+   */
   def getTransformedDFs(sqlContext: SQLContext): Map[String, DataFrame] = {
     addConfigurations(sqlContext)
     performRegistrations(sqlContext)
@@ -101,11 +101,11 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
   }
 
   /**
-    * Performs end to end transformations - Reading sources and writing transformation result to provided targets
-    * The source yaml file should contains source and target information.
-    *
-    * @param sqlContext Spark [[SQLContext]]
-    */
+   * Performs end to end transformations - Reading sources and writing transformation result to provided targets
+   * The source yaml file should contains source and target information.
+   *
+   * @param sqlContext Spark [[SQLContext]]
+   */
   def performTransformations(sqlContext: SQLContext): Unit = {
     val transformations = getTransformedDFs(sqlContext)
     val sc = sqlContext.sparkContext
@@ -118,5 +118,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       sc.clearCallSite()
       logInfo(s"End time: ${Calendar.getInstance().getTime}")
     })
+    if (transformations.values.exists(_.isStreaming))
+      sqlContext.sparkSession.streams.awaitAnyTermination()
   }
 }
