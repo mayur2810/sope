@@ -61,7 +61,7 @@ package object output {
       val bucketingApplied = bucketBy
         .fold(partitioningApplied)(bucketingOption => partitioningApplied
           .bucketBy(bucketingOption.numBuckets, bucketingOption.columns.head, bucketingOption.columns.tail: _*))
-      bucketingApplied.options(options.getOrElse(Map()))
+      bucketingApplied.options(options.getOrElse(Map.empty))
     }
 
     def getStreamWriter(df: DataFrame): DataStreamWriter[Row] = {
@@ -75,7 +75,7 @@ package object output {
           case _ => throw new YamlDataTransformException(s"invalid Trigger mode provided for streaming input: $input")
         }
         partitioningApplied.trigger(trigger)
-      })
+      }).options(options.getOrElse(Map.empty))
     }
   }
 
