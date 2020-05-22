@@ -233,8 +233,9 @@ package object output {
                           @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                           @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                           @JsonProperty(value = "output_mode") outputMode: Option[String],
-                          options: Option[Map[String, String]])
-    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode) {
+                          options: Option[Map[String, String]],
+                          trigger: Option[TriggerOption])
+    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode, trigger) {
     def apply(df: DataFrame): Unit =
       if (isStreaming.getOrElse(false))
         getStreamWriter(df).format(format).start()
