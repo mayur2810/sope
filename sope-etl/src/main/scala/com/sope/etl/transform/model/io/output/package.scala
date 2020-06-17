@@ -61,7 +61,7 @@ package object output {
       val bucketingApplied = bucketBy
         .fold(partitioningApplied)(bucketingOption => partitioningApplied
           .bucketBy(bucketingOption.numBuckets, bucketingOption.columns.head, bucketingOption.columns.tail: _*))
-      bucketingApplied.options(options.getOrElse(Map()))
+      bucketingApplied.options(options.getOrElse(Map.empty))
     }
 
     def getStreamWriter(df: DataFrame): DataStreamWriter[Row] = {
@@ -75,7 +75,7 @@ package object output {
           case _ => throw new YamlDataTransformException(s"invalid Trigger mode provided for streaming input: $input")
         }
         partitioningApplied.trigger(trigger)
-      })
+      }).options(options.getOrElse(Map.empty))
     }
   }
 
@@ -233,13 +233,12 @@ package object output {
                           @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                           @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                           @JsonProperty(value = "output_mode") outputMode: Option[String],
-                          options: Option[Map[String, String]])
-    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode) {
+                          options: Option[Map[String, String]],
+                          trigger: Option[TriggerOption])
+    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode, trigger) {
     def apply(df: DataFrame): Unit =
-      if (isStreaming.getOrElse(false)) {
-        val query = getStreamWriter(df).format(format).start()
-        query.awaitTermination()
-      }
+      if (isStreaming.getOrElse(false))
+        getStreamWriter(df).format(format).start()
       else
         getWriter(df).format(format).save()
   }

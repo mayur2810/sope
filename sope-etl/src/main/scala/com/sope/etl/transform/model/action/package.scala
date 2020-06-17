@@ -342,10 +342,11 @@ package object action {
      Group By
    */
   case class GroupAction(@SqlExpr @JsonProperty(value = "columns", required = true) groupColumns: Seq[String],
-                         @SqlExpr @JsonProperty(value = "expr", required = true) groupExpr: String,
+                         @SqlExpr @JsonProperty(value = "exprs", required = true) groupExprs: Seq[String],
                          @JsonProperty(value = "pivot_column") pivotColumn: Option[String])
     extends SingleOutputTransform(Actions.GroupBy) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = GroupByAndPivot(groupColumns.map(expr): _*)(pivotColumn) ^ groupExpr
+    override def transformFunction(dataframes: DataFrame*): DFFunc =
+      GroupByAndPivot(groupColumns.map(expr): _*)(pivotColumn).agg(groupExprs :_*)
   }
 
   /*

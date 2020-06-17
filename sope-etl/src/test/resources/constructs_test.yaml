@@ -18,13 +18,13 @@ transformations :
     - input: "transactions"
       alias: "grp_by"
       actions:
-        - {type: "group_by", columns: ["product"], expr: "count(product) as p_cnt"}
+        - {type: "group_by", columns: ["product"], exprs: ["count(product) as p_cnt"]}
         - {type: "order_by", columns: ["p_cnt:desc"]}
     - input: "transactions"
       alias: "grp_by_pivot"
       actions:
         - {type: "transform", list: {year: "year(date)"}}
-        - {type: "group_by", columns: ["product"], pivot_column: "year",  expr: "count(product) as p_cnt"}
+        - {type: "group_by", columns: ["product"], pivot_column: "year",  exprs: ["count(product) as p_cnt"]}
     - input : "product"
       alias: "final_dim_out"
       actions:

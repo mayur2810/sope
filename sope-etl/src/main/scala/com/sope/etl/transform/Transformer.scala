@@ -69,7 +69,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
 
     val autoPersist = autoPersistList.contains(alias)
     val df = sourceDFMap(alias).storageLevel match {
-      case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` =>
+      case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` && !sourceDFMap(alias).isStreaming  =>
         logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
         val persisted = (prePartitionColumns(alias) match {
           case Some(sortCols) =>
