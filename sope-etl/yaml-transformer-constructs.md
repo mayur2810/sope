@@ -103,7 +103,7 @@ Distinct | {type: distinct} |
 Drop Duplicates |  {type: drop_duplicates, columns: [col1, col2, ...]} | Drop duplicate row using specified columns
 Unstruct | {type: unstruct, column: col1, col2} | Flattens the struct columns.
 Join | {type: join, columns: [col1, col2, ..] , condition: x.col1 = y.col2, join_type: <join_type>, with: <join_dataframe>, broadcast_hint: <left/right>} | Either columns or condition should be provided; join_types: inner, left, right, full; broadcast_hint: left/right (optional)
-Group By |{type: group_by, columns: [col1, col2, ..], expr: group_expression} |
+Group By |{type: group_by, columns: [col1, col2, ..], exprs: group_expression} |
 Order By |{type: order_by, columns: [col1:desc, col2, ..]} | to sort in descending order, append column by ':desc'
 Union | {type: union, with: [dataset1, dataset2, ..]} |
 Intersect | {type: intersect, with: [dataset1, dataset2, ..]} |
