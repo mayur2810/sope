@@ -94,9 +94,10 @@ Select with Alias | { type: select_alias, include_columns: [col1, col2 ..], excl
 Drop Columns |  {type: drop, columns: [col1, col2, ...]} |
 Filter | {type: filter, condition: filter_condition} | Filter transformation
 Rename  | {type: rename, list: {col1: new_col1, col2: new_col2, ..}} | Rename columns. list: list of existing name and new name
-Rename All  | {type: rename_all, append: <string_to_append_to_all_columns>, prefix: <true/false> | Rename all columns by appending provided string. prefix is optional, defaults to false i.e. renames in suffix mode.
+Rename All  | {type: rename_all, append: <string_to_append_to_all_columns>, prefix: <true/false>, columns: [col1, col2] , pattern: <regex_pattern>} | Rename all/selected/pattern matching columns by appending provided string. columns & pattern are optional, if not provided, all columns are renamed. prefix is optional, defaults to false i.e. renames in suffix mode.
 Column Transform |{type: transform, list: {col1: func(<any_col>), col2: func(<any_col1>, <any_expr>), ..} }| list of column name and functions applied to column
 Column Transform(Bulk)| {type: transform_all, function: <single_arg_function>, suffix: <suffix_to_append>, columns: [col1, col2, expr1, expr2] } | **suffix** is optional, if not provided the columns will be replaced by transformed column else new column with appended suffix will be generated. **columns** is optional, if not provided the function will be applied on all the columns of the input
+Column Transform (Multi Arg Function) |{type: transform_multi_arg, function: <multi_arg_function> , list: {col1: [<any_col1>, <any_col2>], col2: [<any_col1>, <any_expr>], ..} }| list of argument list (columns) for the multi argument function
 Limit | {type: limit, size: <int> } | Limit the records
 Distinct | {type: distinct} |
 Drop Duplicates |  {type: drop_duplicates, columns: [col1, col2, ...]} | Drop duplicate row using specified columns
