@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>FilterAction - sope-etl 1.2 API - com.sope.etl.transform.model.action.FilterAction</title>
-          <meta name="description" content="FilterAction - sope - etl 1.2 API - com.sope.etl.transform.model.action.FilterAction" />
-          <meta name="keywords" content="FilterAction sope etl 1.2 API com.sope.etl.transform.model.action.FilterAction" />
+          <title>FilterAction - sope-etl 1.5 API - com.sope.etl.transform.model.action.FilterAction</title>
+          <meta name="description" content="FilterAction - sope - etl 1.5 API - com.sope.etl.transform.model.action.FilterAction" />
+          <meta name="keywords" content="FilterAction sope etl 1.5 API com.sope.etl.transform.model.action.FilterAction" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -45,13 +45,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">FilterAction</span><span class="params">(<span name="condition">condition: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">FilterAction</span><span class="params">(<span name="condition">condition: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a>, <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a>, <span class="extype" name="com.sope.utils.Logging">Logging</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -69,7 +69,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.sope.etl.transform.model.action.FilterAction"><span>FilterAction</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.sope.etl.transform.model.action.TransformActionRoot"><span>TransformActionRoot</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.sope.etl.transform.model.action.FilterAction"><span>FilterAction</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.sope.etl.transform.model.action.SingleOutputTransform"><span>SingleOutputTransform</span></li><li class="in" name="com.sope.etl.transform.model.action.TransformActionRoot"><span>TransformActionRoot</span></li><li class="in" name="com.sope.utils.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -165,23 +165,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.sope.etl.transform.model.action.FilterAction#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(dataframes:org.apache.spark.sql.DataFrame*):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply(DataFrame*):DFFunc"></a>
+    </li><li name="com.sope.etl.transform.model.action.SingleOutputTransform#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(dataframes:org.apache.spark.sql.DataFrame*):Seq[com.sope.spark.sql.DFFunc]"></a>
+      <a id="apply(DataFrame*):Seq[DFFunc]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="dataframes">dataframes: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>*</span>)</span><span class="result">: <span class="extype" name="com.sope.spark.sql.DFFunc">DFFunc</span></span>
+        <span class="name">apply</span><span class="params">(<span name="dataframes">dataframes: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>*</span>)</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.sope.spark.sql.DFFunc">DFFunc</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@apply(dataframes:org.apache.spark.sql.DataFrame*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@apply(dataframes:org.apache.spark.sql.DataFrame*):Seq[com.sope.spark.sql.DFFunc]" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.sope.etl.transform.model.action.FilterAction">FilterAction</a> → <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> → <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -208,7 +208,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@clone():Object" title="Permalink" target="_top">
@@ -222,7 +222,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.sope.etl.transform.model.action.FilterAction#condition" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.sope.etl.transform.model.action.FilterAction#condition" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="condition:String"></a>
       <a id="condition:String"></a>
       <h4 class="signature">
@@ -238,7 +238,10 @@
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@<a href="../../../annotations/SqlExpr.html" class="extype" name="com.sope.etl.annotations.SqlExpr">SqlExpr</a></span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -248,7 +251,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -343,7 +346,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">inputAliases</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">inputAliases</span><span class="result">: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@inputAliases:Seq[String]" title="Permalink" target="_top">
@@ -368,6 +371,146 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#log" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="log:org.slf4j.Logger"></a>
+      <a id="log:Logger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">log</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@log:org.slf4j.Logger" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#logDebug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logDebug(msg:=&gt;String):Unit"></a>
+      <a id="logDebug(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logDebug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@logDebug(msg:=&gt;String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#logError" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logError(msg:=&gt;String):Unit"></a>
+      <a id="logError(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logError</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@logError(msg:=&gt;String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#logInfo" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logInfo(msg:=&gt;String):Unit"></a>
+      <a id="logInfo(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logInfo</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@logInfo(msg:=&gt;String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#logName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logName:String"></a>
+      <a id="logName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@logName:String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#logTrace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logTrace(msg:=&gt;String):Unit"></a>
+      <a id="logTrace(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logTrace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@logTrace(msg:=&gt;String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.utils.Logging#logWarning" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logWarning(msg:=&gt;String):Unit"></a>
+      <a id="logWarning(⇒String):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logWarning</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@logWarning(msg:=&gt;String):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.action.TransformActionRoot#multiArgToSingleArgFunc" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="multiArgToSingleArgFunc(multiArgFunc:com.sope.spark.sql.MultiColFunc,columns:Seq[org.apache.spark.sql.Column]):com.sope.spark.sql.ColFunc"></a>
+      <a id="multiArgToSingleArgFunc(MultiColFunc,Seq[Column]):ColFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">multiArgToSingleArgFunc</span><span class="params">(<span name="multiArgFunc">multiArgFunc: <span class="extype" name="com.sope.spark.sql.MultiColFunc">MultiColFunc</span></span>, <span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="org.apache.spark.sql.Column">Column</span>]</span>)</span><span class="result">: <span class="extype" name="com.sope.spark.sql.ColFunc">ColFunc</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@multiArgToSingleArgFunc(multiArgFunc:com.sope.spark.sql.MultiColFunc,columns:Seq[org.apache.spark.sql.Column]):com.sope.spark.sql.ColFunc" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Applies know arguments to MultiArg Function in order provided and returns
+a single arg function to which the actual column can be provided
+</p><div class="fullcomment"><div class="comment cmt"><p>Applies know arguments to MultiArg Function in order provided and returns
+a single arg function to which the actual column can be provided
+</p></div><dl class="paramcmts block"><dt class="param">multiArgFunc</dt><dd class="cmt"><p>Multi Argument Column Function</p></dd><dt class="param">columns</dt><dd class="cmt"><p>Columns to be applied</p></dd><dt>returns</dt><dd class="cmt"><p><span class="extype" name="ColFunc">ColFunc</span></p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -377,7 +520,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -419,6 +562,25 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.action.TransformActionRoot#runtimeModifier" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="runtimeModifier:com.sope.etl.transform.model.action.package.TransformActionRoot"></a>
+      <a id="runtimeModifier:TransformActionRoot"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">runtimeModifier</span><span class="result">: <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@runtimeModifier:com.sope.etl.transform.model.action.package.TransformActionRoot" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Modifies any SQL expression which have placeholders at Runtime.</p><div class="fullcomment"><div class="comment cmt"><p>Modifies any SQL expression which have placeholders at Runtime.
+Internally converts to Yaml and reconstructs the action instance
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p><a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -436,6 +598,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.action.FilterAction#transformFunction" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="transformFunction(dataframes:org.apache.spark.sql.DataFrame*):com.sope.spark.sql.DFFunc"></a>
+      <a id="transformFunction(DataFrame*):DFFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">transformFunction</span><span class="params">(<span name="dataframes">dataframes: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>*</span>)</span><span class="result">: <span class="extype" name="com.sope.spark.sql.DFFunc">DFFunc</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package$$FilterAction@transformFunction(dataframes:org.apache.spark.sql.DataFrame*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.sope.etl.transform.model.action.FilterAction">FilterAction</a> → <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -522,10 +701,14 @@
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="com.sope.etl.transform.model.action.SingleOutputTransform">
+              <h3>Inherited from <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a></h3>
             </div><div class="parent" name="com.sope.etl.transform.model.action.TransformActionRoot">
               <h3>Inherited from <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></h3>
+            </div><div class="parent" name="com.sope.utils.Logging">
+              <h3>Inherited from <span class="extype" name="com.sope.utils.Logging">Logging</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

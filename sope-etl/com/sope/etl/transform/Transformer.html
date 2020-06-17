@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Transformer - sope-etl 1.2 API - com.sope.etl.transform.Transformer</title>
-          <meta name="description" content="Transformer - sope - etl 1.2 API - com.sope.etl.transform.Transformer" />
-          <meta name="keywords" content="Transformer sope etl 1.2 API com.sope.etl.transform.Transformer" />
+          <title>Transformer - sope-etl 1.5 API - com.sope.etl.transform.Transformer</title>
+          <meta name="description" content="Transformer - sope - etl 1.5 API - com.sope.etl.transform.Transformer" />
+          <meta name="keywords" content="Transformer sope etl 1.5 API com.sope.etl.transform.Transformer" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -52,7 +52,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains logic for building Spark SQL transformations
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.sope.utils.Logging">Logging</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.sope.utils.Logging">Logging</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -90,7 +90,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.sope.etl.transform.Transformer#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(file:String,inputMap:Map[String,org.apache.spark.sql.DataFrame],transformations:Seq[com.sope.etl.transform.model.DFTransformation]):com.sope.etl.transform.Transformer"></a>
+      <a id="&lt;init&gt;(file:String,inputMap:Map[String,org.apache.spark.sql.DataFrame],model:com.sope.etl.transform.model.TransformModel):com.sope.etl.transform.Transformer"></a>
       <a id="&lt;init&gt;:Transformer"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,10 +98,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Transformer</span><span class="params">(<span name="file">file: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="inputMap">inputMap: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>]</span>, <span name="transformations">transformations: <span class="extype" name="scala.Seq">Seq</span>[<a href="model/package$$DFTransformation.html" class="extype" name="com.sope.etl.transform.model.DFTransformation">DFTransformation</a>]</span>)</span>
+        <span class="name">Transformer</span><span class="params">(<span name="file">file: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="inputMap">inputMap: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>]</span>, <span name="model">model: <a href="model/package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a></span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.transform.Transformer@&lt;init&gt;(file:String,inputMap:Map[String,org.apache.spark.sql.DataFrame],transformations:Seq[com.sope.etl.transform.model.DFTransformation]):com.sope.etl.transform.Transformer" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.sope.etl.transform.Transformer@&lt;init&gt;(file:String,inputMap:Map[String,org.apache.spark.sql.DataFrame],model:com.sope.etl.transform.model.TransformModel):com.sope.etl.transform.Transformer" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -192,7 +192,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">autoPersistList</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">autoPersistList</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.transform.Transformer@autoPersistList:Seq[String]" title="Permalink" target="_top">
@@ -209,7 +209,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.transform.Transformer@clone():Object" title="Permalink" target="_top">
@@ -232,7 +232,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.transform.Transformer@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -459,7 +459,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.transform.Transformer@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -544,7 +544,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">transform</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>)]</span>
+        <span class="name">transform</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span>)]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.transform.Transformer@transform:Seq[(String,org.apache.spark.sql.DataFrame)]" title="Permalink" target="_top">
@@ -635,7 +635,7 @@
         <div class="parent" name="com.sope.utils.Logging">
               <h3>Inherited from <span class="extype" name="com.sope.utils.Logging">Logging</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

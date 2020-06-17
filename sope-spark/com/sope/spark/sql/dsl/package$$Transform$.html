@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Transform - sope-spark 1.2 API - com.sope.spark.sql.dsl.Transform</title>
-          <meta name="description" content="Transform - sope - spark 1.2 API - com.sope.spark.sql.dsl.Transform" />
-          <meta name="keywords" content="Transform sope spark 1.2 API com.sope.spark.sql.dsl.Transform" />
+          <title>Transform - sope-spark 1.5 API - com.sope.spark.sql.dsl.Transform</title>
+          <meta name="description" content="Transform - sope - spark 1.5 API - com.sope.spark.sql.dsl.Transform" />
+          <meta name="keywords" content="Transform sope spark 1.5 API com.sope.spark.sql.dsl.Transform" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -146,92 +146,74 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Transform#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[_](columnFunc:com.sope.spark.sql.MultiColFunc,columns:(String,Seq[String])*)(implicitevidence$4:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply[_](MultiColFunc,(String,Seq[String])*)(ClassTag[Any]):DFFunc"></a>
+      <a id="apply[T](columnFunc:com.sope.spark.sql.MultiColFunc,columns:(String,Seq[String])*)(implicitevidence$4:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply[T](MultiColFunc,(String,Seq[String])*)(ClassTag[T]):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="_">_</span>]</span><span class="params">(<span name="columnFunc">columnFunc: <a href="../package.html#MultiColFunc=Seq[org.apache.spark.sql.Column]=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.MultiColFunc">MultiColFunc</a></span>, <span name="columns">columns: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>])*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="columnFunc">columnFunc: <a href="../package.html#MultiColFunc=Seq[org.apache.spark.sql.Column]=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.MultiColFunc">MultiColFunc</a></span>, <span name="columns">columns: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>])*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.sope.spark.sql.dsl.Transform.apply.T">T</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply[_](columnFunc:com.sope.spark.sql.MultiColFunc,columns:(String,Seq[String])*)(implicitevidence$4:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply[T](columnFunc:com.sope.spark.sql.MultiColFunc,columns:(String,Seq[String])*)(implicitevidence$4:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Apply a multi argument column expression to provided columns.</p><div class="fullcomment"><div class="comment cmt"><p>Apply a multi argument column expression to provided columns.
 </p></div><dl class="paramcmts block"><dt class="param">columnFunc</dt><dd class="cmt"><p>column expression</p></dd><dt class="param">columns</dt><dd class="cmt"><p>List of resultant column name and source column names/expressions to which the function is to be applied</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Transform#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(columnFunc:com.sope.spark.sql.ColFunc):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply(ColFunc):DFFunc"></a>
+      <a id="apply(columnFunc:com.sope.spark.sql.ColFunc,suffix:Option[String],pattern:String):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(ColFunc,Option[String],String):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="columnFunc">columnFunc: <a href="../package.html#ColFunc=org.apache.spark.sql.Column=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.ColFunc">ColFunc</a></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="params">(<span name="columnFunc">columnFunc: <a href="../package.html#ColFunc=org.apache.spark.sql.Column=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.ColFunc">ColFunc</a></span>, <span name="suffix">suffix: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply(columnFunc:com.sope.spark.sql.ColFunc):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply(columnFunc:com.sope.spark.sql.ColFunc,suffix:Option[String],pattern:String):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Applies single argument column expression to all columns in dataframe
-</p><div class="fullcomment"><div class="comment cmt"><p>Applies single argument column expression to all columns in dataframe
-</p></div><dl class="paramcmts block"><dt class="param">columnFunc</dt><dd class="cmt"><p>column expression</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+      <p class="shortcomment cmt">Apply a column expression to columns which match provided pattern
+</p><div class="fullcomment"><div class="comment cmt"><p>Apply a column expression to columns which match provided pattern
+</p></div><dl class="paramcmts block"><dt class="param">columnFunc</dt><dd class="cmt"><p>column expression</p></dd><dt class="param">suffix</dt><dd class="cmt"><p>suffix to add in case new column is to be derived</p></dd><dt class="param">pattern</dt><dd class="cmt"><p>regular expression to select the columns to which transformation will be applied</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Transform#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(suffix:String,columnFunc:com.sope.spark.sql.ColFunc,columns:String*):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply(String,ColFunc,String*):DFFunc"></a>
+      <a id="apply(columnFunc:com.sope.spark.sql.ColFunc,suffix:Option[String],columns:String*):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(ColFunc,Option[String],String*):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="suffix">suffix: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="columnFunc">columnFunc: <a href="../package.html#ColFunc=org.apache.spark.sql.Column=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.ColFunc">ColFunc</a></span>, <span name="columns">columns: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="params">(<span name="columnFunc">columnFunc: <a href="../package.html#ColFunc=org.apache.spark.sql.Column=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.ColFunc">ColFunc</a></span>, <span name="suffix">suffix: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="columns">columns: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply(suffix:String,columnFunc:com.sope.spark.sql.ColFunc,columns:String*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Apply a single argument column expression to provided columns.</p><div class="fullcomment"><div class="comment cmt"><p>Apply a single argument column expression to provided columns. Use if a new column is to be derived for each for transformation
-</p></div><dl class="paramcmts block"><dt class="param">suffix</dt><dd class="cmt"><p>suffix to append to for the new columns</p></dd><dt class="param">columnFunc</dt><dd class="cmt"><p>column expression</p></dd><dt class="param">columns</dt><dd class="cmt"><p>List of resultant column and target column names to which function is to be applied</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
-    </li><li name="com.sope.spark.sql.dsl.Transform#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(columnFunc:com.sope.spark.sql.ColFunc,columns:String*):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply(ColFunc,String*):DFFunc"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="columnFunc">columnFunc: <a href="../package.html#ColFunc=org.apache.spark.sql.Column=&gt;org.apache.spark.sql.Column" class="extmbr" name="com.sope.spark.sql.ColFunc">ColFunc</a></span>, <span name="columns">columns: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply(columnFunc:com.sope.spark.sql.ColFunc,columns:String*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply(columnFunc:com.sope.spark.sql.ColFunc,suffix:Option[String],columns:String*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Apply a column expression to provided columns
 </p><div class="fullcomment"><div class="comment cmt"><p>Apply a column expression to provided columns
-</p></div><dl class="paramcmts block"><dt class="param">columnFunc</dt><dd class="cmt"><p>column expression</p></dd><dt class="param">columns</dt><dd class="cmt"><p>column names to which function is to be applied</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">columnFunc</dt><dd class="cmt"><p>column expression</p></dd><dt class="param">suffix</dt><dd class="cmt"><p>suffix to add in case new column is to be derived</p></dd><dt class="param">columns</dt><dd class="cmt"><p>column names to which function is to be applied</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Transform#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[_](tuples:(String,org.apache.spark.sql.Column)*)(implicitevidence$3:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply[_]((String,Column)*)(ClassTag[Any]):DFFunc"></a>
+      <a id="apply[T](tuples:(String,org.apache.spark.sql.Column)*)(implicitevidence$3:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply[T]((String,Column)*)(ClassTag[T]):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="_">_</span>]</span><span class="params">(<span name="tuples">tuples: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.sql.Column">Column</span>)*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="tuples">tuples: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.spark.sql.Column">Column</span>)*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.sope.spark.sql.dsl.Transform.apply.T">T</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply[_](tuples:(String,org.apache.spark.sql.Column)*)(implicitevidence$3:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Transform$@apply[T](tuples:(String,org.apache.spark.sql.Column)*)(implicitevidence$3:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

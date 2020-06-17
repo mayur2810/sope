@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Rename - sope-spark 1.2 API - com.sope.spark.sql.dsl.Rename</title>
-          <meta name="description" content="Rename - sope - spark 1.2 API - com.sope.spark.sql.dsl.Rename" />
-          <meta name="keywords" content="Rename sope spark 1.2 API com.sope.spark.sql.dsl.Rename" />
+          <title>Rename - sope-spark 1.5 API - com.sope.spark.sql.dsl.Rename</title>
+          <meta name="description" content="Rename - sope - spark 1.5 API - com.sope.spark.sql.dsl.Rename" />
+          <meta name="keywords" content="Rename sope spark 1.5 API com.sope.spark.sql.dsl.Rename" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -146,18 +146,56 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Rename#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(append:String,prefix:Boolean):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply(String,Boolean):DFFunc"></a>
+      <a id="apply(pattern:String,find:String,replace:String):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(String,String,String):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="append">append: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="find">find: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="replace">replace: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Rename$@apply(append:String,prefix:Boolean):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Rename$@apply(pattern:String,find:String,replace:String):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Find columns which match the provided pattern and rename with provided replacement text
+</p><div class="fullcomment"><div class="comment cmt"><p>Find columns which match the provided pattern and rename with provided replacement text
+</p></div><dl class="paramcmts block"><dt class="param">pattern</dt><dd class="cmt"><p>Pattern to find the columns</p></dd><dt class="param">find</dt><dd class="cmt"><p>Text to replace within column name</p></dd><dt class="param">replace</dt><dd class="cmt"><p>Replacement text</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.dsl.Rename#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(append:String,prefix:Boolean,pattern:String):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(String,Boolean,String):DFFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="append">append: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Rename$@apply(append:String,prefix:Boolean,pattern:String):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Append prefix or suffix to columns which match the provided pattern
+</p><div class="fullcomment"><div class="comment cmt"><p>Append prefix or suffix to columns which match the provided pattern
+</p></div><dl class="paramcmts block"><dt class="param">append</dt><dd class="cmt"><p>String to append to column name</p></dd><dt class="param">prefix</dt><dd class="cmt"><p>is true adds as prefix else suffix</p></dd><dt class="param">pattern</dt><dd class="cmt"><p>pattern to match the columns</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.dsl.Rename#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(append:String,prefix:Boolean,columns:String*):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(String,Boolean,String*):DFFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="append">append: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="columns">columns: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Rename$@apply(append:String,prefix:Boolean,columns:String*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

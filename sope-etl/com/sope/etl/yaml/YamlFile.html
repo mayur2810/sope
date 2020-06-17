@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>YamlFile - sope-etl 1.2 API - com.sope.etl.yaml.YamlFile</title>
-          <meta name="description" content="YamlFile - sope - etl 1.2 API - com.sope.etl.yaml.YamlFile" />
-          <meta name="keywords" content="YamlFile sope etl 1.2 API com.sope.etl.yaml.YamlFile" />
+          <title>YamlFile - sope-etl 1.5 API - com.sope.etl.yaml.YamlFile</title>
+          <meta name="description" content="YamlFile - sope - etl 1.5 API - com.sope.etl.yaml.YamlFile" />
+          <meta name="keywords" content="YamlFile sope etl 1.5 API com.sope.etl.yaml.YamlFile" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -28,12 +28,10 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="YamlFile$.html" title="See companion object"><img alt="Class/Object" src="../../../../lib/class_to_object_big.png" /></a>
+        <img alt="Class" src="../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.sope">sope</a>.<a href="../package.html" class="extype" name="com.sope.etl">etl</a>.<a href="package.html" class="extype" name="com.sope.etl.yaml">yaml</a></p>
-        <h1><a href="YamlFile$.html" title="See companion object">YamlFile</a></h1><h3><span class="morelinks"><div>
-            Related Docs:
-            <a href="YamlFile$.html" title="See companion object">object YamlFile</a>
-            | <a href="package.html" class="extype" name="com.sope.etl.yaml">package yaml</a>
+        <h1>YamlFile</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="com.sope.etl.yaml">package yaml</a>
           </div></span></h3><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.yaml.YamlFile" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
@@ -47,17 +45,17 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">YamlFile</span><span class="tparams">[<span name="T">T &lt;: <a href="../transform/model/package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a></span>]</span><span class="result"> extends <span class="extype" name="com.sope.utils.Logging">Logging</span></span>
+        <span class="name">YamlFile</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="com.sope.utils.Logging">Logging</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A wrapper class with utilities around Yaml file
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.sope.utils.Logging">Logging</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.sope.utils.Logging">Logging</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="YamlFile$$End2EndYaml.html" class="extype" name="com.sope.etl.yaml.YamlFile.End2EndYaml">End2EndYaml</a>, <a href="YamlFile$$IntermediateYaml.html" class="extype" name="com.sope.etl.yaml.YamlFile.IntermediateYaml">IntermediateYaml</a></div>
+            <div class="subClasses hiddenContent"><a href="End2EndYaml.html" class="extype" name="com.sope.etl.yaml.End2EndYaml">End2EndYaml</a>, <a href="IntermediateYaml.html" class="extype" name="com.sope.etl.yaml.IntermediateYaml">IntermediateYaml</a>, <a href="ListYaml.html" class="extype" name="com.sope.etl.yaml.ListYaml">ListYaml</a>, <a href="MapYaml.html" class="extype" name="com.sope.etl.yaml.MapYaml">MapYaml</a>, <a href="ParallelizeYaml.html" class="extype" name="com.sope.etl.yaml.ParallelizeYaml">ParallelizeYaml</a>, <a href="SchemaYaml.html" class="extype" name="com.sope.etl.yaml.SchemaYaml">SchemaYaml</a></div>
           </div></div>
         
 
@@ -95,7 +93,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.sope.etl.yaml.YamlFile#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(yamlPath:String,substitutions:Option[Seq[Any]],modelClass:Class[T]):com.sope.etl.yaml.YamlFile[T]"></a>
+      <a id="&lt;init&gt;(yamlPath:String,substitutions:Option[Map[String,Any]],modelClass:Class[T]):com.sope.etl.yaml.YamlFile[T]"></a>
       <a id="&lt;init&gt;:YamlFile[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -103,10 +101,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">YamlFile</span><span class="params">(<span name="yamlPath">yamlPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="substitutions">substitutions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Any">Any</span>]] = <span class="symbol">None</span></span>, <span name="modelClass">modelClass: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.sope.etl.yaml.YamlFile.T">T</span>]</span>)</span>
+        <span class="name">YamlFile</span><span class="params">(<span name="yamlPath">yamlPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="substitutions">substitutions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]] = <span class="symbol"><span class="name"><a href="../../../../scala/package.html">None</a></span></span></span>, <span name="modelClass">modelClass: <span class="extype" name="scala.Predef.Class">Class</span>[<span class="extype" name="com.sope.etl.yaml.YamlFile.T">T</span>]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@&lt;init&gt;(yamlPath:String,substitutions:Option[Seq[Any]],modelClass:Class[T]):com.sope.etl.yaml.YamlFile[T]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@&lt;init&gt;(yamlPath:String,substitutions:Option[Map[String,Any]],modelClass:Class[T]):com.sope.etl.yaml.YamlFile[T]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -197,7 +195,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@clone():Object" title="Permalink" target="_top">
@@ -211,6 +209,25 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.sope.etl.yaml.YamlFile#deserialize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="deserialize:T"></a>
+      <a id="deserialize:T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">deserialize</span><span class="result">: <span class="extype" name="com.sope.etl.yaml.YamlFile.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@deserialize:T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Deserialize the YAML to provided Type
+</p><div class="fullcomment"><div class="comment cmt"><p>Deserialize the YAML to provided Type
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>T</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -220,7 +237,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -285,24 +302,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.sope.etl.yaml.YamlFile#getText" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getText:String"></a>
-      <a id="getText:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getText</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@getText:String" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Get Yaml Text.</p><div class="fullcomment"><div class="comment cmt"><p>Get Yaml Text. Substitutes values if they are provided
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p><span class="extype" name="String">String</span></p></dd></dl></div>
     </li><li name="com.sope.etl.yaml.YamlFile#getYamlFileName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getYamlFileName:String"></a>
       <a id="getYamlFileName:String"></a>
@@ -501,7 +500,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -543,44 +542,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.sope.etl.yaml.YamlFile#performRegistrations" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="performRegistrations(sqlContext:org.apache.spark.sql.SQLContext):Unit"></a>
-      <a id="performRegistrations(SQLContext):Unit"></a>
+    </li><li name="com.sope.etl.yaml.YamlFile#redactedText" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="redactedText:String"></a>
+      <a id="redactedText:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">performRegistrations</span><span class="params">(<span name="sqlContext">sqlContext: <span class="extype" name="org.apache.spark.sql.SQLContext">SQLContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">redactedText</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@performRegistrations(sqlContext:org.apache.spark.sql.SQLContext):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@redactedText:String" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Performs Custom UDF &amp; Transformation registrations
-</p><div class="fullcomment"><div class="comment cmt"><p>Performs Custom UDF &amp; Transformation registrations
-</p></div><dl class="paramcmts block"><dt class="param">sqlContext</dt><dd class="cmt"><p>Spark's SQL Context</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="com.sope.etl.yaml.YamlFile#serialize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="serialize:T"></a>
-      <a id="serialize:T"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">serialize</span><span class="result">: <span class="extype" name="com.sope.etl.yaml.YamlFile.T">T</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.yaml.YamlFile@serialize:T" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Serialize the YAML to provided Type
-</p><div class="fullcomment"><div class="comment cmt"><p>Serialize the YAML to provided Type
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>T</p></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -696,7 +674,7 @@
         <div class="parent" name="com.sope.utils.Logging">
               <h3>Inherited from <span class="extype" name="com.sope.utils.Logging">Logging</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

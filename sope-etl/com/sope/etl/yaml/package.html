@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>yaml - sope-etl 1.2 API - com.sope.etl.yaml</title>
-          <meta name="description" content="yaml - sope - etl 1.2 API - com.sope.etl.yaml" />
-          <meta name="keywords" content="yaml sope etl 1.2 API com.sope.etl.yaml" />
+          <title>yaml - sope-etl 1.5 API - com.sope.etl.yaml</title>
+          <meta name="description" content="yaml - sope - etl 1.5 API - com.sope.etl.yaml" />
+          <meta name="keywords" content="yaml sope etl 1.5 API com.sope.etl.yaml" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -66,19 +66,132 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.sope.etl.yaml.YamlFile" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="YamlFile[T&lt;:com.sope.etl.transform.model.TransformModel]extendsLogging"></a>
-      <a id="YamlFile[T&lt;:TransformModel]:YamlFile[T]"></a>
+              <ol><li name="com.sope.etl.yaml.End2EndYaml" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="End2EndYamlextendsYamlFile[com.sope.etl.transform.model.TransformModelWithSourceTarget]withProductwithSerializable"></a>
+      <a id="End2EndYaml:End2EndYaml"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="End2EndYaml.html"><span class="name">End2EndYaml</span></a><span class="params">(<span name="yamlPath">yamlPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="substitutions">substitutions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]] = <span class="symbol"><span class="name"><a href="../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <a href="YamlFile.html" class="extype" name="com.sope.etl.yaml.YamlFile">YamlFile</a>[<a href="../transform/model/package$$TransformModelWithSourceTarget.html" class="extype" name="com.sope.etl.transform.model.TransformModelWithSourceTarget">TransformModelWithSourceTarget</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@End2EndYamlextendsYamlFile[com.sope.etl.transform.model.TransformModelWithSourceTarget]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">End-to-End model YAML.</p><div class="fullcomment"><div class="comment cmt"><p>End-to-End model YAML. It should contain source and target information
+</p></div><dl class="paramcmts block"><dt class="param">yamlPath</dt><dd class="cmt"><p>yaml file path</p></dd><dt class="param">substitutions</dt><dd class="cmt"><p>Substitutions if any</p></dd></dl></div>
+    </li><li name="com.sope.etl.yaml.IntermediateYaml" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="IntermediateYamlextendsYamlFile[com.sope.etl.transform.model.TransformModelWithoutSourceTarget]withProductwithSerializable"></a>
+      <a id="IntermediateYaml:IntermediateYaml"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="IntermediateYaml.html"><span class="name">IntermediateYaml</span></a><span class="params">(<span name="yamlPath">yamlPath: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="substitutions">substitutions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]] = <span class="symbol"><span class="name"><a href="../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <a href="YamlFile.html" class="extype" name="com.sope.etl.yaml.YamlFile">YamlFile</a>[<a href="../transform/model/package$$TransformModelWithoutSourceTarget.html" class="extype" name="com.sope.etl.transform.model.TransformModelWithoutSourceTarget">TransformModelWithoutSourceTarget</a>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@IntermediateYamlextendsYamlFile[com.sope.etl.transform.model.TransformModelWithoutSourceTarget]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Intermediate Mode YAML.</p><div class="fullcomment"><div class="comment cmt"><p>Intermediate Mode YAML. The sources are logical aliases which are passed dynamically.
+Also, It does not contain any output targets
+</p></div><dl class="paramcmts block"><dt class="param">yamlPath</dt><dd class="cmt"><p>yaml file path</p></dd><dt class="param">substitutions</dt><dd class="cmt"><p>Substitutions if any</p></dd></dl></div>
+    </li><li name="com.sope.etl.yaml.ListYaml" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ListYaml[V]extendsYamlFile[Seq[V]]"></a>
+      <a id="ListYaml[V]:ListYaml[V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ListYaml.html"><span class="name">ListYaml</span></a><span class="tparams">[<span name="V">V</span>]</span><span class="result"> extends <a href="YamlFile.html" class="extype" name="com.sope.etl.yaml.YamlFile">YamlFile</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.sope.etl.yaml.ListYaml.V">V</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@ListYaml[V]extendsYamlFile[Seq[V]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Yaml file representing List data
+</p><div class="fullcomment"><div class="comment cmt"><p>Yaml file representing List data
+</p></div><dl class="paramcmts block"><dt class="tparam">V</dt><dd class="cmt"><p>Type</p></dd></dl></div>
+    </li><li name="com.sope.etl.yaml.MapYaml" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MapYaml[K,V]extendsYamlFile[scala.collection.mutable.LinkedHashMap[K,V]]"></a>
+      <a id="MapYaml[K,V]:MapYaml[K,V]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="MapYaml.html"><span class="name">MapYaml</span></a><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="result"> extends <a href="YamlFile.html" class="extype" name="com.sope.etl.yaml.YamlFile">YamlFile</a>[<span class="extype" name="scala.collection.mutable.LinkedHashMap">LinkedHashMap</span>[<span class="extype" name="com.sope.etl.yaml.MapYaml.K">K</span>, <span class="extype" name="com.sope.etl.yaml.MapYaml.V">V</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@MapYaml[K,V]extendsYamlFile[scala.collection.mutable.LinkedHashMap[K,V]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Yaml file representing a Map type
+</p><div class="fullcomment"><div class="comment cmt"><p>Yaml file representing a Map type
+</p></div><dl class="paramcmts block"><dt class="tparam">K</dt><dd class="cmt"><p>Key class</p></dd><dt class="tparam">V</dt><dd class="cmt"><p>Value class</p></dd></dl></div>
+    </li><li name="com.sope.etl.yaml.ParallelizeYaml" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ParallelizeYamlextendsListYaml[Map[String,Any]]withLoggingwithProductwithSerializable"></a>
+      <a id="ParallelizeYaml:ParallelizeYaml"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParallelizeYaml.html"><span class="name">ParallelizeYaml</span></a><span class="params">(<span name="dataYamlPath">dataYamlPath: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="ListYaml.html" class="extype" name="com.sope.etl.yaml.ListYaml">ListYaml</a>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]] with <span class="extype" name="com.sope.utils.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@ParallelizeYamlextendsListYaml[Map[String,Any]]withLoggingwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Parses a Local Yaml File and parallelises it to a DataFrame.</p><div class="fullcomment"><div class="comment cmt"><p>Parses a Local Yaml File and parallelises it to a DataFrame.
+The Schema is inferred from the Yaml data types.
+Note: A Yaml 'Map' is converted to Struct type in Spark. Hence, a Spark inbuilt Map type is not supported.
+</p></div></div>
+    </li><li name="com.sope.etl.yaml.SchemaYaml" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SchemaYamlextendsMapYaml[String,String]withLoggingwithProductwithSerializable"></a>
+      <a id="SchemaYaml:SchemaYaml"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SchemaYaml.html"><span class="name">SchemaYaml</span></a><span class="params">(<span name="schemaFile">schemaFile: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="MapYaml.html" class="extype" name="com.sope.etl.yaml.MapYaml">MapYaml</a>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>] with <span class="extype" name="com.sope.utils.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@SchemaYamlextendsMapYaml[String,String]withLoggingwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Yaml file representing Spark SQL Schema
+</p>
+    </li><li name="com.sope.etl.yaml.YamlFile" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="YamlFile[T]extendsLogging"></a>
+      <a id="YamlFile[T]:YamlFile[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="YamlFile.html"><span class="name">YamlFile</span></a><span class="tparams">[<span name="T">T &lt;: <a href="../transform/model/package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a></span>]</span><span class="result"> extends <span class="extype" name="com.sope.utils.Logging">Logging</span></span>
+        <a href="YamlFile.html"><span class="name">YamlFile</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="com.sope.utils.Logging">Logging</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.yaml.package@YamlFile[T&lt;:com.sope.etl.transform.model.TransformModel]extendsLogging" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@YamlFile[T]extendsLogging" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -91,19 +204,19 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.sope.etl.yaml.YamlFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="YamlFile"></a>
-      <a id="YamlFile:YamlFile"></a>
+              <ol><li name="com.sope.etl.yaml.ParallelizeYaml" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParallelizeYaml"></a>
+      <a id="ParallelizeYaml:ParallelizeYaml"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="YamlFile$.html"><span class="name">YamlFile</span></a>
+        <a href="ParallelizeYaml$.html"><span class="name">ParallelizeYaml</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.sope.etl.yaml.package@YamlFile" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.sope.etl.yaml.package@ParallelizeYaml" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>model - sope-etl 1.2 API - com.sope.etl.transform.model</title>
-          <meta name="description" content="model - sope - etl 1.2 API - com.sope.etl.transform.model" />
-          <meta name="keywords" content="model sope etl 1.2 API com.sope.etl.transform.model" />
+          <title>model - sope-etl 1.5 API - com.sope.etl.transform.model</title>
+          <meta name="description" content="model - sope - etl 1.5 API - com.sope.etl.transform.model" />
+          <meta name="keywords" content="model sope etl 1.5 API com.sope.etl.transform.model" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -50,7 +50,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Package contains YAML Transformer Root construct mappings and definitions
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -89,24 +89,64 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.sope.etl.transform.model.DFTransformation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="DFTransformationextendsProductwithSerializable"></a>
-      <a id="DFTransformation:DFTransformation"></a>
+              <ol><li name="com.sope.etl.transform.model.Failed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="FailedextendsProductwithSerializable"></a>
+      <a id="Failed:Failed"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$DFTransformation.html"><span class="name">DFTransformation</span></a><span class="params">(<span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alias">alias: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="persistLevel">persistLevel: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="coalesce">coalesce: <span class="extype" name="scala.Int">Int</span></span>, <span name="description">description: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="actions">actions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[_ &lt;: <a href="action/package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a>]]</span>, <span name="sql">sql: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$Failed.html"><span class="name">Failed</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="line">line: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>, <span name="index">index: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.etl.transform.model.package@DFTransformationextendsProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@FailedextendsProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Class represents a transformation entity.</p><div class="fullcomment"><div class="comment cmt"><p>Class represents a transformation entity.
-</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>input source name</p></dd><dt class="param">alias</dt><dd class="cmt"><p>alias for the transformation</p></dd><dt class="param">persistLevel</dt><dd class="cmt"><p>Persistence level for this transformation</p></dd><dt class="param">coalesce</dt><dd class="cmt"><p>Coalesce partitions</p></dd><dt class="param">description</dt><dd class="cmt"><p>Description for this transformation</p></dd><dt class="param">actions</dt><dd class="cmt"><p>Actions to performed on source. Either 'actions' or 'sql' should be provided</p></dd><dt class="param">sql</dt><dd class="cmt"><p>Transformation provided as sql query. Either 'sql' or 'actions' should be provided</p></dd></dl></div>
+      <p class="shortcomment cmt">Structure for maintaining failure information
+</p><div class="fullcomment"><div class="comment cmt"><p>Structure for maintaining failure information
+</p></div><dl class="paramcmts block"><dt class="param">message</dt><dd class="cmt"><p>Failure message</p></dd><dt class="param">line</dt><dd class="cmt"><p>Line number</p></dd><dt class="param">index</dt><dd class="cmt"><p>Column position</p></dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.MList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MList[T]extendsProductwithSerializable"></a>
+      <a id="MList[T]:MList[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$MList.html"><span class="name">MList</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="data">data: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.sope.etl.transform.model.MList.T">T</span>]</span>, <span name="failures">failures: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="package$$Failed.html" class="extype" name="com.sope.etl.transform.model.Failed">Failed</a>] = <span class="symbol">Nil</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@MList[T]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Structure representing a 'Model List' that is parsed to corresponding Model type.</p><div class="fullcomment"><div class="comment cmt"><p>Structure representing a 'Model List' that is parsed to corresponding Model type.
+Any Failures during deserialization are collected for reporting purpose.
+Refer <a href="MListDeserializer.html" class="extype" name="com.sope.etl.transform.model.MListDeserializer">MListDeserializer</a> for more details.
+</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>Type</p></dd><dt class="param">data</dt><dd class="cmt"><p>Deserialized data</p></dd><dt class="param">failures</dt><dd class="cmt"><p>Failed records of the List</p></dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.MListDeserializer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MListDeserializer[T]extendsStdDeserializer[com.sope.etl.transform.model.MList[T]]withLogging"></a>
+      <a id="MListDeserializer[T]:MListDeserializer[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="MListDeserializer.html"><span class="name">MListDeserializer</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="com.fasterxml.jackson.databind.deser.std.StdDeserializer">StdDeserializer</span>[<a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<span class="extype" name="com.sope.etl.transform.model.MListDeserializer.T">T</span>]] with <span class="extype" name="com.sope.utils.Logging">Logging</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@MListDeserializer[T]extendsStdDeserializer[com.sope.etl.transform.model.MList[T]]withLogging" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"><a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a> Deserializer.</p><div class="fullcomment"><div class="comment cmt"><p><a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a> Deserializer. This does a best effort to record failures during deserialization of the provided type.
+The Goal is to not fail the deserialization process but to record the failures, which may then be used to report all of them at once.
+</p></div></div>
     </li><li name="com.sope.etl.transform.model.TransformModel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="TransformModelextendsAnyRef"></a>
       <a id="TransformModel:TransformModel"></a>
@@ -116,14 +156,15 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="package$$TransformModel.html"><span class="name">TransformModel</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="package$$TransformModel.html"><span class="name">TransformModel</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformModelextendsAnyRef" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Base Trait for Transformation Model
+</p>
     </li><li name="com.sope.etl.transform.model.TransformModelWithSourceTarget" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TransformModelWithSourceTargetextendspackage.TransformModelwithProductwithSerializable"></a>
       <a id="TransformModelWithSourceTarget:TransformModelWithSourceTarget"></a>
@@ -133,7 +174,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$TransformModelWithSourceTarget.html"><span class="name">TransformModelWithSourceTarget</span></a><span class="params">(<span name="sources">sources: <span class="extype" name="scala.Seq">Seq</span>[_ &lt;: <a href="io/input/package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a>]</span>, <span name="transformations">transformations: <span class="extype" name="scala.Seq">Seq</span>[<a href="package$$DFTransformation.html" class="extype" name="com.sope.etl.transform.model.DFTransformation">DFTransformation</a>]</span>, <span name="targets">targets: <span class="extype" name="scala.Seq">Seq</span>[<a href="io/output/package$$TargetTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.output.TargetTypeRoot">TargetTypeRoot</a>]</span>)</span><span class="result"> extends <a href="package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$TransformModelWithSourceTarget.html"><span class="name">TransformModelWithSourceTarget</span></a><span class="params">(<span name="sources">sources: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="io/input/package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a>]</span>, <span name="transformations">transformations: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="package$$Transformation.html" class="extype" name="com.sope.etl.transform.model.Transformation">Transformation</a>]</span>, <span name="targets">targets: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="io/output/package$$TargetTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.output.TargetTypeRoot">TargetTypeRoot</a>]</span>, <span name="configs">configs: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="udfs">udfs: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="udfFiles">udfFiles: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformModelWithSourceTargetextendspackage.TransformModelwithProductwithSerializable" title="Permalink" target="_top">
@@ -150,7 +191,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$TransformModelWithoutSourceTarget.html"><span class="name">TransformModelWithoutSourceTarget</span></a><span class="params">(<span name="sources">sources: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="transformations">transformations: <span class="extype" name="scala.Seq">Seq</span>[<a href="package$$DFTransformation.html" class="extype" name="com.sope.etl.transform.model.DFTransformation">DFTransformation</a>]</span>)</span><span class="result"> extends <a href="package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$TransformModelWithoutSourceTarget.html"><span class="name">TransformModelWithoutSourceTarget</span></a><span class="params">(<span name="vSources">vSources: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="transformations">transformations: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="package$$Transformation.html" class="extype" name="com.sope.etl.transform.model.Transformation">Transformation</a>]</span>)</span><span class="result"> extends <a href="package$$TransformModel.html" class="extype" name="com.sope.etl.transform.model.TransformModel">TransformModel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformModelWithoutSourceTargetextendspackage.TransformModelwithProductwithSerializable" title="Permalink" target="_top">
@@ -158,6 +199,24 @@
       </a>
     </span>
       
+    </li><li name="com.sope.etl.transform.model.Transformation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="TransformationextendsProductwithSerializable"></a>
+      <a id="Transformation:Transformation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$Transformation.html"><span class="name">Transformation</span></a><span class="params">(<span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alias">alias: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="aliases">aliases: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="persistLevel">persistLevel: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="description">description: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="actions">actions: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="action/package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a>]</span>, <span name="sql">sql: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@TransformationextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Class represents a transformation entity.</p><div class="fullcomment"><div class="comment cmt"><p>Class represents a transformation entity.
+</p></div><dl class="paramcmts block"><dt class="param">source</dt><dd class="cmt"><p>input source name</p></dd><dt class="param">alias</dt><dd class="cmt"><p>alias for the transformation</p></dd><dt class="param">persistLevel</dt><dd class="cmt"><p>Persistence level for this transformation</p></dd><dt class="param">description</dt><dd class="cmt"><p>Description for this transformation</p></dd><dt class="param">actions</dt><dd class="cmt"><p>Actions to performed on source. Either 'actions' or 'sql' should be provided</p></dd><dt class="param">sql</dt><dd class="cmt"><p>Transformation provided as sql query. Either 'sql' or 'actions' should be provided</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -165,7 +224,24 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.sope.etl.transform.model.action" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.sope.etl.transform.model.MListDeserializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MListDeserializer"></a>
+      <a id="MListDeserializer:MListDeserializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MListDeserializer$.html"><span class="name">MListDeserializer</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package@MListDeserializer" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="action"></a>
       <a id="action:action"></a>
       <h4 class="signature">
@@ -210,7 +286,7 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

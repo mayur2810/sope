@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>CSVSource - sope-etl 1.2 API - com.sope.etl.transform.model.io.input.CSVSource</title>
-          <meta name="description" content="CSVSource - sope - etl 1.2 API - com.sope.etl.transform.model.io.input.CSVSource" />
-          <meta name="keywords" content="CSVSource sope etl 1.2 API com.sope.etl.transform.model.io.input.CSVSource" />
+          <title>CSVSource - sope-etl 1.5 API - com.sope.etl.transform.model.io.input.CSVSource</title>
+          <meta name="description" content="CSVSource - sope - etl 1.5 API - com.sope.etl.transform.model.io.input.CSVSource" />
+          <meta name="keywords" content="CSVSource sope etl 1.5 API com.sope.etl.transform.model.io.input.CSVSource" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -45,13 +45,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">CSVSource</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">CSVSource</span><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a>, <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -89,7 +89,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.sope.etl.transform.model.io.input.CSVSource#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(name:String,path:String,options:Map[String,String]):com.sope.etl.transform.model.io.input.package.CSVSource"></a>
+      <a id="&lt;init&gt;(alias:String,path:String,isStreaming:Option[Boolean],schemaFile:Option[String],options:Option[Map[String,String]]):com.sope.etl.transform.model.io.input.package.CSVSource"></a>
       <a id="&lt;init&gt;:CSVSource"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -97,10 +97,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CSVSource</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+        <span class="name">CSVSource</span><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@&lt;init&gt;(name:String,path:String,options:Map[String,String]):com.sope.etl.transform.model.io.input.package.CSVSource" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@&lt;init&gt;(alias:String,path:String,isStreaming:Option[Boolean],schemaFile:Option[String],options:Option[Map[String,String]]):com.sope.etl.transform.model.io.input.package.CSVSource" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -165,6 +165,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.io.input.CSVSource#alias" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="alias:String"></a>
+      <a id="alias:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">alias</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@alias:String" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="com.sope.etl.transform.model.io.input.CSVSource#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="apply:com.sope.spark.sql.DFFunc2"></a>
       <a id="apply:DFFunc2"></a>
@@ -208,7 +225,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@clone():Object" title="Permalink" target="_top">
@@ -231,7 +248,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -279,23 +296,40 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.sope.etl.transform.model.io.input.SourceTypeRoot#getOptions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getOptions(options:Map[String,String]):Map[String,String]"></a>
-      <a id="getOptions(Map[String,String]):Map[String,String]"></a>
+    </li><li name="com.sope.etl.transform.model.io.input.SourceTypeRoot#getReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getReader(sqlContext:org.apache.spark.sql.SQLContext):Either[org.apache.spark.sql.DataFrameReader,org.apache.spark.sql.streaming.DataStreamReader]"></a>
+      <a id="getReader(SQLContext):Either[DataFrameReader,DataStreamReader]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOptions</span><span class="params">(<span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">getReader</span><span class="params">(<span name="sqlContext">sqlContext: <span class="extype" name="org.apache.spark.sql.SQLContext">SQLContext</span></span>)</span><span class="result">: <a href="../../../../../../../scala/package.html#Either[+A,+B]=scala.util.Either[A,B]" class="extmbr" name="scala.Either">Either</a>[<span class="extype" name="org.apache.spark.sql.DataFrameReader">DataFrameReader</span>, <span class="extype" name="org.apache.spark.sql.streaming.DataStreamReader">DataStreamReader</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@getOptions(options:Map[String,String]):Map[String,String]" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@getReader(sqlContext:org.apache.spark.sql.SQLContext):Either[org.apache.spark.sql.DataFrameReader,org.apache.spark.sql.streaming.DataStreamReader]" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a></dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.io.input.SourceTypeRoot#getSchema" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getSchema:Option[org.apache.spark.sql.types.StructType]"></a>
+      <a id="getSchema:Option[StructType]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getSchema</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.spark.sql.types.StructType">StructType</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@getSchema:Option[org.apache.spark.sql.types.StructType]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a></dd></dl></div>
     </li><li name="com.sope.etl.transform.model.io.input.SourceTypeRoot#getSourceName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getSourceName:String"></a>
       <a id="getSourceName:String"></a>
@@ -330,19 +364,19 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.sope.etl.transform.model.io.input.CSVSource#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="name:String"></a>
-      <a id="name:String"></a>
+    </li><li name="com.sope.etl.transform.model.io.input.CSVSource#isStreaming" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isStreaming:Option[Boolean]"></a>
+      <a id="isStreaming:Option[Boolean]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">isStreaming</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@name:String" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@isStreaming:Option[Boolean]" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -356,7 +390,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -399,18 +433,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.sope.etl.transform.model.io.input.CSVSource#options" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="options:Map[String,String]"></a>
-      <a id="options:Map[String,String]"></a>
+      <a id="options:Option[Map[String,String]]"></a>
+      <a id="options:Option[Map[String,String]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">options</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">options</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@options:Map[String,String]" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@options:Option[Map[String,String]]" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -428,6 +462,23 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@path:String" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.io.input.CSVSource#schemaFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="schemaFile:Option[String]"></a>
+      <a id="schemaFile:Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">schemaFile</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package$$CSVSource@schemaFile:Option[String]" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -538,7 +589,7 @@
             </div><div class="parent" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">
               <h3>Inherited from <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

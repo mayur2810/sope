@@ -58,7 +58,7 @@ The transformer supports both end-to-end and intermediate mode.
     ./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files,/home/user/conf-files" --main_yaml_file demo.yaml --cluster_mode false  --name sope_etl_demo --master yarn  --substitution_files="demo-conf1.yaml, demo-conf2.yaml"
     ```
     
-    - Client mode:
+    - Cluster mode:
     ```shell
     ./sope-spark-submit.sh  --yaml_folders "/home/user/yaml-files,/home/user/conf-files" --main_yaml_file demo.yaml --cluster_mode true  --name sope_etl_demo --master yarn  --substitution_files="demo-conf1.yaml, demo-conf2.yaml"
     ```

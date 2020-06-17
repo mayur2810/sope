@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>Select - sope-spark 1.2 API - com.sope.spark.sql.dsl.Select</title>
-          <meta name="description" content="Select - sope - spark 1.2 API - com.sope.spark.sql.dsl.Select" />
-          <meta name="keywords" content="Select sope spark 1.2 API com.sope.spark.sql.dsl.Select" />
+          <title>Select - sope-spark 1.5 API - com.sope.spark.sql.dsl.Select</title>
+          <meta name="description" content="Select - sope - spark 1.5 API - com.sope.spark.sql.dsl.Select" />
+          <meta name="keywords" content="Select sope spark 1.5 API com.sope.spark.sql.dsl.Select" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -146,24 +146,24 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Select#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(joinedDF:org.apache.spark.sql.DataFrame,alias:String):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply(DataFrame,String):DFFunc"></a>
+      <a id="apply(priorDF:org.apache.spark.sql.DataFrame,alias:String,includeColumns:Seq[String],excludeColumns:Seq[String]):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(DataFrame,String,Seq[String],Seq[String]):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="joinedDF">joinedDF: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="params">(<span name="priorDF">priorDF: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>, <span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="includeColumns">includeColumns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Nil</span></span>, <span name="excludeColumns">excludeColumns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Nil</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Select$@apply(joinedDF:org.apache.spark.sql.DataFrame,alias:String):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Select$@apply(priorDF:org.apache.spark.sql.DataFrame,alias:String,includeColumns:Seq[String],excludeColumns:Seq[String]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Select columns from given dataframe which are aliased
-</p><div class="fullcomment"><div class="comment cmt"><p>Select columns from given dataframe which are aliased
-</p></div><dl class="paramcmts block"><dt class="param">joinedDF</dt><dd class="cmt"><p><span class="extype" name="DataFrame">DataFrame</span> which has aliased columns</p></dd><dt class="param">alias</dt><dd class="cmt"><p>DF alias</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+      <p class="shortcomment cmt">Select columns from a dataframe which was joined using aliased dataframes.</p><div class="fullcomment"><div class="comment cmt"><p>Select columns from a dataframe which was joined using aliased dataframes.
+Useful if you want to get a structure of pre-joined dataframe and include some join columns from opposite side of join.
+</p></div><dl class="paramcmts block"><dt class="param">priorDF</dt><dd class="cmt"><p><span class="extype" name="DataFrame">DataFrame</span> from which columns will be referred</p></dd><dt class="param">alias</dt><dd class="cmt"><p>alias to be selected</p></dd><dt class="param">includeColumns</dt><dd class="cmt"><p>Any columns to be included from the opposite side of join. Should not conflict with aliased columns.</p></dd><dt class="param">excludeColumns</dt><dd class="cmt"><p>Any columns to be excluded from alias columns to selected</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Select#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="apply(reorderDF:org.apache.spark.sql.DataFrame):com.sope.spark.sql.DFFunc"></a>
       <a id="apply(DataFrame):DFFunc"></a>
@@ -180,22 +180,41 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Select columns from given dataframe
-</p><div class="fullcomment"><div class="comment cmt"><p>Select columns from given dataframe
+      <p class="shortcomment cmt">Select columns from given dataframe.</p><div class="fullcomment"><div class="comment cmt"><p>Select columns from given dataframe. The Dataframe on which this function is called should contain all columns from the
+dataframe used for re-ordering. Useful for doing a 'Union' operation.
 </p></div><dl class="paramcmts block"><dt class="param">reorderDF</dt><dd class="cmt"><p><span class="extype" name="DataFrame">DataFrame</span> which has the ordered columns</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.Select#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply[_](columns:org.apache.spark.sql.Column*)(implicitevidence$1:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc"></a>
-      <a id="apply[_](Column*)(ClassTag[Any]):DFFunc"></a>
+      <a id="apply(pattern:String):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply(String):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="_">_</span>]</span><span class="params">(<span name="columns">columns: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span class="name">apply</span><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Select$@apply[_](columns:org.apache.spark.sql.Column*)(implicitevidence$1:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Select$@apply(pattern:String):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Select columns based on provided pattern
+</p><div class="fullcomment"><div class="comment cmt"><p>Select columns based on provided pattern
+</p></div><dl class="paramcmts block"><dt class="param">pattern</dt><dd class="cmt"><p>A regular expression to match and select the columns</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.dsl.Select#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply[T](columns:org.apache.spark.sql.Column*)(implicitevidence$1:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc"></a>
+      <a id="apply[T](Column*)(ClassTag[T]):DFFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="columns">columns: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.sope.spark.sql.dsl.Select.apply.T">T</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$Select$@apply[T](columns:org.apache.spark.sql.Column*)(implicitevidence$1:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

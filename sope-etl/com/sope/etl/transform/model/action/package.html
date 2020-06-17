@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>action - sope-etl 1.2 API - com.sope.etl.transform.model.action</title>
-          <meta name="description" content="action - sope - etl 1.2 API - com.sope.etl.transform.model.action" />
-          <meta name="keywords" content="action sope etl 1.2 API com.sope.etl.transform.model.action" />
+          <title>action - sope-etl 1.5 API - com.sope.etl.transform.model.action</title>
+          <meta name="description" content="action - sope - etl 1.5 API - com.sope.etl.transform.model.action" />
+          <meta name="keywords" content="action sope etl 1.5 API com.sope.etl.transform.model.action" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -50,7 +50,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Package contains YAML Transformer Action (transform) construct mappings and definitions
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -89,8 +89,59 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.sope.etl.transform.model.action.DQCheckAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DQCheckActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+              <ol><li name="com.sope.etl.transform.model.action.AggregateAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AggregateActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="AggregateAction:AggregateAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$AggregateAction.html"><span class="name">AggregateAction</span></a><span class="params">(<span name="exprs">exprs: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@AggregateActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.CoalesceAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CoalesceActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="CoalesceAction:CoalesceAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$CoalesceAction.html"><span class="name">CoalesceAction</span></a><span class="params">(<span name="numPartitions">numPartitions: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@CoalesceActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.CollectAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CollectActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="CollectAction:CollectAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$CollectAction.html"><span class="name">CollectAction</span></a><span class="params">(<span name="placeholder">placeholder: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="column">column: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@CollectActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.DQCheckAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DQCheckActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="DQCheckAction:DQCheckAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,16 +149,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$DQCheckAction.html"><span class="name">DQCheckAction</span></a><span class="params">(<span name="id">id: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dqFunction">dqFunction: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="functionOptions">functionOptions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Any">Any</span>]]</span>, <span name="columns">columns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$DQCheckAction.html"><span class="name">DQCheckAction</span></a><span class="params">(<span name="id">id: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dqFunction">dqFunction: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="functionOptions">functionOptions: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Any">Any</span>]]</span>, <span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DQCheckActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DQCheckActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.DistinctAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DistinctActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="DistinctActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="DistinctAction:DistinctAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -115,16 +166,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$DistinctAction.html"><span class="name">DistinctAction</span></a><span class="params">()</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$DistinctAction.html"><span class="name">DistinctAction</span></a><span class="params">()</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DistinctActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DistinctActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.DropColumnAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DropColumnActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="DropColumnActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="DropColumnAction:DropColumnAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -132,16 +183,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$DropColumnAction.html"><span class="name">DropColumnAction</span></a><span class="params">(<span name="columns">columns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$DropColumnAction.html"><span class="name">DropColumnAction</span></a><span class="params">(<span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DropColumnActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DropColumnActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.DropDuplicateAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DropDuplicateActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="DropDuplicateActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="DropDuplicateAction:DropDuplicateAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -149,16 +200,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$DropDuplicateAction.html"><span class="name">DropDuplicateAction</span></a><span class="params">(<span name="columns">columns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$DropDuplicateAction.html"><span class="name">DropDuplicateAction</span></a><span class="params">(<span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DropDuplicateActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@DropDuplicateActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.ExceptAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ExceptActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="ExceptActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="ExceptAction:ExceptAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -166,16 +217,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$ExceptAction.html"><span class="name">ExceptAction</span></a><span class="params">(<span name="exceptWith">exceptWith: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$ExceptAction.html"><span class="name">ExceptAction</span></a><span class="params">(<span name="exceptWith">exceptWith: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@ExceptActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@ExceptActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.FilterAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="FilterActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="FilterActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="FilterAction:FilterAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -183,16 +234,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$FilterAction.html"><span class="name">FilterAction</span></a><span class="params">(<span name="condition">condition: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$FilterAction.html"><span class="name">FilterAction</span></a><span class="params">(<span name="condition">condition: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@FilterActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@FilterActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.GroupAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GroupActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="GroupActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="GroupAction:GroupAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -200,16 +251,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$GroupAction.html"><span class="name">GroupAction</span></a><span class="params">(<span name="groupColumns">groupColumns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="groupExpr">groupExpr: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$GroupAction.html"><span class="name">GroupAction</span></a><span class="params">(<span name="groupColumns">groupColumns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="groupExprs">groupExprs: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="pivotColumn">pivotColumn: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@GroupActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@GroupActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.IntersectAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="IntersectActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="IntersectActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="IntersectAction:IntersectAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -217,16 +268,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$IntersectAction.html"><span class="name">IntersectAction</span></a><span class="params">(<span name="intersectWith">intersectWith: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$IntersectAction.html"><span class="name">IntersectAction</span></a><span class="params">(<span name="intersectWith">intersectWith: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@IntersectActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@IntersectActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.JoinAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="JoinActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="JoinActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="JoinAction:JoinAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -234,16 +285,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$JoinAction.html"><span class="name">JoinAction</span></a><span class="params">(<span name="joinCondition">joinCondition: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="joinColumns">joinColumns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinType">joinType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="joinSource">joinSource: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="broadcastHint">broadcastHint: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$JoinAction.html"><span class="name">JoinAction</span></a><span class="params">(<span name="joinCondition">joinCondition: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="joinColumns">joinColumns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="joinType">joinType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="joinSource">joinSource: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="broadcastHint">broadcastHint: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@JoinActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@JoinActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.LimitAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="LimitActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="LimitActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="LimitAction:LimitAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -251,16 +302,34 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$LimitAction.html"><span class="name">LimitAction</span></a><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$LimitAction.html"><span class="name">LimitAction</span></a><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@LimitActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@LimitActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
+    </li><li name="com.sope.etl.transform.model.action.MultiOutputTransform" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="MultiOutputTransformextendspackage.TransformActionRoot"></a>
+      <a id="MultiOutputTransform:MultiOutputTransform"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$MultiOutputTransform.html"><span class="name">MultiOutputTransform</span></a><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@MultiOutputTransformextendspackage.TransformActionRoot" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Class representing Transformation with multiple output
+</p>
     </li><li name="com.sope.etl.transform.model.action.NAAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="NAActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="NAActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="NAAction:NAAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -268,16 +337,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$NAAction.html"><span class="name">NAAction</span></a><span class="params">(<span name="defaultNumericValue">defaultNumericValue: <span class="extype" name="scala.Double">Double</span></span>, <span name="defaultStringValue">defaultStringValue: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="columns">columns: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$NAAction.html"><span class="name">NAAction</span></a><span class="params">(<span name="defaultNumericValue">defaultNumericValue: <span class="extype" name="scala.Double">Double</span></span>, <span name="defaultStringValue">defaultStringValue: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="columns">columns: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@NAActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@NAActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.NamedAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="NamedActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="NamedActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="NamedAction:NamedAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -285,16 +354,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$NamedAction.html"><span class="name">NamedAction</span></a><span class="params">(<span name="transformationName">transformationName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="inputs">inputs: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$NamedAction.html"><span class="name">NamedAction</span></a><span class="params">(<span name="transformationName">transformationName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="inputs">inputs: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@NamedActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@NamedActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.OrderByAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="OrderByActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="OrderByActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="OrderByAction:OrderByAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -302,16 +371,33 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$OrderByAction.html"><span class="name">OrderByAction</span></a><span class="params">(<span name="columns">columns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$OrderByAction.html"><span class="name">OrderByAction</span></a><span class="params">(<span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@OrderByActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@OrderByActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.PartitionAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PartitionActionextendspackage.MultiOutputTransformwithProductwithSerializable"></a>
+      <a id="PartitionAction:PartitionAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$PartitionAction.html"><span class="name">PartitionAction</span></a><span class="params">(<span name="condition">condition: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$MultiOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.MultiOutputTransform">MultiOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@PartitionActionextendspackage.MultiOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.RenameAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RenameActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="RenameActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="RenameAction:RenameAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -319,16 +405,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$RenameAction.html"><span class="name">RenameAction</span></a><span class="params">(<span name="list">list: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$RenameAction.html"><span class="name">RenameAction</span></a><span class="params">(<span name="list">list: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RenameActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RenameActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.RenameAllAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RenameAllActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="RenameAllActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="RenameAllAction:RenameAllAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -336,16 +422,67 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$RenameAllAction.html"><span class="name">RenameAllAction</span></a><span class="params">(<span name="append">append: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$RenameAllAction.html"><span class="name">RenameAllAction</span></a><span class="params">(<span name="append">append: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="columns">columns: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="pattern">pattern: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RenameAllActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RenameAllActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.RenameFindReplace" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RenameFindReplaceextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="RenameFindReplace:RenameFindReplace"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$RenameFindReplace.html"><span class="name">RenameFindReplace</span></a><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="find">find: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="replace">replace: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RenameFindReplaceextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.RepartitionAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RepartitionActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="RepartitionAction:RepartitionAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$RepartitionAction.html"><span class="name">RepartitionAction</span></a><span class="params">(<span name="numPartitions">numPartitions: <span class="extype" name="scala.Int">Int</span></span>, <span name="columns">columns: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RepartitionActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.RouterAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RouterActionextendspackage.MultiOutputTransformwithProductwithSerializable"></a>
+      <a id="RouterAction:RouterAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$RouterAction.html"><span class="name">RouterAction</span></a><span class="params">(<span name="conditions">conditions: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$MultiOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.MultiOutputTransform">MultiOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@RouterActionextendspackage.MultiOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.SCDAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SCDActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="SCDActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="SCDAction:SCDAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -353,16 +490,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$SCDAction.html"><span class="name">SCDAction</span></a><span class="params">(<span name="dimTable">dimTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="surrogateKey">surrogateKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="naturalKeys">naturalKeys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="derivedColumns">derivedColumns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="metaColumns">metaColumns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="incrementalLoad">incrementalLoad: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$SCDAction.html"><span class="name">SCDAction</span></a><span class="params">(<span name="dimTable">dimTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="surrogateKey">surrogateKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="naturalKeys">naturalKeys: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="derivedColumns">derivedColumns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="metaColumns">metaColumns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="incrementalLoad">incrementalLoad: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SCDActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SCDActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.SelectAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SelectActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="SelectActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="SelectAction:SelectAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -370,16 +507,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$SelectAction.html"><span class="name">SelectAction</span></a><span class="params">(<span name="columns">columns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$SelectAction.html"><span class="name">SelectAction</span></a><span class="params">(<span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.SelectNotAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SelectNotActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="SelectNotActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="SelectNotAction:SelectNotAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -387,16 +524,67 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$SelectNotAction.html"><span class="name">SelectNotAction</span></a><span class="params">(<span name="columns">columns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$SelectNotAction.html"><span class="name">SelectNotAction</span></a><span class="params">(<span name="columns">columns: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectNotActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectNotActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.SelectWithAliasAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SelectWithAliasActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="SelectWithAliasAction:SelectWithAliasAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$SelectWithAliasAction.html"><span class="name">SelectWithAliasAction</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="includeColumns">includeColumns: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="skipColumns">skipColumns: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectWithAliasActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.SelectWithRegexAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SelectWithRegexActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="SelectWithRegexAction:SelectWithRegexAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$SelectWithRegexAction.html"><span class="name">SelectWithRegexAction</span></a><span class="params">(<span name="regex">regex: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectWithRegexActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.SelectWithReorderedAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SelectWithReorderedActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="SelectWithReorderedAction:SelectWithReorderedAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$SelectWithReorderedAction.html"><span class="name">SelectWithReorderedAction</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SelectWithReorderedActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.SequenceAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SequenceActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="SequenceActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="SequenceAction:SequenceAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -404,16 +592,34 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$SequenceAction.html"><span class="name">SequenceAction</span></a><span class="params">(<span name="skSource">skSource: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="skColumn">skColumn: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$SequenceAction.html"><span class="name">SequenceAction</span></a><span class="params">(<span name="skSource">skSource: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="skColumn">skColumn: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SequenceActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SequenceActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
+    </li><li name="com.sope.etl.transform.model.action.SingleOutputTransform" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SingleOutputTransformextendspackage.TransformActionRoot"></a>
+      <a id="SingleOutputTransform:SingleOutputTransform"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$SingleOutputTransform.html"><span class="name">SingleOutputTransform</span></a><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@SingleOutputTransformextendspackage.TransformActionRoot" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Class representing Transformation with single output
+</p>
     </li><li name="com.sope.etl.transform.model.action.TransformAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TransformActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="TransformActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="TransformAction:TransformAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -421,16 +627,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$TransformAction.html"><span class="name">TransformAction</span></a><span class="params">(<span name="list">list: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$TransformAction.html"><span class="name">TransformAction</span></a><span class="params">(<span name="list">list: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.TransformActionRoot" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="TransformActionRootextendsAnyRef"></a>
+      <a id="TransformActionRootextendsLogging"></a>
       <a id="TransformActionRoot:TransformActionRoot"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -438,10 +644,10 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="package$$TransformActionRoot.html"><span class="name">TransformActionRoot</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="package$$TransformActionRoot.html"><span class="name">TransformActionRoot</span></a><span class="result"> extends <span class="extype" name="com.sope.utils.Logging">Logging</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformActionRootextendsAnyRef" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformActionRootextendsLogging" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -453,7 +659,7 @@
               
         </dd></dl></div>
     </li><li name="com.sope.etl.transform.model.action.TransformAllAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TransformAllActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="TransformAllActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="TransformAllAction:TransformAllAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -461,16 +667,33 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$TransformAllAction.html"><span class="name">TransformAllAction</span></a><span class="params">(<span name="transformExpr">transformExpr: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="columns">columns: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$TransformAllAction.html"><span class="name">TransformAllAction</span></a><span class="params">(<span name="transformExpr">transformExpr: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="columns">columns: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="pattern">pattern: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformAllActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformAllActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.TransformAllMultiArgAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TransformAllMultiArgActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="TransformAllMultiArgAction:TransformAllMultiArgAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$TransformAllMultiArgAction.html"><span class="name">TransformAllMultiArgAction</span></a><span class="params">(<span name="function">function: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="list">list: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@TransformAllMultiArgActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.UnionAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="UnionActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="UnionActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="UnionAction:UnionAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -478,16 +701,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$UnionAction.html"><span class="name">UnionAction</span></a><span class="params">(<span name="unionWith">unionWith: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$UnionAction.html"><span class="name">UnionAction</span></a><span class="params">(<span name="unionWith">unionWith: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@UnionActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@UnionActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.UnstructAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="UnstructActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="UnstructActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="UnstructAction:UnstructAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -495,16 +718,33 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$UnstructAction.html"><span class="name">UnstructAction</span></a><span class="params">(<span name="column">column: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$UnstructAction.html"><span class="name">UnstructAction</span></a><span class="params">(<span name="column">column: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@UnstructActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@UnstructActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.action.WatermarkAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WatermarkActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
+      <a id="WatermarkAction:WatermarkAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$WatermarkAction.html"><span class="name">WatermarkAction</span></a><span class="params">(<span name="eventTime">eventTime: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="delayThreshold">delayThreshold: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@WatermarkActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.sope.etl.transform.model.action.YamlAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="YamlActionextendspackage.TransformActionRootwithProductwithSerializable"></a>
+      <a id="YamlActionextendspackage.SingleOutputTransformwithProductwithSerializable"></a>
       <a id="YamlAction:YamlAction"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -512,10 +752,10 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$YamlAction.html"><span class="name">YamlAction</span></a><span class="params">(<span name="yamlFile">yamlFile: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="inputs">inputs: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="outputAlias">outputAlias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="substitutions">substitutions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Any">Any</span>]]</span>)</span><span class="result"> extends <a href="package$$TransformActionRoot.html" class="extype" name="com.sope.etl.transform.model.action.TransformActionRoot">TransformActionRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$YamlAction.html"><span class="name">YamlAction</span></a><span class="params">(<span name="yamlFile">yamlFile: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="inputs">inputs: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="outputAlias">outputAlias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="substitutions">substitutions: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Any">Any</span>]]</span>)</span><span class="result"> extends <a href="package$$SingleOutputTransform.html" class="extype" name="com.sope.etl.transform.model.action.SingleOutputTransform">SingleOutputTransform</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@YamlActionextendspackage.TransformActionRootwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@YamlActionextendspackage.SingleOutputTransformwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -544,6 +784,23 @@
       </a>
     </span>
       
+    </li><li name="com.sope.etl.transform.model.action.CollectAction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CollectAction"></a>
+      <a id="CollectAction:CollectAction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$CollectAction$.html"><span class="name">CollectAction</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.sope.etl.transform.model.action.package@CollectAction" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li></ol>
             </div>
 
@@ -554,7 +811,7 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>TransformModel - sope-etl 1.2 API - com.sope.etl.transform.model.TransformModel</title>
-          <meta name="description" content="TransformModel - sope - etl 1.2 API - com.sope.etl.transform.model.TransformModel" />
-          <meta name="keywords" content="TransformModel sope etl 1.2 API com.sope.etl.transform.model.TransformModel" />
+          <title>TransformModel - sope-etl 1.5 API - com.sope.etl.transform.model.TransformModel</title>
+          <meta name="description" content="TransformModel - sope - etl 1.5 API - com.sope.etl.transform.model.TransformModel" />
+          <meta name="keywords" content="TransformModel sope etl 1.5 API com.sope.etl.transform.model.TransformModel" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -45,13 +45,14 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">TransformModel</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">TransformModel</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Base Trait for Transformation Model
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
             <div class="subClasses hiddenContent"><a href="package$$TransformModelWithSourceTarget.html" class="extype" name="com.sope.etl.transform.model.TransformModelWithSourceTarget">TransformModelWithSourceTarget</a>, <a href="package$$TransformModelWithoutSourceTarget.html" class="extype" name="com.sope.etl.transform.model.TransformModelWithoutSourceTarget">TransformModelWithoutSourceTarget</a></div>
@@ -93,10 +94,70 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.sope.etl.transform.model.TransformModel#sources" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="sources:com.sope.etl.transform.model.package.MList[_]"></a>
+      <a id="sources:MList[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sources</span><span class="result">: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@sources:com.sope.etl.transform.model.package.MList[_]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Get the sources involved
+</p><div class="fullcomment"><div class="comment cmt"><p>Get the sources involved
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Seq[_]</p></dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.TransformModel#targets" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="targets:com.sope.etl.transform.model.package.MList[com.sope.etl.transform.model.io.output.TargetTypeRoot]"></a>
+      <a id="targets:MList[TargetTypeRoot]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">targets</span><span class="result">: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="io/output/package$$TargetTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.output.TargetTypeRoot">TargetTypeRoot</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@targets:com.sope.etl.transform.model.package.MList[com.sope.etl.transform.model.io.output.TargetTypeRoot]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Output Targets
+</p><div class="fullcomment"><div class="comment cmt"><p>Output Targets
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Seq[TargetTypeRoot]</p></dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.TransformModel#transformations" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="transformations:com.sope.etl.transform.model.package.MList[com.sope.etl.transform.model.package.Transformation]"></a>
+      <a id="transformations:MList[Transformation]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">transformations</span><span class="result">: <a href="package$$MList.html" class="extype" name="com.sope.etl.transform.model.MList">MList</a>[<a href="package$$Transformation.html" class="extype" name="com.sope.etl.transform.model.Transformation">Transformation</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@transformations:com.sope.etl.transform.model.package.MList[com.sope.etl.transform.model.package.Transformation]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Transformations list
+</p><div class="fullcomment"><div class="comment cmt"><p>Transformations list
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Seq[DFTransformation]</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -165,6 +226,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.TransformModel#checkFailure" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="checkFailure():Unit"></a>
+      <a id="checkFailure():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkFailure</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@checkFailure():Unit" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Checks for failure and throws <span class="extype" name="YamlDataTransformException">YamlDataTransformException</span> if there are any.</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -174,7 +252,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@clone():Object" title="Permalink" target="_top">
@@ -197,7 +275,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -262,6 +340,25 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.TransformModel#hasFailures" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hasFailures:(Boolean,Seq[com.sope.etl.transform.model.package.Failed])"></a>
+      <a id="hasFailures:(Boolean,Seq[Failed])"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hasFailures</span><span class="result">: (<span class="extype" name="scala.Boolean">Boolean</span>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="package$$Failed.html" class="extype" name="com.sope.etl.transform.model.Failed">Failed</a>])</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@hasFailures:(Boolean,Seq[com.sope.etl.transform.model.package.Failed])" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Check if the model has any failed elements during deserialization
+</p><div class="fullcomment"><div class="comment cmt"><p>Check if the model has any failed elements during deserialization
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Tuple of failed status and list of failures in case their is failure</p></dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -305,7 +402,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.etl.transform.model.package$$TransformModel@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -460,7 +557,7 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

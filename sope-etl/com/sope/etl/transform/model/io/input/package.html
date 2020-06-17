@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>input - sope-etl 1.2 API - com.sope.etl.transform.model.io.input</title>
-          <meta name="description" content="input - sope - etl 1.2 API - com.sope.etl.transform.model.io.input" />
-          <meta name="keywords" content="input sope etl 1.2 API com.sope.etl.transform.model.io.input" />
+          <title>input - sope-etl 1.5 API - com.sope.etl.transform.model.io.input</title>
+          <meta name="description" content="input - sope - etl 1.5 API - com.sope.etl.transform.model.io.input" />
+          <meta name="keywords" content="input sope etl 1.5 API com.sope.etl.transform.model.io.input" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -50,7 +50,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Package contains YAML Transformer Input construct mappings and definitions
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -89,7 +89,24 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.sope.etl.transform.model.io.input.CSVSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.sope.etl.transform.model.io.input.BigQuerySource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BigQuerySourceextendspackage.SourceTypeRootwithProductwithSerializable"></a>
+      <a id="BigQuerySource:BigQuerySource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$BigQuerySource.html"><span class="name">BigQuerySource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="db">db: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="projectId">projectId: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@BigQuerySourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.io.input.CSVSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="CSVSourceextendspackage.SourceTypeRootwithProductwithSerializable"></a>
       <a id="CSVSource:CSVSource"></a>
       <h4 class="signature">
@@ -98,10 +115,27 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$CSVSource.html"><span class="name">CSVSource</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$CSVSource.html"><span class="name">CSVSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@CSVSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.io.input.CustomSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CustomSourceextendspackage.SourceTypeRootwithProductwithSerializable"></a>
+      <a id="CustomSource:CustomSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$CustomSource.html"><span class="name">CustomSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@CustomSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -123,6 +157,23 @@
       </a>
     </span>
       
+    </li><li name="com.sope.etl.transform.model.io.input.JDBCSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="JDBCSourceextendspackage.SourceTypeRootwithProductwithSerializable"></a>
+      <a id="JDBCSource:JDBCSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$JDBCSource.html"><span class="name">JDBCSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="url">url: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@JDBCSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="com.sope.etl.transform.model.io.input.JsonSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="JsonSourceextendspackage.SourceTypeRootwithProductwithSerializable"></a>
       <a id="JsonSource:JsonSource"></a>
@@ -132,10 +183,27 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$JsonSource.html"><span class="name">JsonSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$JsonSource.html"><span class="name">JsonSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@JsonSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.sope.etl.transform.model.io.input.LocalSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LocalSourceextendspackage.SourceTypeRootwithProductwithSerializable"></a>
+      <a id="LocalSource:LocalSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$LocalSource.html"><span class="name">LocalSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="yamlFile">yamlFile: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@LocalSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -149,7 +217,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$OrcSource.html"><span class="name">OrcSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$OrcSource.html"><span class="name">OrcSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@OrcSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
@@ -166,7 +234,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$ParquetSource.html"><span class="name">ParquetSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$ParquetSource.html"><span class="name">ParquetSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@ParquetSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
@@ -183,7 +251,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="package$$SourceTypeRoot.html"><span class="name">SourceTypeRoot</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="package$$SourceTypeRoot.html"><span class="name">SourceTypeRoot</span></a><span class="result"> extends <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@SourceTypeRootextendsAnyRef" title="Permalink" target="_top">
@@ -205,7 +273,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="package$$TextSource.html"><span class="name">TextSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="package$$TextSource.html"><span class="name">TextSource</span></a><span class="params">(<span name="alias">alias: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="isStreaming">isStreaming: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="schemaFile">schemaFile: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="package$$SourceTypeRoot.html" class="extype" name="com.sope.etl.transform.model.io.input.SourceTypeRoot">SourceTypeRoot</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.input.package@TextSourceextendspackage.SourceTypeRootwithProductwithSerializable" title="Permalink" target="_top">
@@ -227,7 +295,7 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

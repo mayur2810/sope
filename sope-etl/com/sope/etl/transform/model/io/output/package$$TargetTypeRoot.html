@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>TargetTypeRoot - sope-etl 1.2 API - com.sope.etl.transform.model.io.output.TargetTypeRoot</title>
-          <meta name="description" content="TargetTypeRoot - sope - etl 1.2 API - com.sope.etl.transform.model.io.output.TargetTypeRoot" />
-          <meta name="keywords" content="TargetTypeRoot sope etl 1.2 API com.sope.etl.transform.model.io.output.TargetTypeRoot" />
+          <title>TargetTypeRoot - sope-etl 1.5 API - com.sope.etl.transform.model.io.output.TargetTypeRoot</title>
+          <meta name="description" content="TargetTypeRoot - sope - etl 1.5 API - com.sope.etl.transform.model.io.output.TargetTypeRoot" />
+          <meta name="keywords" content="TargetTypeRoot sope etl 1.5 API com.sope.etl.transform.model.io.output.TargetTypeRoot" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -56,10 +56,10 @@
               
         </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="com.sope.utils.Logging">Logging</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.sope.utils.Logging">Logging</span>, <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="package$$CSVTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.CSVTarget">CSVTarget</a>, <a href="package$$CountOutput.html" class="extype" name="com.sope.etl.transform.model.io.output.CountOutput">CountOutput</a>, <a href="package$$HiveTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.HiveTarget">HiveTarget</a>, <a href="package$$JsonTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.JsonTarget">JsonTarget</a>, <a href="package$$OrcTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.OrcTarget">OrcTarget</a>, <a href="package$$ParquetTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.ParquetTarget">ParquetTarget</a>, <a href="package$$ShowOutput.html" class="extype" name="com.sope.etl.transform.model.io.output.ShowOutput">ShowOutput</a>, <a href="package$$TextTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.TextTarget">TextTarget</a></div>
+            <div class="subClasses hiddenContent"><a href="package$$BigQueryTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.BigQueryTarget">BigQueryTarget</a>, <a href="package$$CSVTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.CSVTarget">CSVTarget</a>, <a href="package$$CountOutput.html" class="extype" name="com.sope.etl.transform.model.io.output.CountOutput">CountOutput</a>, <a href="package$$CustomTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.CustomTarget">CustomTarget</a>, <a href="package$$HiveTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.HiveTarget">HiveTarget</a>, <a href="package$$JDBCTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.JDBCTarget">JDBCTarget</a>, <a href="package$$JsonTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.JsonTarget">JsonTarget</a>, <a href="package$$OrcTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.OrcTarget">OrcTarget</a>, <a href="package$$ParquetTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.ParquetTarget">ParquetTarget</a>, <a href="package$$ShowOutput.html" class="extype" name="com.sope.etl.transform.model.io.output.ShowOutput">ShowOutput</a>, <a href="package$$TextTarget.html" class="extype" name="com.sope.etl.transform.model.io.output.TextTarget">TextTarget</a></div>
           </div></div>
         
 
@@ -97,7 +97,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(id:String,input:String,mode:String):com.sope.etl.transform.model.io.output.package.TargetTypeRoot"></a>
+      <a id="&lt;init&gt;(id:String,input:String,mode:Option[String],partitionBy:Option[Seq[String]],bucketBy:Option[com.sope.etl.transform.model.io.output.package.BucketingOption],options:Option[Map[String,String]],outputMode:Option[String],trigger:Option[com.sope.etl.transform.model.io.output.package.TriggerOption]):com.sope.etl.transform.model.io.output.package.TargetTypeRoot"></a>
       <a id="&lt;init&gt;:TargetTypeRoot"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -105,10 +105,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">TargetTypeRoot</span><span class="params">(<span name="id">id: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mode">mode: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">TargetTypeRoot</span><span class="params">(<span name="id">id: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mode">mode: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="partitionBy">partitionBy: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="bucketBy">bucketBy: <span class="extype" name="scala.Option">Option</span>[<a href="package$$BucketingOption.html" class="extype" name="com.sope.etl.transform.model.io.output.BucketingOption">BucketingOption</a>]</span>, <span name="options">options: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="outputMode">outputMode: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="../../../../../../../scala/package.html">None</a></span></span></span>, <span name="trigger">trigger: <span class="extype" name="scala.Option">Option</span>[<a href="package$$TriggerOption.html" class="extype" name="com.sope.etl.transform.model.io.output.TriggerOption">TriggerOption</a>] = <span class="symbol"><span class="name"><a href="../../../../../../../scala/package.html">None</a></span></span></span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@&lt;init&gt;(id:String,input:String,mode:String):com.sope.etl.transform.model.io.output.package.TargetTypeRoot" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@&lt;init&gt;(id:String,input:String,mode:Option[String],partitionBy:Option[Seq[String]],bucketBy:Option[com.sope.etl.transform.model.io.output.package.BucketingOption],options:Option[Map[String,String]],outputMode:Option[String],trigger:Option[com.sope.etl.transform.model.io.output.package.TriggerOption]):com.sope.etl.transform.model.io.output.package.TargetTypeRoot" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -219,7 +219,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@clone():Object" title="Permalink" target="_top">
@@ -242,7 +242,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -307,6 +307,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#getId" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getId:String"></a>
+      <a id="getId:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getId</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@getId:String" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#getInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="getInput:String"></a>
       <a id="getInput:String"></a>
@@ -324,36 +341,36 @@
       </a>
     </span>
       
-    </li><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#getOptions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getOptions(options:Map[String,String]):Map[String,String]"></a>
-      <a id="getOptions(Map[String,String]):Map[String,String]"></a>
+    </li><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#getStreamWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getStreamWriter(df:org.apache.spark.sql.DataFrame):org.apache.spark.sql.streaming.DataStreamWriter[org.apache.spark.sql.Row]"></a>
+      <a id="getStreamWriter(DataFrame):DataStreamWriter[Row]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOptions</span><span class="params">(<span name="options">options: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">getStreamWriter</span><span class="params">(<span name="df">df: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.streaming.DataStreamWriter">DataStreamWriter</span>[<span class="extype" name="org.apache.spark.sql.Row">Row</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@getOptions(options:Map[String,String]):Map[String,String]" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@getStreamWriter(df:org.apache.spark.sql.DataFrame):org.apache.spark.sql.streaming.DataStreamWriter[org.apache.spark.sql.Row]" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
-    </li><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#getSaveMode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getSaveMode:org.apache.spark.sql.SaveMode"></a>
-      <a id="getSaveMode:SaveMode"></a>
+    </li><li name="com.sope.etl.transform.model.io.output.TargetTypeRoot#getWriter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getWriter(df:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrameWriter[org.apache.spark.sql.Row]"></a>
+      <a id="getWriter(DataFrame):DataFrameWriter[Row]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getSaveMode</span><span class="result">: <span class="extype" name="org.apache.spark.sql.SaveMode">SaveMode</span></span>
+        <span class="name">getWriter</span><span class="params">(<span name="df">df: <span class="extype" name="org.apache.spark.sql.DataFrame">DataFrame</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.sql.DataFrameWriter">DataFrameWriter</span>[<span class="extype" name="org.apache.spark.sql.Row">Row</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@getSaveMode:org.apache.spark.sql.SaveMode" title="Permalink" target="_top">
+      <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@getWriter(df:org.apache.spark.sql.DataFrame):org.apache.spark.sql.DataFrameWriter[org.apache.spark.sql.Row]" title="Permalink" target="_top">
         <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -520,7 +537,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../../index.html#com.sope.etl.transform.model.io.output.package$$TargetTypeRoot@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
@@ -677,7 +694,7 @@
         <div class="parent" name="com.sope.utils.Logging">
               <h3>Inherited from <span class="extype" name="com.sope.utils.Logging">Logging</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
             </div>

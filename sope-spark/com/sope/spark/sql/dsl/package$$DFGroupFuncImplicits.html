@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>DFGroupFuncImplicits - sope-spark 1.2 API - com.sope.spark.sql.dsl.DFGroupFuncImplicits</title>
-          <meta name="description" content="DFGroupFuncImplicits - sope - spark 1.2 API - com.sope.spark.sql.dsl.DFGroupFuncImplicits" />
-          <meta name="keywords" content="DFGroupFuncImplicits sope spark 1.2 API com.sope.spark.sql.dsl.DFGroupFuncImplicits" />
+          <title>DFGroupFuncImplicits - sope-spark 1.5 API - com.sope.spark.sql.dsl.DFGroupFuncImplicits</title>
+          <meta name="description" content="DFGroupFuncImplicits - sope - spark 1.5 API - com.sope.spark.sql.dsl.DFGroupFuncImplicits" />
+          <meta name="keywords" content="DFGroupFuncImplicits sope spark 1.5 API com.sope.spark.sql.dsl.DFGroupFuncImplicits" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -166,18 +166,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.sope.spark.sql.dsl.DFGroupFuncImplicits#^" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="^[_](aggExprs:String*)(implicitevidence$8:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc"></a>
-      <a id="^[_](String*)(ClassTag[Any]):DFFunc"></a>
+      <a id="^[T](aggExprs:String*)(implicitevidence$15:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc"></a>
+      <a id="^[T](String*)(ClassTag[T]):DFFunc"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $up" class="name">^</span><span class="tparams">[<span name="_">_</span>]</span><span class="params">(<span name="aggExprs">aggExprs: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="scala.Any">Any</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+        <span title="gt4s: $up" class="name">^</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="aggExprs">aggExprs: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.sope.spark.sql.dsl.DFGroupFuncImplicits.^.T">T</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$DFGroupFuncImplicits@^[_](aggExprs:String*)(implicitevidence$8:scala.reflect.ClassTag[Any]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$DFGroupFuncImplicits@^[T](aggExprs:String*)(implicitevidence$15:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -197,6 +197,44 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$DFGroupFuncImplicits@^(aggExprs:org.apache.spark.sql.Column*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Apply Aggregation expressions for Group by
+</p><div class="fullcomment"><div class="comment cmt"><p>Apply Aggregation expressions for Group by
+</p></div><dl class="paramcmts block"><dt class="param">aggExprs</dt><dd class="cmt"><p>Aggregation column expressions</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.dsl.DFGroupFuncImplicits#agg" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="agg[T](aggExprs:String*)(implicitevidence$14:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc"></a>
+      <a id="agg[T](String*)(ClassTag[T]):DFFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">agg</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="aggExprs">aggExprs: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.sope.spark.sql.dsl.DFGroupFuncImplicits.agg.T">T</span>]</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$DFGroupFuncImplicits@agg[T](aggExprs:String*)(implicitevidence$14:scala.reflect.ClassTag[T]):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Apply Aggregation expressions for Group by
+</p><div class="fullcomment"><div class="comment cmt"><p>Apply Aggregation expressions for Group by
+</p></div><dl class="paramcmts block"><dt class="param">aggExprs</dt><dd class="cmt"><p>Aggregation String expressions</p></dd><dt>returns</dt><dd class="cmt"><p><a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></p></dd></dl></div>
+    </li><li name="com.sope.spark.sql.dsl.DFGroupFuncImplicits#agg" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="agg(aggExprs:org.apache.spark.sql.Column*):com.sope.spark.sql.DFFunc"></a>
+      <a id="agg(Column*):DFFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">agg</span><span class="params">(<span name="aggExprs">aggExprs: <span class="extype" name="org.apache.spark.sql.Column">Column</span>*</span>)</span><span class="result">: <a href="../package.html#DFFunc=org.apache.spark.sql.DataFrame=&gt;org.apache.spark.sql.DataFrame" class="extmbr" name="com.sope.spark.sql.DFFunc">DFFunc</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.sope.spark.sql.dsl.package$$DFGroupFuncImplicits@agg(aggExprs:org.apache.spark.sql.Column*):com.sope.spark.sql.DFFunc" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
