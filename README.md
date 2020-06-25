@@ -22,6 +22,9 @@ The project contains the following sub-modules:
     [More information](sope-etl/README.md)
 
 
+#### Examples:
+Please check: https://github.com/mayur2810/sope-spark-examples
+
 #### Building the project:
 The project has full support for Spark versions 2.x onwards. Please refer the separate branch for 1.x support, which is limited in features.  
 Use **mvn clean package** to build the project. The **sope-etl** module will create a zip package containing the utility shell wrapper along with the jar which is to be used for Spark job submission. The jar generated from **sope-spark** module can be imported and used as a library.  
