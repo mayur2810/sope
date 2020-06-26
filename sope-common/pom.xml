@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sope-etl</artifactId>
+    <artifactId>sope-common</artifactId>
 
     <dependencies>
         <dependency>
@@ -18,42 +18,20 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_${scala.version.tag}</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_${scala.version.tag}</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-hive_${scala.version.tag}</artifactId>
-            <scope>provided</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.scopt</groupId>
-            <artifactId>scopt_${scala.version.tag}</artifactId>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${scala.version.tag}</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.cloud.bigdataoss</groupId>
-            <artifactId>bigquery-connector</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mayurb</groupId>
-            <artifactId>sope-spark</artifactId>
-            <version>${project.ver}</version>
+            <groupId>org.scalameta</groupId>
+            <artifactId>scalameta_${scala.version.tag}</artifactId>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
@@ -79,31 +57,31 @@
                 <groupId>org.scoverage</groupId>
                 <artifactId>scoverage-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${project.basedir}\target</outputDirectory>
-                    <finalName>sope-etl</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>assembly/sope-etl-assembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sope-etl-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>pl.project13.maven</groupId>-->
+<!--                <artifactId>git-commit-id-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <outputDirectory>${project.basedir}\target</outputDirectory>-->
+<!--                    <finalName>sope-etl</finalName>-->
+<!--                    <appendAssemblyId>false</appendAssemblyId>-->
+<!--                    <descriptors>-->
+<!--                        <descriptor>../sope-spark/assembly/sope-etl-assembly.xml</descriptor>-->
+<!--                    </descriptors>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>sope-etl-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
 
     </build>

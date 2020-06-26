@@ -3,9 +3,8 @@ package com.sope.common.yaml
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.sope.common.transform.exception.TransformException
 import com.sope.common.transform.model.Failed
-import com.sope.common.utils.RedactUtil
+import com.sope.common.utils.{Logging, RedactUtil}
 import com.sope.common.yaml.YamlParserUtil._
-import com.sope.utils.Logging
 
 import scala.util.{Failure, Success, Try}
 
