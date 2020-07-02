@@ -2,13 +2,13 @@ package com.sope.common.sql.dsl
 
 import java.sql.Date
 
-import com.sope.common.sql.{SqlOps, TestInit}
+import com.sope.common.sql.{SqlColumnOps, SqlDatasetOps, SqlOps, TestInit}
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * @author mbadgujar
  */
-trait DSLResults[D] {
+trait DSLResults[D, CF] {
   this: FlatSpec with Matchers with DSL with TestInit[D] =>
 
   type DatasetColsFunc = D => Seq[String]
@@ -21,7 +21,9 @@ trait DSLResults[D] {
 
   def getDatasetRecordsFunc: DatasetRecordsFunc
 
-  implicit def sqlOps: SqlOps[D, String]
+  implicit def sqlOps: SqlOps[D, String, CF]
+  implicit def sqlDatasetOps: SqlDatasetOps[D]
+  implicit def columnSqlOps: SqlColumnOps[CF]
 
   def noOpResult(): Unit = {
     val resultDataset = NoOp() --> testDatasets(CustomerDataset)

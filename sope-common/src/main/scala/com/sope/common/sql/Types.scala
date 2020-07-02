@@ -5,6 +5,7 @@ object Types {
   /*
        D : Dataset
        C : Column
+       CF: Column Function
    */
 
   // Dataset Transformation Function Alias
@@ -17,4 +18,7 @@ object Types {
   // Group Function AliasDSL
   type GFunc[D, C] = Seq[(String, C)] => TFunc[D]
 
+  // Column Functions
+  type ColFunc[CF] = CF => CF
+  type MultiColFunc[CF] = Seq[CF] => CF
 }
