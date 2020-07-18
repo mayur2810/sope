@@ -16,11 +16,13 @@ package object sql {
 
   // Type Aliases
   type DFFunc = DataFrame => DataFrame
+  type DFFunc2 = SQLContext => DataFrame
+  type MultiDFFunc = Seq[DataFrame] => DataFrame
+
+  // TODO: Remove
   type DFFuncSeq = Seq[DFFunc]
   type DFFuncMap = Map[String, DFFunc]
   type DFFuncMapSelective = (String, DFFuncMap)
-  type DFFunc2 = SQLContext => DataFrame
-  type MultiDFFunc = Seq[DataFrame] => DataFrame
   type ColFunc = Column => Column
   type MultiColFunc = Seq[Column] => Column
   type DFJoinFunc = (DataFrame, DataFrame, String) => DataFrame
@@ -104,17 +106,6 @@ package object sql {
       */
     def isEmpty: Boolean = dataframe.head(1).isEmpty
 
-
-    /**
-      * Drop Columns from Dataframe
-      * Note: Supported for Spark 1.x version, Spark 2.x has this version
-      *
-      * @param columns [[Seq]] of column [[String]]
-      * @return [[DataFrame]]
-      */
-    def dropColumns(columns: Seq[String]): DataFrame = {
-      columns.foldLeft(dataframe)((df, column) => df.drop(column))
-    }
 
 
     /**
@@ -383,6 +374,12 @@ package object sql {
     }
 
   }
+
+  // IMPLICITS
+  implicit val stringSqlOps = StringExprSqlOps
+  implicit val dfSqlOps = DataFrameOps
+  implicit val cexpOps = ColumnExprSqlOps
+  implicit val cOps = ColumnOps
 
 
 }

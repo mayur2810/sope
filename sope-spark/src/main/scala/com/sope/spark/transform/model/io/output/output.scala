@@ -1,15 +1,21 @@
-package com.sope.spark.transform.io.output
+package com.sope.spark.transform.model.io
 
 import java.util.Properties
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.common.transform.exception.TransformException
+import com.sope.common.transform.model.io.output.TargetTypeRoot
+import com.sope.spark.sql._
+import com.sope.utils.Logging
+import org.apache.spark.sql.streaming.{DataStreamWriter, Trigger}
+import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row}
 
 /**
-  * Package contains YAML Transformer Output construct mappings and definitions
-  *
-  * @author mbadgujar
-  */
+ * Package contains YAML Transformer Output construct mappings and definitions
+ *
+ * @author mbadgujar
+ */
 package object output {
 
   case class BucketingOption(@JsonProperty(value = "num_buckets") numBuckets: Int = 200,
@@ -29,25 +35,25 @@ package object output {
     new Type(value = classOf[CSVTarget], name = "csv"),
     new Type(value = classOf[TextTarget], name = "text"),
     new Type(value = classOf[JsonTarget], name = "json"),
-    new Type(value = classOf[BigQueryTarget], name = "bigquery"),
     new Type(value = classOf[CustomTarget], name = "custom"),
     new Type(value = classOf[CountOutput], name = "count"),
     new Type(value = classOf[ShowOutput], name = "show")
   ))
-  abstract class TargetTypeRoot(@JsonProperty(value = "type", required = true) id: String,
-                                input: String,
-                                mode: Option[String],
-                                partitionBy: Option[Seq[String]],
-                                bucketBy: Option[BucketingOption],
-                                options: Option[Map[String, String]],
-                                outputMode: Option[String] = None,
-                                trigger: Option[TriggerOption] = None) extends Logging {
+  abstract class SparkTargetTypeRoot(@JsonProperty(value = "type", required = true) id: String,
+                                     input: String,
+                                     mode: Option[String],
+                                     partitionBy: Option[Seq[String]],
+                                     bucketBy: Option[BucketingOption],
+                                     options: Option[Map[String, String]],
+                                     outputMode: Option[String] = None,
+                                     trigger: Option[TriggerOption] = None) extends TargetTypeRoot[DataFrame](id,
+    input) with Logging {
 
     def apply(df: DataFrame): Unit
 
-    def getInput: String = input
+    override def getInput: String = input
 
-    def getId: String = id
+    override def getId: String = id
 
     def getWriter(df: DataFrame): DataFrameWriter[Row] = {
       val writeModeApplied = mode.fold(df.write)(_ => df.write.mode(mode.get))
@@ -84,7 +90,7 @@ package object output {
                         @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                         @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                         options: Option[Map[String, String]])
-    extends TargetTypeRoot("hive", input, mode, partitionBy, bucketBy, options) {
+    extends SparkTargetTypeRoot("hive", input, mode, partitionBy, bucketBy, options) {
     def apply(df: DataFrame): Unit = {
       val targetTable = s"$db.$table"
       val saveAsTableFlag = saveAsTable.getOrElse(false)
@@ -107,7 +113,7 @@ package object output {
                        @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                        @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                        options: Option[Map[String, String]])
-    extends TargetTypeRoot("orc", input, mode, partitionBy, bucketBy, options) {
+    extends SparkTargetTypeRoot("orc", input, mode, partitionBy, bucketBy, options) {
     def apply(df: DataFrame): Unit = getWriter(df).orc(path)
   }
 
@@ -120,7 +126,7 @@ package object output {
                            @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                            @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                            options: Option[Map[String, String]])
-    extends TargetTypeRoot("parquet", input, mode, partitionBy, bucketBy, options) {
+    extends SparkTargetTypeRoot("parquet", input, mode, partitionBy, bucketBy, options) {
     def apply(df: DataFrame): Unit = getWriter(df).parquet(path)
   }
 
@@ -133,7 +139,7 @@ package object output {
                        @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                        @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                        options: Option[Map[String, String]])
-    extends TargetTypeRoot("csv", input, mode, partitionBy, bucketBy, options) {
+    extends SparkTargetTypeRoot("csv", input, mode, partitionBy, bucketBy, options) {
     def apply(df: DataFrame): Unit = getWriter(df).csv(path)
   }
 
@@ -146,7 +152,7 @@ package object output {
                         @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                         @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                         options: Option[Map[String, String]])
-    extends TargetTypeRoot("text", input, mode, partitionBy, bucketBy, options) {
+    extends SparkTargetTypeRoot("text", input, mode, partitionBy, bucketBy, options) {
     def apply(df: DataFrame): Unit = getWriter(df).text(path)
   }
 
@@ -159,7 +165,7 @@ package object output {
                         @JsonProperty(value = "partition_by") partitionBy: Option[Seq[String]],
                         @JsonProperty(value = "bucket_by") bucketBy: Option[BucketingOption],
                         options: Option[Map[String, String]])
-    extends TargetTypeRoot("json", input, mode, partitionBy, bucketBy, options) {
+    extends SparkTargetTypeRoot("json", input, mode, partitionBy, bucketBy, options) {
     def apply(df: DataFrame): Unit = getWriter(df).json(path)
   }
 
@@ -171,7 +177,7 @@ package object output {
                         @JsonProperty(required = true) url: String,
                         @JsonProperty(required = true) table: String,
                         options: Option[Map[String, String]])
-    extends TargetTypeRoot("jdbc", input, mode, None, None, options) {
+    extends SparkTargetTypeRoot("jdbc", input, mode, None, None, options) {
     private val properties = options.fold(new Properties())(options => {
       val properties = new Properties()
       options.foreach { case (k, v) => properties.setProperty(k, v) }
@@ -187,7 +193,7 @@ package object output {
     Show Count
   */
   case class CountOutput(@JsonProperty(required = true) input: String)
-    extends TargetTypeRoot("count", input, None, None, None, None) {
+    extends SparkTargetTypeRoot("count", input, None, None, None, None) {
     def apply(df: DataFrame): Unit = logInfo(s"Count for transformation alias: $input :- ${df.count}")
   }
 
@@ -195,26 +201,11 @@ package object output {
     Show sample result
   */
   case class ShowOutput(@JsonProperty(required = true) input: String, num_records: Int)
-    extends TargetTypeRoot("show", input, None, None, None, None) {
+    extends SparkTargetTypeRoot("show", input, None, None, None, None) {
     def apply(df: DataFrame): Unit = {
       logInfo(s"Showing sample rows for transformation alias: $input")
       if (num_records == 0) df.show(num_records, truncate = false) else df.show(false)
     }
-  }
-
-  /*
-   BigQuery Target
-  */
-  case class BigQueryTarget(@JsonProperty(required = true) input: String,
-                            @JsonProperty(required = true) db: String,
-                            @JsonProperty(required = true) table: String,
-                            @JsonProperty(value = "project_id") projectId: Option[String],
-                            @JsonProperty(required = true) mode: Option[String])
-    extends TargetTypeRoot("custom", input, mode, None, None, None, None) {
-    private val bqDataset = projectId.fold(s"$db.$table")(id => s"$id:$db.$table")
-    private val overwriteFlag = mode.fold(false)(mode => if (mode.toLowerCase == "overwrite") true else false)
-
-    def apply(df: DataFrame): Unit = new BigQueryWriter(df, bqDataset, overwriteFlag).save()
   }
 
   /*
@@ -229,7 +220,7 @@ package object output {
                           @JsonProperty(value = "output_mode") outputMode: Option[String],
                           options: Option[Map[String, String]],
                           trigger: Option[TriggerOption])
-    extends TargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode, trigger) {
+    extends SparkTargetTypeRoot("custom", input, mode, partitionBy, bucketBy, options, outputMode, trigger) {
     def apply(df: DataFrame): Unit =
       if (isStreaming.getOrElse(false))
         getStreamWriter(df).format(format).start()

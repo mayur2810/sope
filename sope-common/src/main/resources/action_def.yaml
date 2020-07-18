@@ -1,0 +1,74 @@
+imports:
+  - "com.fasterxml.jackson.annotation.JsonProperty"
+  - "com.fasterxml.jackson.databind.jsontype.NamedType"
+  - "com.sope.common.annotations.SqlExpr"
+  - "com.sope.common.transform.model.action.SingleOutputTransform"
+  - "com.sope.common.sql.Types.TFunc"
+definitions:
+  - id: "select"
+    params:
+      - name: columns
+        type: Seq[String]
+        is_required: true
+        is_sql_expr: true
+    expr: "Select(columns :_*)"
+  - id: "rename"
+    params:
+      - name: list
+        type: Map[String, String]
+        is_required: true
+    expr: "Rename(list.toSeq :_*)"
+  - id: "filter"
+    params:
+      - name: condition
+        type: String
+        is_required: true
+    expr: "Filter(condition)"
+  - id: "drop"
+    params:
+      - name: columns
+        type: List[String]
+        is_required: true
+    expr: "Drop(columns :_*)"
+  - id: "transform"
+    params:
+      - name: columns
+        type: Map[String, String]
+        is_required: true
+    expr: "Transform(columns.toSeq :_*)"
+  - id: "transform_all"
+    params:
+      - name: singleArgFunctionName
+        type: String
+        mapped_name: single_arg_function
+        is_required: true
+      - name: columns
+        type: Map[String, String]
+        is_required: true
+    expr: "TransformAll(singleArgFunctionName, columns.toSeq :_*)"
+  - id: "transform_all_multi_arg"
+    params:
+      - name: multiArgFunctionName
+        type: String
+        mapped_name: multi_arg_function
+        is_required: true
+      - name: columns
+        type: Map[String, Seq[String]]
+        is_required: true
+    expr: "TransformAllMultiArg(multiArgFunctionName, columns.toSeq :_*)"
+  - id: "join"
+    params:
+      - name: joinColumns
+        type: List[String]
+        is_required: true
+        mapped_name: columns
+      - name: joinType
+        type: String
+        is_required: true
+        mapped_name: join_type
+      - name: joinWith
+        type: String
+        is_dataset_ref: true
+        is_required: true
+        mapped_name: with
+    expr: "Join(joinColumns: _*).apply(joinType).apply(datasets.head)"

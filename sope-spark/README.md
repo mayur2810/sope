@@ -64,7 +64,7 @@ It will reduce the boiler-plate code for complex transformations and will assist
     Following is a sample DSL usage :
     ```scala
     // Use Following import to use the DSL constructs
-    import com.sope.spark.sql.dsl._
+    import com.sope.spark.sql.dslo._
 
     val studentDF =  ...
     val classDF = ...

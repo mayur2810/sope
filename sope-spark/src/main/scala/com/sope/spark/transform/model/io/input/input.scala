@@ -1,9 +1,15 @@
-package com.sope.spark.transform.io.input
+package com.sope.spark.transform.model.io
 
 import java.util.Properties
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.sope.spark.sql.DFFunc2
+import com.sope.spark.yaml.{ParallelizeYaml, SchemaYaml}
+import org.apache.spark.sql.{DataFrame, DataFrameReader, SQLContext}
+import org.apache.spark.sql.streaming.DataStreamReader
+import org.apache.spark.sql.types.StructType
+import com.sope.common.transform.model.io.input.SourceTypeRoot
 
 /**
   * Package contains YAML Transformer Input construct mappings and definitions
@@ -24,18 +30,17 @@ package object input {
     new Type(value = classOf[TextSource], name = "text"),
     new Type(value = classOf[JsonSource], name = "json"),
     new Type(value = classOf[JDBCSource], name = "jdbc"),
-    new Type(value = classOf[BigQuerySource], name = "bigquery"),
     new Type(value = classOf[CustomSource], name = "custom"),
     new Type(value = classOf[LocalSource], name = "local")
   ))
-  abstract class SourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
+  abstract class SparkSourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
                                 alias: String,
                                 options: Option[Map[String, String]],
                                 isStreaming: Option[Boolean] = Some(false),
-                                schemaFile: Option[String] = None) {
+                                schemaFile: Option[String] = None) extends SourceTypeRoot[DataFrame](id, alias) {
     def apply: DFFunc2
 
-    def getSourceName: String = alias
+    override def getSourceName: String = alias
 
     protected def getSchema: Option[StructType] = schemaFile.fold(None: Option[StructType]) {
       file => Some(SchemaYaml(file).getSparkSchema)
@@ -57,7 +62,7 @@ package object input {
    */
   case class HiveSource(@JsonProperty(required = true) alias: String,
                         @JsonProperty(required = true) db: String,
-                        @JsonProperty(required = true) table: String) extends SourceTypeRoot("hive", alias, None) {
+                        @JsonProperty(required = true) table: String) extends SparkSourceTypeRoot("hive", alias, None) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => sqlContext.table(s"$db.$table")
   }
 
@@ -69,7 +74,7 @@ package object input {
                        @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                        @JsonProperty(value = "schema_file") schemaFile: Option[String],
                        options: Option[Map[String, String]])
-    extends SourceTypeRoot("orc", alias, options, isStreaming, schemaFile) {
+    extends SparkSourceTypeRoot("orc", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.orc(path), _.orc(path))
   }
 
@@ -81,7 +86,7 @@ package object input {
                            @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                            @JsonProperty(value = "schema_file") schemaFile: Option[String],
                            options: Option[Map[String, String]])
-    extends SourceTypeRoot("parquet", alias, options, isStreaming, schemaFile) {
+    extends SparkSourceTypeRoot("parquet", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.parquet(path), _.parquet(path))
   }
 
@@ -93,7 +98,7 @@ package object input {
                        @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                        @JsonProperty(value = "schema_file") schemaFile: Option[String],
                        options: Option[Map[String, String]])
-    extends SourceTypeRoot("csv", alias, options, isStreaming, schemaFile) {
+    extends SparkSourceTypeRoot("csv", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.csv(path), _.csv(path))
   }
 
@@ -105,7 +110,7 @@ package object input {
                         @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                         @JsonProperty(value = "schema_file") schemaFile: Option[String],
                         options: Option[Map[String, String]])
-    extends SourceTypeRoot("text", alias, options, isStreaming, schemaFile) {
+    extends SparkSourceTypeRoot("text", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.text(path), _.text(path))
   }
 
@@ -117,7 +122,7 @@ package object input {
                         @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                         @JsonProperty(value = "schema_file") schemaFile: Option[String],
                         options: Option[Map[String, String]])
-    extends SourceTypeRoot("json", alias, options, isStreaming, schemaFile) {
+    extends SparkSourceTypeRoot("json", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.json(path), _.json(path))
   }
 
@@ -128,7 +133,7 @@ package object input {
                         @JsonProperty(required = true) url: String,
                         @JsonProperty(required = true) table: String,
                         options: Option[Map[String, String]])
-    extends SourceTypeRoot("jdbc", alias, options) {
+    extends SparkSourceTypeRoot("jdbc", alias, options) {
     private val properties = options.fold(new Properties())(options => {
       val properties = new Properties()
       options.foreach { case (k, v) => properties.setProperty(k, v) }
@@ -140,26 +145,12 @@ package object input {
 
 
   /*
-   Big Query Source
-   */
-  case class BigQuerySource(@JsonProperty(required = true) alias: String,
-                            @JsonProperty(required = true) db: String,
-                            @JsonProperty(required = true) table: String,
-                            @JsonProperty(value = "project_id") projectId: Option[String])
-    extends SourceTypeRoot("bigquery", alias, None) {
-    private val bqDataset = projectId.fold(s"$db.$table")(id => s"$id:$db.$table")
-
-    def apply: DFFunc2 = (sqlContext: SQLContext) => new BigQueryReader(sqlContext, bqDataset).load()
-  }
-
-
-  /*
    Local Source
  */
   case class LocalSource(@JsonProperty(required = true) alias: String,
                          @JsonProperty(value = "yaml_file", required = true) yamlFile: String,
                          @JsonProperty(value = "schema_file") schemaFile: Option[String])
-    extends SourceTypeRoot("local", alias, None, None, schemaFile) {
+    extends SparkSourceTypeRoot("local", alias, None, None, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => ParallelizeYaml(yamlFile).parallelize(sqlContext, getSchema)
   }
 
@@ -172,7 +163,7 @@ package object input {
                           @JsonProperty(value = "is_streaming") isStreaming: Option[Boolean],
                           @JsonProperty(value = "schema_file") schemaFile: Option[String],
                           @JsonProperty(required = true) options: Option[Map[String, String]])
-    extends SourceTypeRoot("custom", alias, options, isStreaming, schemaFile) {
+    extends SparkSourceTypeRoot("custom", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.format(format).load(), _.format(format).load())
   }
 

@@ -2,7 +2,11 @@ package com.sope.spark.yaml
 
 import java.util.Calendar
 
+import com.sope.common.transform.model.TransformModelWithSourceTarget
+import com.sope.common.yaml.{MapYaml, YamlFile}
+import com.sope.spark.etl.SopeETLConfig
 import com.sope.spark.etl.register.UDFBuilder
+import com.sope.spark.sql.Transformer
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 import scala.util.{Failure, Success, Try}
@@ -15,7 +19,7 @@ import scala.util.{Failure, Success, Try}
  * @author mbadgujar
  */
 case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
-  extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget]) {
+  extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithSourceTarget[DataFrame]]) {
 
   /* Add the provided configurations to Spark context */
   private def addConfigurations(sqlContext: SQLContext): Unit = {

@@ -1,0 +1,6 @@
+package: "com.sope.spark.transform.model.actions"
+imports:
+  - "com.sope.spark.sql._"
+  - "com.sope.spark.sql.dsl._"
+  - "org.apache.spark.sql.DataFrame"
+dataset_type: "DataFrame"

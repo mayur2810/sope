@@ -1,6 +1,6 @@
 package com.sope.spark.etl.register
 
-import com.sope.etl.{SopeETLConfig, getClassInstance}
+import com.sope.spark.etl.{SopeETLConfig, getClassInstance}
 import com.sope.utils.Logging
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.expressions.UserDefinedFunction

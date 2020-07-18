@@ -2,6 +2,7 @@ package com.sope.spark.yaml
 
 import java.sql.{Date, Timestamp}
 
+import com.sope.common.yaml.ListYaml
 import com.sope.utils.Logging
 import org.apache.spark.sql.catalyst.ScalaReflection
 import org.apache.spark.sql.types._

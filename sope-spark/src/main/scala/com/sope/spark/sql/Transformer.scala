@@ -1,5 +1,8 @@
 package com.sope.spark.sql
 
+import com.sope.common.transform.exception.TransformException
+import com.sope.common.transform.model.TransformModel
+import com.sope.spark.etl.SopeETLConfig
 import com.sope.spark.sql.dsl._
 import com.sope.utils.Logging
 import org.apache.spark.sql.DataFrame
@@ -9,11 +12,11 @@ import org.apache.spark.storage.StorageLevel
 import scala.util.{Failure, Success, Try}
 
 /**
-  * Contains logic for building Spark SQL transformations
-  *
-  * @author mbadgujar
-  */
-class Transformer(file: String, inputMap: Map[String, DataFrame], model: TransformModel) extends Logging {
+ * Contains logic for building Spark SQL transformations
+ *
+ * @author mbadgujar
+ */
+class Transformer(file: String, inputMap: Map[String, DataFrame], model: TransformModel[DataFrame]) extends Logging {
 
 
   private case class InputSource(name: String, isUsedForJoin: Boolean, joinColumns: Option[Seq[String]])
@@ -33,15 +36,16 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           }
         inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
     } :+ InputSource(transform.source, isUsedForJoin = false, None)
-  } ++ model.targets.data.map(target => InputSource(target.getInput, isUsedForJoin = false, None)) // add inputs from target information
+  } ++ model.targets.data.map(target => InputSource(target.getInput, isUsedForJoin = false, None)) // add inputs from
+  // target information
 
   /**
-    * Check if the alias that is to be persisted can be
-    * pre partitioned if used in multiple joins using same columns
-    *
-    * @param alias Transformation alias
-    * @return Partitioning columns
-    */
+   * Check if the alias that is to be persisted can be
+   * pre partitioned if used in multiple joins using same columns
+   *
+   * @param alias Transformation alias
+   * @return Partitioning columns
+   */
   private def prePartitionColumns(alias: String): Option[Seq[String]] = {
     val joinSources = inputSources
       .filter(source => source.name == alias && source.isUsedForJoin)
@@ -65,11 +69,12 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
 
     val autoPersist = autoPersistList.contains(alias)
     val df = sourceDFMap(alias).storageLevel match {
-      case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` && !sourceDFMap(alias).isStreaming  =>
+      case level: StorageLevel if level == StorageLevel.NONE && `autoPersist` && !sourceDFMap(alias).isStreaming =>
         logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
         val persisted = (prePartitionColumns(alias) match {
           case Some(sortCols) =>
-            logWarning(s"Persisted transformation: '$alias' will be pre-partitioned on columns: ${sortCols.mkString(", ")}")
+            logWarning(s"Persisted transformation: '$alias' will be pre-partitioned on columns: ${sortCols.mkString
+              (", ")}")
             sourceDFMap(alias).repartition(sortCols.map(col): _*)
           case None =>
             sourceDFMap(alias)
@@ -83,10 +88,10 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
   }
 
   /**
-    * Applies the provided list of transformations on the sources (dataframes)
-    *
-    * @return Transformed Dataframes
-    */
+   * Applies the provided list of transformations on the sources (dataframes)
+   *
+   * @return Transformed Dataframes
+   */
   def transform: Seq[(String, DataFrame)] = {
 
     logDebug("AUTO persist set: " + autoPersistSetting)
@@ -108,7 +113,8 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
             val transformedSingleAction = actions
               .take(actions.size - 1)
               .foldLeft(NoOp()) {
-                (transformed, transformAction) => transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*).head
+                (transformed, transformAction) => transformed + transformAction.runtimeModifier(transformAction
+                  .inputAliases.map(getDF): _*).head
               }
             multiOutAction
               .apply(multiOutAction.inputAliases.map(getDF): _*)

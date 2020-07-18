@@ -1,8 +1,9 @@
 package com.sope.spark.etl
 
 import com.sope.common.yaml.YamlParserUtil.parseYAML
-import com.sope.common.yaml.{End2EndYaml, MapYaml}
+import com.sope.common.yaml.MapYaml
 import com.sope.spark.etl.register.UDFBuilder
+import com.sope.spark.yaml.End2EndYaml
 import com.sope.utils.Logging
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession

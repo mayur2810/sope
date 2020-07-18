@@ -3,7 +3,7 @@ package com.sope.spark.etl.register
 import java.io.File
 import java.net.URLClassLoader
 
-import com.sope.etl.getObjectInstance
+import com.sope.spark.etl.getObjectInstance
 import com.sope.common.transform.exception.TransformException
 import com.sope.common.utils.JarUtils
 import com.sope.utils.Logging

@@ -32,6 +32,7 @@
         <dependency>
             <groupId>org.scalameta</groupId>
             <artifactId>scalameta_${scala.version.tag}</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>

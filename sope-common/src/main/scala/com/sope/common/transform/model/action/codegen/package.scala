@@ -63,18 +63,27 @@ package object codegen {
       val multiOuputFlag = isMultiOutput.getOrElse(false)
       val actionClassName = Type.Name(getClassName)
       val paramList = params.map(_.getParam)
+      val datasetReferenceExpr = params
+        .filter(_.isDatasetReference.getOrElse(false))
+        .map(_.name) match {
+        case Nil => "Nil".parse[Term].get
+        case nonEmpty => nonEmpty.mkString("Seq(", ",", ")").parse[Term].get
+      }
+
       val actionExpr = expr.parse[Term].get
       if (multiOuputFlag) {
         val transformExtensionType = t"MultiOutputTransform[$datasetType]"
         q"""case class $actionClassName(..$paramList)
             extends $transformExtensionType($id) {
             override def transformFunctions(datasets: $datasetType*): Seq[TFunc[$datasetType]] = $actionExpr
+            override def inputAliases: Seq[String] = $datasetReferenceExpr
           }"""
       } else {
         val transformExtensionType = t"SingleOutputTransform[$datasetType]"
         q"""case class $actionClassName(..$paramList)
             extends $transformExtensionType($id) {
             override def transformFunction(datasets: $datasetType*): TFunc[$datasetType] = $actionExpr
+            override def inputAliases: Seq[String] = $datasetReferenceExpr
           }"""
       }
     }
@@ -90,7 +99,9 @@ package object codegen {
                              @JsonProperty(value = "type", required = true) paramType: String,
                              @JsonProperty(value = "mapped_name", required = false) mappedName: Option[String],
                              @JsonProperty(value = "is_required", required = false) isRequired: Option[Boolean],
-                             @JsonProperty(value = "is_sql_expr", required = false) isSqlExpr: Option[Boolean]) {
+                             @JsonProperty(value = "is_sql_expr", required = false) isSqlExpr: Option[Boolean],
+                             @JsonProperty(value = "is_dataset_ref", required = false)
+                             isDatasetReference: Option[Boolean]) {
 
     def getJsonPropertyAnnotation(required: Boolean, name: Option[String] = None): Mod.Annot = {
       val requiredTerm = Term.Assign(Term.Name("required"), Lit.Boolean(required))

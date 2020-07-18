@@ -1,5 +1,6 @@
 package com.sope.spark.yaml
 
+import com.sope.common.yaml.MapYaml
 import com.sope.utils.Logging
 import org.apache.spark.sql.types.StructType
 

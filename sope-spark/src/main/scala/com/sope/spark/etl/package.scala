@@ -1,7 +1,7 @@
 package com.sope.spark
 
-import com.sope.etl.register.TransformationRegistration._
-import com.sope.etl.register.UDFRegistration._
+import com.sope.spark.etl.register.TransformationRegistration._
+import com.sope.spark.etl.register.UDFRegistration._
 import com.sope.spark.sql.udfs.registerUDFs
 import com.sope.utils.Logging
 import org.apache.spark.sql.SQLContext
@@ -102,7 +102,7 @@ package object etl extends Logging {
       list
         .map(elem => if (elem.isInstanceOf[String]) s"'${elem.toString}'" else elem)
         .mkString(",")
-    case str: String => s"'${str.toString}'"
+    case str: String => s"'$str'"
     case _ => value.toString
   }
 
