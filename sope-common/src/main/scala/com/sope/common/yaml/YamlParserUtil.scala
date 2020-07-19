@@ -1,6 +1,6 @@
 package com.sope.common.yaml
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.{Module, ObjectMapper}
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.{DumperOptions, Yaml}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -32,6 +32,20 @@ object YamlParserUtil {
   def parseYAML[T](yamlStr: String, clazz: Class[T]): T = {
     mapper.registerModule(DefaultScalaModule)
     mapper.readValue(yamlStr, clazz)
+  }
+
+  /**
+   * Parses the yaml string to provided class T. Uses the provided module for Parsing
+   *
+   * @param yamlStr Yaml String
+   * @param clazz  class to serialize to
+   * @param moduleToRegister Jackson module
+   * @tparam T Class type
+   * @return object of class T
+   */
+  def parseYAML[T](yamlStr: String, clazz: Class[T], moduleToRegister: Module): T = {
+    mapper.registerModule(moduleToRegister)
+    parseYAML(yamlStr, clazz)
   }
 
   /**

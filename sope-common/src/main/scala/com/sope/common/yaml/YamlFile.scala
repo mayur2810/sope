@@ -1,6 +1,6 @@
 package com.sope.common.yaml
 
-import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.{JsonMappingException, Module}
 import com.sope.common.transform.exception.TransformException
 import com.sope.common.transform.model.Failed
 import com.sope.common.utils.{Logging, RedactUtil}
@@ -19,6 +19,12 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
   private val text: String = getText
   protected val redactedText: String = RedactUtil.redact(text)
   protected val model: T = deserialize
+
+  /**
+   * Get the module to register extensions that are to be used during deserialization
+   * @return Optional Module
+   */
+  def getModule: Option[Module] = None
 
   /*
      Updates Placeholders with values provided for Substitution
@@ -63,7 +69,9 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
   def deserialize: T = Try {
     val yamlStr = text
     logInfo(s"Parsing $getYamlFileName YAML file :-\n $redactedText")
-    parseYAML(yamlStr, modelClass)
+    getModule.fold(parseYAML(yamlStr, modelClass)){
+      module => parseYAML(yamlStr, modelClass, module)
+    }
   } match {
     case Success(t) => logInfo(s"Successfully parsed $getYamlFileName YAML File"); t
     case Failure(e) => e match {
