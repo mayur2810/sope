@@ -5,38 +5,38 @@ imports:
   - "com.sope.common.transform.model.action.SingleOutputTransform"
   - "com.sope.common.sql.Types.TFunc"
 definitions:
-  - id: "select"
+  - id: select
     params:
       - name: columns
         type: Seq[String]
         is_required: true
         is_sql_expr: true
     expr: "Select(columns :_*)"
-  - id: "rename"
+  - id: rename
     params:
       - name: list
         type: Map[String, String]
         is_required: true
     expr: "Rename(list.toSeq :_*)"
-  - id: "filter"
+  - id: filter
     params:
       - name: condition
         type: String
         is_required: true
     expr: "Filter(condition)"
-  - id: "drop"
+  - id: drop
     params:
       - name: columns
-        type: List[String]
+        type: Seq[String]
         is_required: true
     expr: "Drop(columns :_*)"
-  - id: "transform"
+  - id: transform
     params:
-      - name: columns
+      - name: list
         type: Map[String, String]
         is_required: true
-    expr: "Transform(columns.toSeq :_*)"
-  - id: "transform_all"
+    expr: "Transform(list.toSeq :_*)"
+  - id: transform_all
     params:
       - name: singleArgFunctionName
         type: String
@@ -46,7 +46,7 @@ definitions:
         type: Map[String, String]
         is_required: true
     expr: "TransformAll(singleArgFunctionName, columns.toSeq :_*)"
-  - id: "transform_all_multi_arg"
+  - id: transform_all_multi_arg
     params:
       - name: multiArgFunctionName
         type: String
@@ -56,10 +56,10 @@ definitions:
         type: Map[String, Seq[String]]
         is_required: true
     expr: "TransformAllMultiArg(multiArgFunctionName, columns.toSeq :_*)"
-  - id: "join"
+  - id: join
     params:
       - name: joinColumns
-        type: List[String]
+        type: Seq[String]
         is_required: true
         mapped_name: columns
       - name: joinType
@@ -72,3 +72,70 @@ definitions:
         is_required: true
         mapped_name: with
     expr: "Join(joinColumns: _*).apply(joinType).apply(datasets.head)"
+  - id: join_exprs
+    params:
+      - name: joinExprs
+        type: Seq[String]
+        is_required: true
+        mapped_name: join_exprs
+      - name: joinType
+        type: String
+        is_required: true
+        mapped_name: join_type
+      - name: joinWith
+        type: String
+        is_dataset_ref: true
+        is_required: true
+        mapped_name: with
+    expr: "JoinExpr(joinExprs: _*).apply(joinType).apply(datasets.head)"
+  - id: aggregate
+    params:
+      - name:  aggExprs
+        type: Map[String, String]
+        is_required: true
+        is_sql_expr: true
+        mapped_name: exprs
+    expr: "Aggregate(aggExprs.toSeq :_*)"
+  - id: group_by
+    params:
+      - name:  groupColumns
+        type: Seq[String]
+        is_required: true
+        is_sql_expr: true
+        mapped_name: columns
+      - name: groupExprs
+        type: Map[String, String]
+        is_required: true
+        is_sql_expr: true
+        mapped_name: exprs
+    expr: "GroupBy(groupColumns :_*).apply(groupExprs.toSeq)"
+  - id: union
+    params:
+      - name: datasets
+        type: Seq[String]
+        is_dataset_ref_list: true
+        is_required: true
+    expr: "Union(datasets: _*)"
+  - id: intersect
+    params:
+      - name: datasets
+        type: Seq[String]
+        is_dataset_ref_list: true
+        is_required: true
+    expr: "Intersect(datasets: _*)"
+  - id: except
+    params:
+      - name: datasets
+        type: Seq[String]
+        is_dataset_ref_list: true
+        is_required: true
+    expr: "Except(datasets: _*)"
+  - id: order_by
+    params:
+      - name: columns
+        type: Seq[String]
+        is_required: true
+    expr: "OrderBy(columns: _*)"
+  - id: distinct
+    params: []
+    expr: "Distinct()"
