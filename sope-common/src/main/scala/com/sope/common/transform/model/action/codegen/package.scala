@@ -56,6 +56,7 @@ package object codegen {
                               @JsonProperty(required = true) expr: String,
                               @JsonProperty(value = "is_multi_out", required = false) isMultiOutput: Option[Boolean]) {
 
+    import ExprConstants._
 
     def getClassName: String = id.split("_").map(_.capitalize).mkString("", "", "Action")
 
@@ -63,11 +64,22 @@ package object codegen {
       val multiOuputFlag = isMultiOutput.getOrElse(false)
       val actionClassName = Type.Name(getClassName)
       val paramList = params.map(_.getParam)
-      val datasetReferenceExpr = params
-        .filter(_.isDatasetReference.getOrElse(false))
-        .map(_.name) match {
-        case Nil => "Nil".parse[Term].get
-        case nonEmpty => nonEmpty.mkString("Seq(", ",", ")").parse[Term].get
+      val datasetReferenceExpr = {
+          val listTypeDatasetRef = params.filter(_.isDatasetReferenceList.getOrElse(false)).map(_.name)
+          val datasetRef = params.filter(_.isDatasetReference.getOrElse(false)).map(_.name)
+
+          {
+            (listTypeDatasetRef, datasetRef) match {
+              case (Nil, Nil) =>
+                "Nil"
+              case (_, Nil) =>
+                listTypeDatasetRef.mkString(concatListExpr)
+              case (Nil, _) =>
+                datasetRef.mkString("Seq(", "," , ")")
+              case (_, _) =>
+                datasetRef.mkString("Seq(", "," , ")") + concatListExpr + listTypeDatasetRef.mkString(concatListExpr)
+            }
+          }.parse[Term].get
       }
 
       val actionExpr = expr.parse[Term].get
@@ -101,8 +113,11 @@ package object codegen {
                              @JsonProperty(value = "is_required", required = false) isRequired: Option[Boolean],
                              @JsonProperty(value = "is_sql_expr", required = false) isSqlExpr: Option[Boolean],
                              @JsonProperty(value = "is_dataset_ref", required = false)
-                             isDatasetReference: Option[Boolean]) {
+                             isDatasetReference: Option[Boolean],
+                             @JsonProperty(value = "is_dataset_ref_list", required = false)
+                             isDatasetReferenceList: Option[Boolean]) {
 
+    import ExprConstants._
     def getJsonPropertyAnnotation(required: Boolean, name: Option[String] = None): Mod.Annot = {
       val requiredTerm = Term.Assign(Term.Name("required"), Lit.Boolean(required))
       val attrList = name.fold(List(requiredTerm)) {
@@ -114,15 +129,16 @@ package object codegen {
     def getParam: Term.Param = {
       val jsonPropertyAnnotation = getJsonPropertyAnnotation(isRequired.getOrElse(false), mappedName)
       val annotations = if (isSqlExpr.getOrElse(false))
-        Nil :+ jsonPropertyAnnotation :+ ParamDefinition.sqlExprAnnotation
+        Nil :+ jsonPropertyAnnotation :+ sqlExprAnnotation
       else
         Nil :+ jsonPropertyAnnotation
       Term.Param(annotations, Type.Name(name), Some(paramType.parse[Type].get), None)
     }
   }
 
-  object ParamDefinition {
+  object ExprConstants {
     val sqlExprAnnotation = mod"@SqlExpr"
+    val concatListExpr = " ++ "
   }
 
 }
