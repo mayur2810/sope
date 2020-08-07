@@ -54,7 +54,7 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
         }
         catch {
           case e: Exception =>
-            e.printStackTrace()
+            //e.printStackTrace()
             log.error(s"Parsing failed with message ${e.getMessage} at ${location.getLineNr}:${location.getColumnNr}")
             failures += Failed(e.getMessage, location.getLineNr, location.getColumnNr)
         }
@@ -80,7 +80,7 @@ object MListDeserializer {
 
   class ActionDeserializer[D] extends MListDeserializer(classOf[TransformActionRoot[D]])
 
-  class InputDeserializer[D] extends MListDeserializer(classOf[SourceTypeRoot[D]])
+  class InputDeserializer[CTX, D] extends MListDeserializer(classOf[SourceTypeRoot[CTX, D]])
 
   class TargetDeserializer[D] extends MListDeserializer(classOf[TargetTypeRoot[D]])
 

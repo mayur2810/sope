@@ -155,8 +155,8 @@ package object model {
   }
 
   // Model for YAML with source target information
-  case class TransformModelWithSourceTarget[D](@JsonDeserialize(using = classOf[InputDeserializer[D]])
-                                               @JsonProperty(required = true, value = "inputs") sources: MList[SourceTypeRoot[D]],
+  case class TransformModelWithSourceTarget[CTX, D](@JsonDeserialize(using = classOf[InputDeserializer[CTX, D]])
+                                               @JsonProperty(required = true, value = "inputs") sources: MList[SourceTypeRoot[CTX,D]],
                                                @JsonDeserialize(using = classOf[TransformationDeserializer[D]])
                                                @JsonProperty(required = true) transformations: MList[Transformation[D]],
                                                @JsonDeserialize(using = classOf[TargetDeserializer[D]])
