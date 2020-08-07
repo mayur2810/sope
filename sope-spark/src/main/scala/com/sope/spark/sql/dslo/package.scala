@@ -1,7 +1,7 @@
 package com.sope.spark.sql
 
 import com.sope.spark.utils.etl.DimensionTable
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Column, DataFrame}
 

@@ -4,7 +4,8 @@ import com.sope.common.transform.exception.TransformException
 import com.sope.common.transform.model.TransformModel
 import com.sope.spark.etl.SopeETLConfig
 import com.sope.spark.sql.dsl._
-import com.sope.utils.Logging
+import com.sope.spark.transform.model.actions.CoreActions.JoinAction
+import com.sope.common.utils.Logging
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
 import org.apache.spark.storage.StorageLevel
@@ -31,7 +32,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
       case (inputs, action) =>
         val (isJoinAction, joinColumns) =
           action match {
-            case ja: JoinAction if !ja.expressionBased => (true, Some(ja.joinColumns))
+            case ja: JoinAction => (true, Some(ja.joinColumns))
             case _ => (false, None)
           }
         inputs ++ action.inputAliases.map(alias => InputSource(alias, isJoinAction, joinColumns))
@@ -73,8 +74,8 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
         logWarning(s"Auto persisting transformation: '$alias' in Memory only mode")
         val persisted = (prePartitionColumns(alias) match {
           case Some(sortCols) =>
-            logWarning(s"Persisted transformation: '$alias' will be pre-partitioned on columns: ${sortCols.mkString
-              (", ")}")
+            logWarning(s"Persisted transformation: '$alias' " +
+              s"will be pre-partitioned on columns: ${sortCols.mkString(", ")}")
             sourceDFMap(alias).repartition(sortCols.map(col): _*)
           case None =>
             sourceDFMap(alias)

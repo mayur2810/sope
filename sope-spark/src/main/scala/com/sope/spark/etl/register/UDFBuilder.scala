@@ -6,7 +6,7 @@ import java.net.URLClassLoader
 import com.sope.spark.etl.getObjectInstance
 import com.sope.common.transform.exception.TransformException
 import com.sope.common.utils.JarUtils
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.commons.io.FileUtils
 import org.apache.spark.sql.expressions.UserDefinedFunction
 

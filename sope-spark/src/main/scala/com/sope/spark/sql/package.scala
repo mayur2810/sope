@@ -1,7 +1,8 @@
 package com.sope.spark
 
+import com.sope.common.sql.Types.TFunc
 import com.sope.spark.sql.udfs.CollectStruct
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -15,7 +16,7 @@ package object sql {
 
 
   // Type Aliases
-  type DFFunc = DataFrame => DataFrame
+  type DFFunc = TFunc[DataFrame]
   type DFFunc2 = SQLContext => DataFrame
   type MultiDFFunc = Seq[DataFrame] => DataFrame
 

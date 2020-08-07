@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonTypeInfo}
   use = JsonTypeInfo.Id.NAME,
   include = JsonTypeInfo.As.PROPERTY,
   property = "type")
-abstract class SourceTypeRoot[D](@JsonProperty(value = "type", required = true) id: String, alias: String) {
+abstract class SourceTypeRoot[CTX, D](@JsonProperty(value = "type", required = true) id: String, alias: String) {
 
-  def apply: _ => D
+  def apply: CTX => D
 
   def getSourceName: String = alias
 

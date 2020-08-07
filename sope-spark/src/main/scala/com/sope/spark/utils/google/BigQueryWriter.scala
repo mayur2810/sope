@@ -2,7 +2,7 @@ package com.sope.spark.utils.google
 
 import com.google.cloud.hadoop.io.bigquery.output.{BigQueryOutputConfiguration, BigQueryTableFieldSchema, BigQueryTableSchema, IndirectBigQueryOutputFormat}
 import com.google.cloud.hadoop.io.bigquery.{BigQueryConfiguration, BigQueryFileFormat}
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._

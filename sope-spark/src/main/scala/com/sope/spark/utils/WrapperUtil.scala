@@ -2,6 +2,8 @@ package com.sope.spark.utils
 
 import java.io.File
 
+import com.sope.spark.etl._
+
 import scala.collection.mutable
 
 /**

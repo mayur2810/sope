@@ -3,7 +3,6 @@ package com.sope.spark.yaml
 import java.sql.{Date, Timestamp}
 
 import com.sope.common.yaml.ListYaml
-import com.sope.utils.Logging
 import org.apache.spark.sql.catalyst.ScalaReflection
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
@@ -18,7 +17,7 @@ import scala.reflect.runtime.universe._
   *
   * @author mbadgujar
   */
-case class ParallelizeYaml(dataYamlPath: String) extends ListYaml[Map[String, Any]](dataYamlPath) with Logging {
+case class ParallelizeYaml(dataYamlPath: String) extends ListYaml[Map[String, Any]](dataYamlPath) {
 
   import ParallelizeYaml._
 

@@ -1,8 +1,8 @@
 package com.sope.spark.etl.register
 
+import com.sope.common.utils.Logging
 import com.sope.spark.etl.{SopeETLConfig, getClassInstance}
 import com.sope.spark.sql.MultiDFFunc
-import com.sope.utils.Logging
 
 import scala.collection.mutable
 

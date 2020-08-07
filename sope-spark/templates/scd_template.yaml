@@ -22,14 +22,14 @@ transformations :
       alias: "scd_product"
       persist: "memory_only"
       actions:
-        - {type: "scd", dim_table: "dimension", sk_column: ${sk_key} , natural_keys: ${natural_keys} , derived_columns: ${derived_cols} , meta_columns: ${meta_cols}}
+        - {type: "dim_change_set", dim_table: "dimension", sk_column: ${sk_key} , natural_keys: ${natural_keys} , derived_columns: ${derived_cols} , meta_columns: ${meta_cols}}
     #Filter insert/updates and adds 'last_updated_date' column, Note: Update the name of the column is required
     - input: "scd_product"
       alias: "insert_update"
       actions:
         - {type: filter, condition: "change_status = 'INSERT' OR change_status = 'UPDATE'"}
         - {type: transform, list: {last_updated_date: "current_date"}}
-        - {type: sequence, sk_source: "dimension", sk_column: ${sk_key}}
+        - {type: sequence, sequence_source_dataset: "dimension", sequence_column: ${sk_key}}
     - input: "scd_product"
       alias: "ncd"
       actions:
@@ -38,5 +38,5 @@ transformations :
     - input: "ncd"
       alias: "scd_result"
       actions:
-        - {type: union, with: ["insert_update"]}
+        - {type: union, datasets: ["insert_update"]}
         - {type: coalesce, num_partitions: 200}

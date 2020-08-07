@@ -1,6 +1,6 @@
 package com.sope.spark.utils.etl
 
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.spark.SparkException
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Column, DataFrame}

@@ -2,7 +2,7 @@ package com.sope.spark.utils.google
 
 import com.google.cloud.hadoop.io.bigquery.{BigQueryConfiguration, GsonBigQueryInputFormat}
 import com.google.gson.JsonObject
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.hadoop.io.LongWritable
 import org.apache.spark.sql.{DataFrame, SQLContext}
 

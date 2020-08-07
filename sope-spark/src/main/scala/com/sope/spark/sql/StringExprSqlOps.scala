@@ -10,20 +10,6 @@ import org.apache.spark.sql.{Column, DataFrame}
  */
 object StringExprSqlOps extends SqlOps[DataFrame, String, Column] {
 
-  //
-  //  /**
-  //   * Applies know arguments to MultiArg Function in order provided and returns
-  //   * a single arg function to which the actual column can be provided
-  //   *
-  //   * @param multiArgFunc Multi Argument Column Function
-  //   * @param columns      Columns to be applied
-  //   * @return [[ColFunc]]
-  //   */
-  //  protected def multiArgToSingleArgFunc(multiArgFunc: MultiColFunc, columns: Seq[Column]): ColFunc =
-  //    (column: Column) => multiArgFunc(column +: columns)
-  //
-
-
   override def select(columns: String*): TFunc[DataFrame] = (df: DataFrame) => df.selectExpr(columns: _*)
 
   override def transform(columns: (String, String)*): TFunc[DataFrame] =

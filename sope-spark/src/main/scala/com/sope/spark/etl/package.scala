@@ -1,9 +1,9 @@
 package com.sope.spark
 
+import com.sope.common.utils.Logging
 import com.sope.spark.etl.register.TransformationRegistration._
 import com.sope.spark.etl.register.UDFRegistration._
 import com.sope.spark.sql.udfs.registerUDFs
-import com.sope.utils.Logging
 import org.apache.spark.sql.SQLContext
 
 import scala.reflect.runtime.universe._
@@ -91,20 +91,6 @@ package object etl extends Logging {
     registerTransformations() // Register custom transformations
   }
 
-  /**
-    * Get SQL Literal Expression for value to substituted in SQL
-    *
-    * @param value Any value
-    * @return String
-    */
-  def sqlLiteralExpr(value: Any): String = value match {
-    case list: List[_] =>
-      list
-        .map(elem => if (elem.isInstanceOf[String]) s"'${elem.toString}'" else elem)
-        .mkString(",")
-    case str: String => s"'$str'"
-    case _ => value.toString
-  }
 
 
   /**
