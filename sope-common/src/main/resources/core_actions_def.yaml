@@ -3,6 +3,7 @@ imports:
   - "com.fasterxml.jackson.databind.jsontype.NamedType"
   - "com.sope.common.annotations.SqlExpr"
   - "com.sope.common.transform.model.action.SingleOutputTransform"
+  - "com.sope.common.transform.model.TypeRegistration"
   - "com.sope.common.sql.Types.TFunc"
 definitions:
   - id: select
@@ -22,6 +23,7 @@ definitions:
     params:
       - name: condition
         type: String
+        is_sql_expr: true
         is_required: true
     expr: "Filter(condition)"
   - id: drop
@@ -35,6 +37,7 @@ definitions:
       - name: list
         type: Map[String, String]
         is_required: true
+        is_sql_expr: true
     expr: "Transform(list.toSeq :_*)"
   - id: transform_all
     params:
@@ -45,6 +48,7 @@ definitions:
       - name: columns
         type: Map[String, String]
         is_required: true
+        is_sql_expr: true
     expr: "TransformAll(singleArgFunctionName, columns.toSeq :_*)"
   - id: transform_all_multi_arg
     params:
@@ -55,6 +59,7 @@ definitions:
       - name: columns
         type: Map[String, Seq[String]]
         is_required: true
+        is_sql_expr: true
     expr: "TransformAllMultiArg(multiArgFunctionName, columns.toSeq :_*)"
   - id: join
     params:
@@ -139,3 +144,9 @@ definitions:
   - id: distinct
     params: []
     expr: "Distinct()"
+  - id: limit
+    params:
+      - name: size
+        type: Int
+        is_required: true
+    expr: "Limit(size)"
