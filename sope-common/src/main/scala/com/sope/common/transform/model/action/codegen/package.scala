@@ -9,16 +9,20 @@ import scala.meta._
  */
 package object codegen {
 
+  case class ActionConfig(name:String, @JsonProperty(required = true, value = "config_file") configFile: String) {
+    def getFilePath(modulePackage: String) : String =
+      modulePackage.replaceAll("\\.", "/") + "/" + name + ".scala"
+  }
+
   case class ModuleDefinition(@JsonProperty(required = true, value = "dataset_type") datasetType: String,
                               @JsonProperty(required = true) imports: Seq[String],
-                              @JsonProperty(required = true, value = "package") modulePackage: String) {
+                              @JsonProperty(required = true, value = "package") modulePackage: String,
+                              @JsonProperty(required = true, value = "action_config") actionConfig: Seq[ActionConfig] ) {
     def getImports: Seq[Importer] = imports.map(imp => imp.parse[Importer].get)
 
     def getDatasetTypeName: Type.Name = Type.Name(datasetType)
 
     def getPackage: String = modulePackage
-
-    def getFilePath: String = modulePackage.replaceAll("\\.", "/") + "/CoreActions.scala"
   }
 
   case class ActionsDefinitions(@JsonProperty(required = true) definitions: Seq[ActionDefinition],
@@ -26,10 +30,10 @@ package object codegen {
 
     def getActionTypeListFn: Defn.Def = {
       val namedTypeExprs = definitions.map(_.getJacksonNamedType).toList
-      q"def getActionList: List[NamedType] = List(..$namedTypeExprs)"
+      q"override def getTypes: List[NamedType] = List(..$namedTypeExprs)"
     }
 
-    def getCode(module: ModuleDefinition): String = {
+    def getCode(module: ModuleDefinition, className: String): String = {
       val packageTerms = module.getPackage.split("\\.")
       val packageStat = packageTerms.tail
         .foldLeft(None: Option[Term.Select]) {
@@ -40,10 +44,11 @@ package object codegen {
       val importStats = (coreImports ++ module.getImports).map(imp => Import(List(imp))).toList
       val bodyStats = definitions.map { definition => definition.getClassDefn(module.getDatasetTypeName) }.toList :+
         getActionTypeListFn
+      val cName = Term.Name(className)
 
       q"""package $packageStat {
             ..$importStats
-             object CoreActions {
+             object $cName extends TypeRegistration {
              ..$bodyStats
              }
          }""".toString()
@@ -65,7 +70,8 @@ package object codegen {
       val actionClassName = Type.Name(getClassName)
       val paramList = params.map(_.getParam)
       val datasetReferenceExpr = {
-          val listTypeDatasetRef = params.filter(_.isDatasetReferenceList.getOrElse(false)).map(_.name)
+          val listTypeDatasetRef = params.filter(_.isDatasetReferenceList.getOrElse(false))
+            .map(listRef => s"Option(${listRef.name}).getOrElse(Nil)")
           val datasetRef = params.filter(_.isDatasetReference.getOrElse(false)).map(_.name)
 
           {
