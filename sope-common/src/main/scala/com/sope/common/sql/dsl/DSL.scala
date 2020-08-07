@@ -85,6 +85,11 @@ trait DSL {
       sqlDatasetOps.except(datasets: _*)
   }
 
+  object Limit {
+    def apply[D, C, CF](size: Int)(implicit sqlDatasetOps: SqlDatasetOps[D]): TFunc[D] =
+      sqlDatasetOps.limit(size)
+  }
+
   object OrderBy {
     def apply[D, C, CF](columns: C*)(implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = sqlOps.orderBy(columns: _*)
   }
