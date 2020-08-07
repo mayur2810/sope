@@ -252,7 +252,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <mainClass>com.sope.common.transform.model.action.codegen.CoreActionsCodeGen</mainClass>
+                        <mainClass>com.sope.common.transform.model.action.codegen.ActionsCodeGen</mainClass>
                         <includeProjectDependencies>true</includeProjectDependencies>
                         <arguments>
                             <argument>${project.build.sourceDirectory}</argument>
