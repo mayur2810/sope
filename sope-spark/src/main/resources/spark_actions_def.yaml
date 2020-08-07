@@ -1,0 +1,173 @@
+imports:
+  - "com.fasterxml.jackson.annotation.JsonProperty"
+  - "com.fasterxml.jackson.databind.jsontype.NamedType"
+  - "com.sope.common.annotations.SqlExpr"
+  - "com.sope.common.transform.model.action.SingleOutputTransform"
+  - "com.sope.common.transform.model.action.MultiOutputTransform"
+  - "com.sope.common.transform.model.TypeRegistration"
+  - "com.sope.common.sql.Types.TFunc"
+definitions:
+  - id: unstruct
+    params:
+      - name: column
+        type: String
+        is_required: true
+    expr: "Unstruct(column)"
+  - id: sequence
+    params:
+      - name: skSource
+        type: String
+        is_required: true
+        is_dataset_ref: true
+        mapped_name: sequence_source_dataset
+      - name: skColumn
+        type: String
+        is_required: true
+        mapped_name: sequence_column
+    expr: "Sequence(datasets.head.maxKeyValue(skColumn), skColumn)"
+  - id: dim_change_set
+    params:
+      - name: dimTable
+        type: String
+        is_required: true
+        is_dataset_ref: true
+        mapped_name: dim_table
+      - name: surrogateKey
+        type: String
+        is_required: true
+        mapped_name: sk_column
+      - name: naturalKeys
+        type: Seq[String]
+        is_required: true
+        mapped_name: natural_keys
+      - name: derivedColumns
+        type: Seq[String]
+        is_required: true
+        mapped_name: derived_columns
+      - name: metaColumns
+        type: Seq[String]
+        is_required: true
+        mapped_name: meta_columns
+      - name: incrementalLoad
+        type: Option[Boolean]
+        is_required: false
+        mapped_name: incremental_load
+    expr: "DimensionChangeSet(datasets.head, surrogateKey, naturalKeys, derivedColumns, metaColumns, incrementalLoad.getOrElse(true))"
+  - id: na
+    params:
+      - name: defaultNumericValue
+        type: Double
+        is_required: true
+        mapped_name: default_numeric_value
+      - name: defaultStringValue
+        type: String
+        is_required: true
+        mapped_name: default_string_value
+      - name: columns
+        type: Option[Seq[String]]
+    expr: "NA(defaultNumericValue, defaultStringValue, columns.getOrElse(Nil))"
+  - id: dq_check
+    params:
+      - name: id
+        type: String
+        is_required: true
+      - name: dqFunction
+        type: String
+        is_required: true
+        mapped_name: dq_function
+      - name: functionOptions
+        type: Option[Seq[Any]]
+        mapped_name: options
+      - name: columns
+        type: Seq[String]
+        is_required: true
+    expr: "DQCheck(id, dqFunction, functionOptions, columns)"
+  - id: watermark
+    params:
+      - name: eventTime
+        type: String
+        is_required: true
+        mapped_name: event_time
+      - name: delayThreshold
+        type: String
+        is_required: true
+        mapped_name: delay_threshold
+    expr: "Watermark(eventTime, delayThreshold)"
+  - id: partition
+    params:
+      - name: condition
+        type: String
+        is_required: true
+        is_sql_expr: true
+    is_multi_out: true
+    expr: "Partition(condition)"
+  - id: router
+    params:
+      - name: conditions
+        type: Seq[String]
+        is_required: true
+        is_sql_expr: true
+    is_multi_out: true
+    expr: "Routes(conditions: _*)"
+  - id: drop_duplicates
+    params:
+      - name: columns
+        type: Seq[String]
+        is_required: true
+    expr: "DropDuplicates(columns: _*)"
+  - id: coalesce
+    params:
+      - name: numPartitions
+        type: Int
+        is_required: true
+        mapped_name: num_partitions
+    expr: "Coalesce(numPartitions)"
+  - id: repartition
+    params:
+      - name: numPartitions
+        type: Int
+        mapped_name: num_partitions
+      - name: columns
+        type: Option[Seq[String]]
+    expr: "Repartition(Some(numPartitions), columns.getOrElse(Nil): _*)"
+  - id: collect
+    params:
+      - name: placeholder
+        type: String
+        is_required: true
+      - name: alias
+        type: String
+        is_required: true
+        is_dataset_ref: true
+      - name: column
+        type: String
+        is_required: true
+    expr: "{ setValue(placeholder -> datasets.head.select(column).collect.map(_.get(0)).toSeq); NoOp()}"
+  - id: yaml
+    params:
+      - name: yamlFile
+        type: String
+        is_required: true
+        mapped_name: yaml_file
+      - name: inputs
+        type: Seq[String]
+        mapped_name: input_aliases
+        is_dataset_ref_list: true
+      - name: outputAlias
+        type: String
+        is_required: true
+        mapped_name: output_alias
+      - name: substitutions
+        type: Option[Map[String, Any]]
+    expr: "CallYaml(yamlFile, datasets, outputAlias, substitutions)"
+  - id: named_transform
+    params:
+      - name: transformationName
+        type: String
+        is_required: true
+        mapped_name: name
+      - name: inputs
+        type:  Seq[String]
+        mapped_name: input_aliases
+        is_dataset_ref_list: true
+    expr: "NamedTransform(transformationName, datasets)"
