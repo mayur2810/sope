@@ -2,43 +2,29 @@ package com.sope.spark.transform.model.io
 
 import java.util.Properties
 
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type
-import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.jsontype.NamedType
+import com.sope.common.transform.model.TypeRegistration
+import com.sope.common.transform.model.io.input.SourceTypeRoot
 import com.sope.spark.sql.DFFunc2
 import com.sope.spark.yaml.{ParallelizeYaml, SchemaYaml}
-import org.apache.spark.sql.{DataFrame, DataFrameReader, SQLContext}
 import org.apache.spark.sql.streaming.DataStreamReader
 import org.apache.spark.sql.types.StructType
-import com.sope.common.transform.model.io.input.SourceTypeRoot
+import org.apache.spark.sql.{DataFrame, DataFrameReader, SQLContext}
 
 /**
   * Package contains YAML Transformer Input construct mappings and definitions
   *
   * @author mbadgujar
   */
-package object input {
+package object input extends TypeRegistration {
 
-  @JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type")
-  @JsonSubTypes(Array(
-    new Type(value = classOf[HiveSource], name = "hive"),
-    new Type(value = classOf[OrcSource], name = "orc"),
-    new Type(value = classOf[ParquetSource], name = "parquet"),
-    new Type(value = classOf[CSVSource], name = "csv"),
-    new Type(value = classOf[TextSource], name = "text"),
-    new Type(value = classOf[JsonSource], name = "json"),
-    new Type(value = classOf[JDBCSource], name = "jdbc"),
-    new Type(value = classOf[CustomSource], name = "custom"),
-    new Type(value = classOf[LocalSource], name = "local")
-  ))
   abstract class SparkSourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
                                 alias: String,
                                 options: Option[Map[String, String]],
                                 isStreaming: Option[Boolean] = Some(false),
-                                schemaFile: Option[String] = None) extends SourceTypeRoot[DataFrame](id, alias) {
-    def apply: DFFunc2
+                                schemaFile: Option[String] = None) extends SourceTypeRoot[SQLContext, DataFrame](id, alias) {
+
 
     override def getSourceName: String = alias
 
@@ -167,4 +153,15 @@ package object input {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.format(format).load(), _.format(format).load())
   }
 
+  override def getTypes: List[NamedType] = List(
+    new NamedType(classOf[HiveSource], "hive"),
+    new NamedType(classOf[OrcSource], "orc"),
+    new NamedType(classOf[ParquetSource], "parquet"),
+    new NamedType(classOf[CSVSource], "csv"),
+    new NamedType(classOf[TextSource], "text"),
+    new NamedType(classOf[JsonSource], "json"),
+    new NamedType(classOf[JDBCSource], "jdbc"),
+    new NamedType(classOf[CustomSource], "custom"),
+    new NamedType(classOf[LocalSource], "local")
+  )
 }

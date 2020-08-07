@@ -4,10 +4,12 @@ import java.util.Properties
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonSubTypes, JsonTypeInfo}
+import com.fasterxml.jackson.databind.jsontype.NamedType
 import com.sope.common.transform.exception.TransformException
+import com.sope.common.transform.model.TypeRegistration
 import com.sope.common.transform.model.io.output.TargetTypeRoot
 import com.sope.spark.sql._
-import com.sope.utils.Logging
+import com.sope.common.utils.Logging
 import org.apache.spark.sql.streaming.{DataStreamWriter, Trigger}
 import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row}
 
@@ -16,7 +18,7 @@ import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row}
  *
  * @author mbadgujar
  */
-package object output {
+package object output extends TypeRegistration {
 
   case class BucketingOption(@JsonProperty(value = "num_buckets") numBuckets: Int = 200,
                              @JsonProperty(required = true) columns: Seq[String])
@@ -228,4 +230,16 @@ package object output {
         getWriter(df).format(format).save()
   }
 
+  override def getTypes: List[NamedType] = List(
+    new NamedType(classOf[HiveTarget], "hive"),
+    new NamedType(classOf[OrcTarget], "orc"),
+    new NamedType(classOf[ParquetTarget], "parquet"),
+    new NamedType(classOf[CSVTarget], "csv"),
+    new NamedType(classOf[TextTarget], "text"),
+    new NamedType(classOf[JsonTarget], "json"),
+    new NamedType(classOf[JDBCTarget], "jdbc"),
+    new NamedType(classOf[CustomTarget], "custom"),
+    new NamedType(classOf[CountOutput], "count"),
+    new NamedType(classOf[ShowOutput], "show")
+  )
 }
