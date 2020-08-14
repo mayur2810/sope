@@ -3,6 +3,8 @@ imports:
   - "com.sope.spark.sql._"
   - "com.sope.spark.sql.dsl._"
   - "org.apache.spark.sql.DataFrame"
+  - "org.apache.spark.sql.functions._"
+  - "org.apache.spark.sql.Column"
 dataset_type: "DataFrame"
 action_config:
   - name: SparkActions

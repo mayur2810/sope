@@ -4,6 +4,10 @@ import com.sope.common.sql.Types._
 
 trait SqlOps[D, C, CF] {
 
+  def columns(dataset: D): Seq[C]
+
+  def columnName(column:C): String
+
   def select(columns: C*): TFunc[D]
 
   def transform(columns: (String, C)*): TFunc[D]

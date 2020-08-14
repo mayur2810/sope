@@ -3,6 +3,7 @@ imports:
   - "com.fasterxml.jackson.databind.jsontype.NamedType"
   - "com.sope.common.annotations.SqlExpr"
   - "com.sope.common.transform.model.action.SingleOutputTransform"
+  - "com.sope.common.transform.model.action.MultiOutputTransform"
   - "com.sope.common.transform.model.TransformationTypeRegistration"
   - "com.sope.common.sql.Types.TFunc"
 definitions:
@@ -45,11 +46,24 @@ definitions:
         type: String
         mapped_name: single_arg_function
         is_required: true
+      - name: suffix
+        type: Option[String]
       - name: columns
-        type: Map[String, String]
-        is_required: true
+        type: Option[Seq[String]]
         is_sql_expr: true
-    expr: "TransformAll(singleArgFunctionName, columns.toSeq :_*)"
+    expr: "TransformAll(singleArgFunctionName, suffix, columns.getOrElse(Nil) :_*)"
+  - id: transform_all_pattern
+    params:
+      - name: singleArgFunctionName
+        type: String
+        mapped_name: single_arg_function
+        is_required: true
+      - name: suffix
+        type: Option[String]
+      - name: pattern
+        type: String
+        is_required: true
+    expr: "TransformAll[DataFrame, String, Column](singleArgFunctionName, suffix, pattern)"
   - id: transform_all_multi_arg
     params:
       - name: multiArgFunctionName

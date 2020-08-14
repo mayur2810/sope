@@ -20,6 +20,7 @@ package object sql {
   type DFFunc2 = SQLContext => DataFrame
   type MultiDFFunc = Seq[DataFrame] => DataFrame
 
+
   // TODO: Remove
   type DFFuncSeq = Seq[DFFunc]
   type DFFuncMap = Map[String, DFFunc]

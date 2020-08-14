@@ -1,5 +1,6 @@
 package com.sope.spark.sql
 
+import com.sope.common.sql.Types.GFunc
 import com.sope.common.sql.dsl.DSL
 import com.sope.common.transform.exception.TransformException
 import com.sope.spark.etl.register.TransformationRegistration
@@ -331,9 +332,9 @@ package object dsl extends DSL {
               outputAlias: String,
               substitutions: Option[Map[String, Any]]): DFFunc =
       (df: DataFrame) => {
-      val transformed = IntermediateYaml(yamlFile, substitutions).getTransformedDFs(df +: dataframes: _*).toMap
-      transformed.getOrElse(outputAlias, throw new TransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
-    }
+        val transformed = IntermediateYaml(yamlFile, substitutions).getTransformedDFs(df +: dataframes: _*).toMap
+        transformed.getOrElse(outputAlias, throw new TransformException(s"Output Alias $outputAlias not found in $yamlFile yaml file"))
+      }
   }
 
   object NamedTransform {
@@ -344,4 +345,35 @@ package object dsl extends DSL {
           transformation => transformation.apply(df +: dataframes)
         }
   }
+
+  object GroupByAndPivot {
+
+    /**
+     * Apply Group Function
+     *
+     * @param groupColumns Group columns
+     * @param pivotColumn  pivot column
+     * @return [[DFGroupFunc]]
+     */
+    def apply(groupColumns: String*)(pivotColumn: String): GFunc[DataFrame, Column] =
+      apply(groupColumns.map(expr): _*)(col(pivotColumn))
+
+    /**
+     * Apply Group Function
+     *
+     * @param groupColumns Group column Expressions
+     * @param pivotColumn  pivot column
+     * @return [[DFGroupFunc]]
+     */
+    def apply[T: ClassTag](groupColumns: Column*)(pivotColumn: Column): GFunc[DataFrame, Column] =
+      (aggExprs: Seq[(String, Column)]) => (df: DataFrame) => {
+        val aggregateExprs = aggExprs.map { case (name, aggExpr) => aggExpr.as(name) }
+        df
+          .groupBy(groupColumns: _*)
+          .pivot(pivotColumn)
+          .agg(aggregateExprs.head, aggregateExprs.tail: _*)
+      }
+  }
+
+
 }

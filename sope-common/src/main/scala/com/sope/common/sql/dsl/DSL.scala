@@ -32,13 +32,40 @@ trait DSL {
   }
 
   object TransformAll {
-    def apply[D, C, CF](singleArgFunction: ColFunc[CF], columns: (String, C)*)
-                       (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] =
-      sqlOps.transformAll(singleArgFunction, columns: _*)
+    def apply[D, C, CF](singleArgFunction: ColFunc[CF], suffix: Option[String], columns: C*)
+                       (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = (dataset: D) => {
+        val transformColumns = if(columns.isEmpty) sqlOps.columns(dataset) else columns
+        val columnMap =  transformColumns
+          .map(column => sqlOps.columnName(column) -> column)
+          .map { case (name, column) =>
+            val newName = suffix.fold(name)(someSuffix => name + "_" + someSuffix)
+            newName -> column
+          }
+        sqlOps.transformAll(singleArgFunction, columnMap :_*)(dataset)
+      }
 
-    def apply[D, C, CF](singleArgFunctionName: String, columns: (String, C)*)
+
+    def apply[D, C, CF](singleArgFunction: ColFunc[CF], suffix: Option[String], pattern: String)
+                       (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] =
+      (dataset: D) => {
+      val transformColumns = sqlOps.columns(dataset)
+        .map(column => sqlOps.columnName(column) -> column)
+        .filter{ case (name,_) => name.matches(pattern)}
+      val columnMap =  transformColumns
+        .map { case (name, column) =>
+          val newName = suffix.fold(name)(someSuffix => name + "_" + someSuffix)
+          newName -> column
+        }
+      sqlOps.transformAll(singleArgFunction, columnMap :_*)(dataset)
+    }
+
+    def apply[D, C, CF](singleArgFunctionName: String, suffix: Option[String], columns: C*)
                        (implicit sqlOps: SqlOps[D, C, CF], colOps: SqlColumnOps[CF]): TFunc[D] =
-      sqlOps.transformAll(colOps.resolveSingleArgFunction(singleArgFunctionName), columns: _*)
+      apply(colOps.resolveSingleArgFunction(singleArgFunctionName), suffix, columns:_*)
+
+    def apply[D, C, CF](singleArgFunctionName: String, suffix: Option[String], pattern: String)
+                       (implicit sqlOps: SqlOps[D, C, CF], colOps: SqlColumnOps[CF]): TFunc[D] =
+      apply(colOps.resolveSingleArgFunction(singleArgFunctionName), suffix, pattern)
   }
 
   object TransformAllMultiArg {

@@ -10,6 +10,10 @@ import org.apache.spark.sql.{Column, DataFrame}
  */
 object StringExprSqlOps extends SqlOps[DataFrame, String, Column] {
 
+  override def columns(dataset: DataFrame): Seq[String] = dataset.columns
+
+  override def columnName(column: String): String = column
+
   override def select(columns: String*): TFunc[DataFrame] = (df: DataFrame) => df.selectExpr(columns: _*)
 
   override def transform(columns: (String, String)*): TFunc[DataFrame] =
@@ -66,5 +70,6 @@ object StringExprSqlOps extends SqlOps[DataFrame, String, Column] {
         desc(exp.split(":").head)
       else
         col(exp.split(":").head)): _*)
+
 
 }

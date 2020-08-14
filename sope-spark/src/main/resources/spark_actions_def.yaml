@@ -1,11 +1,4 @@
-imports:
-  - "com.fasterxml.jackson.annotation.JsonProperty"
-  - "com.fasterxml.jackson.databind.jsontype.NamedType"
-  - "com.sope.common.annotations.SqlExpr"
-  - "com.sope.common.transform.model.action.SingleOutputTransform"
-  - "com.sope.common.transform.model.action.MultiOutputTransform"
-  - "com.sope.common.transform.model.TransformationTypeRegistration"
-  - "com.sope.common.sql.Types.TFunc"
+imports: []
 definitions:
   - id: unstruct
     params:
@@ -171,3 +164,20 @@ definitions:
         mapped_name: input_aliases
         is_dataset_ref_list: true
     expr: "NamedTransform(transformationName, datasets)"
+  - id: group_by_pivot
+    params:
+      - name:  groupColumns
+        type: Seq[String]
+        is_required: true
+        is_sql_expr: true
+        mapped_name: columns
+      - name:  pivotColumn
+        type: String
+        is_required: true
+        mapped_name: pivot_column
+      - name: groupExprs
+        type: Map[String, String]
+        is_required: true
+        is_sql_expr: true
+        mapped_name: exprs
+    expr: "GroupByAndPivot(groupColumns :_*)(pivotColumn).apply(groupExprs.mapValues(expr).toSeq)"

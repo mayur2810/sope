@@ -9,6 +9,11 @@ import org.apache.spark.sql.{Column, DataFrame}
  * @author mbadgujar
  */
 object ColumnExprSqlOps extends SqlOps[DataFrame, Column, Column] {
+
+  override def columns(dataset: DataFrame): Seq[Column] = dataset.columns.map(dataset.col)
+
+  override def columnName(column: Column): String = column.toString
+
   override def select(columns: Column*): TFunc[DataFrame] = (df: DataFrame) => df.select(columns: _*)
 
   override def transform(columns: (String, Column)*): TFunc[DataFrame] =
@@ -63,4 +68,6 @@ object ColumnExprSqlOps extends SqlOps[DataFrame, Column, Column] {
 
 
   override def orderBy(columns: Column*): TFunc[DataFrame] = (df: DataFrame) => df.orderBy(columns: _*)
+
+
 }
