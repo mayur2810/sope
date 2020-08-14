@@ -27,13 +27,23 @@ object ActionsCodeGen {
     }.moduleDefinition
 
     val actionConfig = moduleDefinition.actionConfig
-    actionConfig.foreach {
-      config =>
-        val code = ActionDef(config.configFile).getDefinitions.getCode(moduleDefinition, config.name)
-        val file = new File(config.getFilePath(moduleDefinition.getPackage))
-        val bw = new BufferedWriter(new FileWriter(sourceDir + "/" + file))
-        bw.write(code)
-        bw.close()
-    }
+    actionConfig
+      .map { config =>
+        (config, config.configFiles.foldLeft(None: Option[ActionsDefinitions]) {
+          case (None, configFile) =>
+            Some(ActionDef(configFile).getDefinitions)
+          case (Some(actionsDefinitions), configFile) =>
+            Some(actionsDefinitions.merge(ActionDef(configFile).getDefinitions))
+        })
+      }
+      .foreach {
+        case (config, Some(actionsDefinitions)) =>
+          val code = actionsDefinitions.getCode(moduleDefinition, config.name)
+          val file = new File(config.getFilePath(moduleDefinition.getPackage))
+          val bw = new BufferedWriter(new FileWriter(sourceDir + "/" + file))
+          bw.write(code)
+          bw.close()
+        case _ =>
+      }
   }
 }

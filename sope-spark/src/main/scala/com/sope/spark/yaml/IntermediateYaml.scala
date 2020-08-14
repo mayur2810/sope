@@ -1,7 +1,8 @@
 package com.sope.spark.yaml
 
+import com.fasterxml.jackson.databind.Module
 import com.sope.common.transform.exception.TransformException
-import com.sope.common.transform.model.TransformModelWithoutSourceTarget
+import com.sope.common.transform.model.{TransformModelWithoutSourceTarget, TransformationTypeRegistration}
 import com.sope.common.yaml.YamlFile
 import com.sope.spark.sql.Transformer
 import com.sope.spark.etl._
@@ -17,6 +18,14 @@ import org.apache.spark.sql.DataFrame
   */
 case class IntermediateYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
   extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutSourceTarget[DataFrame]]) {
+
+
+  /**
+   * Get the module to register extensions that are to be used during deserialization
+   *
+   * @return Optional Module
+   */
+  override def getModule: Option[Module] = TransformationTypeRegistration.getModule
 
   /**
     * Perform transformation on provided dataframes.

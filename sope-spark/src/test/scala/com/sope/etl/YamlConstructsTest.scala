@@ -1,6 +1,6 @@
 package com.sope.etl
 
-import TestContext._
+import com.sope.TestContext._
 import com.sope.spark.yaml.End2EndYaml
 import org.scalatest.{FlatSpec, Matchers}
 

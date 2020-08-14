@@ -5,7 +5,7 @@ imports:
   - "org.apache.spark.sql.DataFrame"
 dataset_type: "DataFrame"
 action_config:
-  - name: CoreActions
-    config_file : core_actions_def.yaml
   - name: SparkActions
-    config_file: spark_actions_def.yaml
+    config_files:
+        - core_actions_def.yaml
+        - spark_actions_def.yaml

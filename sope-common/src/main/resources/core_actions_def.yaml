@@ -3,7 +3,7 @@ imports:
   - "com.fasterxml.jackson.databind.jsontype.NamedType"
   - "com.sope.common.annotations.SqlExpr"
   - "com.sope.common.transform.model.action.SingleOutputTransform"
-  - "com.sope.common.transform.model.TypeRegistration"
+  - "com.sope.common.transform.model.TransformationTypeRegistration"
   - "com.sope.common.sql.Types.TFunc"
 definitions:
   - id: select

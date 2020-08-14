@@ -6,5 +6,6 @@ target
 *.iml
 dependency-reduced-pom.xml
 spark-warehouse
+.DS_Store
 
-CoreActions.scala
+SparkActions.scala

@@ -1,6 +1,6 @@
 package com.sope.etl
 
-import TestContext.getSQlContext
+import com.sope.TestContext.getSQlContext
 import com.sope.spark.yaml.{IntermediateYaml, ParallelizeYaml}
 import org.scalatest.{FlatSpec, Matchers}
 

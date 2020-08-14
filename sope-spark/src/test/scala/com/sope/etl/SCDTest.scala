@@ -1,6 +1,6 @@
 package com.sope.etl
 
-import TestContext.getSQlContext
+import com.sope.TestContext.getSQlContext
 import com.sope.spark.utils.etl.DimensionTable
 import com.sope.spark.yaml.{ParallelizeYaml, SchemaYaml}
 import org.apache.spark.SparkException

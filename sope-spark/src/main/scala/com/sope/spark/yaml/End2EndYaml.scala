@@ -3,15 +3,11 @@ package com.sope.spark.yaml
 import java.util.Calendar
 
 import com.fasterxml.jackson.databind.Module
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.sope.common.transform.model.TransformModelWithSourceTarget
+import com.sope.common.transform.model.{TransformModelWithSourceTarget, TransformationTypeRegistration}
 import com.sope.common.yaml.{MapYaml, YamlFile}
-import com.sope.spark.etl.{SopeETLConfig, _}
 import com.sope.spark.etl.register.UDFBuilder
+import com.sope.spark.etl.{SopeETLConfig, _}
 import com.sope.spark.sql.Transformer
-import com.sope.spark.transform.model.actions.{CoreActions, SparkActions}
-import com.sope.spark.transform.model.io.input
-import com.sope.spark.transform.model.io.output
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 import scala.util.{Failure, Success, Try}
@@ -33,14 +29,7 @@ case class End2EndYaml(yamlPath: String, substitutions: Option[Map[String, Any]]
       .foreach { case (k, v) => sqlContext.setConf(k, v) }
   }
 
-  override def getModule: Option[Module] = {
-    val simpleModule = new SimpleModule()
-    simpleModule.registerSubtypes(CoreActions.getTypes: _*)
-    simpleModule.registerSubtypes(SparkActions.getTypes: _*)
-    simpleModule.registerSubtypes(input.getTypes: _*)
-    simpleModule.registerSubtypes(output.getTypes: _*)
-    Some(simpleModule)
-  }
+  override def getModule: Option[Module] = TransformationTypeRegistration.getModule
 
   // Get the UDF definitions
   private val udfs = model.udfs.getOrElse(Map.empty)

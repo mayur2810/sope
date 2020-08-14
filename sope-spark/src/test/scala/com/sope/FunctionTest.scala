@@ -66,7 +66,7 @@ class FunctionTest extends FlatSpec with Matchers {
   "Update Keys Transformation" should  "generate the transformations correctly" in {
     val updatedWithKey = studentDF
       .updateKeys(Seq("cls"), classDF.renameColumns(Map("cls" -> "class")), "class", "key")
-      .dropColumns(Seq("last_name", "roll_no"))
+      .drop(Seq("last_name", "roll_no"):_*)
     updatedWithKey.show(false)
     updatedWithKey.filter("first_name = 'A'").head.getAs[Long]("cls_key") should be(1)
   }

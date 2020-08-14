@@ -4,7 +4,7 @@ import java.util.Properties
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.jsontype.NamedType
-import com.sope.common.transform.model.TypeRegistration
+import com.sope.common.transform.model.TransformationTypeRegistration
 import com.sope.common.transform.model.io.input.SourceTypeRoot
 import com.sope.spark.sql.DFFunc2
 import com.sope.spark.yaml.{ParallelizeYaml, SchemaYaml}
@@ -17,7 +17,7 @@ import org.apache.spark.sql.{DataFrame, DataFrameReader, SQLContext}
   *
   * @author mbadgujar
   */
-package object input extends TypeRegistration {
+package object input {
 
   abstract class SparkSourceTypeRoot(@JsonProperty(value = "type", required = true) id: String,
                                 alias: String,
@@ -152,16 +152,4 @@ package object input extends TypeRegistration {
     extends SparkSourceTypeRoot("custom", alias, options, isStreaming, schemaFile) {
     def apply: DFFunc2 = (sqlContext: SQLContext) => getReader(sqlContext).fold(_.format(format).load(), _.format(format).load())
   }
-
-  override def getTypes: List[NamedType] = List(
-    new NamedType(classOf[HiveSource], "hive"),
-    new NamedType(classOf[OrcSource], "orc"),
-    new NamedType(classOf[ParquetSource], "parquet"),
-    new NamedType(classOf[CSVSource], "csv"),
-    new NamedType(classOf[TextSource], "text"),
-    new NamedType(classOf[JsonSource], "json"),
-    new NamedType(classOf[JDBCSource], "jdbc"),
-    new NamedType(classOf[CustomSource], "custom"),
-    new NamedType(classOf[LocalSource], "local")
-  )
 }

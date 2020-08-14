@@ -4,7 +4,7 @@ import com.sope.common.transform.exception.TransformException
 import com.sope.common.transform.model.TransformModel
 import com.sope.spark.etl.SopeETLConfig
 import com.sope.spark.sql.dsl._
-import com.sope.spark.transform.model.actions.CoreActions.JoinAction
+import com.sope.spark.transform.model.actions.SparkActions.JoinAction
 import com.sope.common.utils.Logging
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col

@@ -9,7 +9,7 @@ import scala.meta._
  */
 package object codegen {
 
-  case class ActionConfig(name:String, @JsonProperty(required = true, value = "config_file") configFile: String) {
+  case class ActionConfig(name: String, @JsonProperty(required = true, value = "config_files") configFiles: Seq[String]) {
     def getFilePath(modulePackage: String) : String =
       modulePackage.replaceAll("\\.", "/") + "/" + name + ".scala"
   }
@@ -42,16 +42,26 @@ package object codegen {
         }.get
       val coreImports = imports.map(_.parse[Importer].get)
       val importStats = (coreImports ++ module.getImports).map(imp => Import(List(imp))).toList
-      val bodyStats = definitions.map { definition => definition.getClassDefn(module.getDatasetTypeName) }.toList :+
-        getActionTypeListFn
-      val cName = Term.Name(className)
+      val bodyStats = definitions.map { definition => definition.getClassDefn(module.getDatasetTypeName) }.toList
+      val oName = Term.Name(className)
+      val cName = Type.Name(className)
 
       q"""package $packageStat {
             ..$importStats
-             object $cName extends TypeRegistration {
+             object $oName {
              ..$bodyStats
              }
+             class $cName extends TransformationTypeRegistration {
+             import $oName._
+               $getActionTypeListFn
+             }
          }""".toString()
+    }
+
+    def merge(otherActionsDefinitions: ActionsDefinitions): ActionsDefinitions = {
+       val mergedDefinitions = definitions ++ otherActionsDefinitions.definitions
+       val mergedImports = imports ++ otherActionsDefinitions.imports
+       ActionsDefinitions(mergedDefinitions.distinct, mergedImports.distinct)
     }
 
   }
