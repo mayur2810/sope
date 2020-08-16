@@ -6,6 +6,8 @@ trait SqlOps[D, C, CF] {
 
   def columns(dataset: D): Seq[C]
 
+  def aliasedColumn(datasetAlias: String, column: C): C
+
   def columnName(column:C): String
 
   def select(columns: C*): TFunc[D]
@@ -18,7 +20,7 @@ trait SqlOps[D, C, CF] {
 
   def filter(condition: C): TFunc[D]
 
-  def rename(columns: (String, C)*): TFunc[D]
+  def rename(columns: (C, String)*): TFunc[D]
 
   def drop(columns: C*): TFunc[D]
 

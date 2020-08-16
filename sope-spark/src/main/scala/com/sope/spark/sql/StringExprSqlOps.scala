@@ -14,6 +14,8 @@ object StringExprSqlOps extends SqlOps[DataFrame, String, Column] {
 
   override def columnName(column: String): String = column
 
+  override def aliasedColumn(datasetAlias: String, column: String): String = s"$datasetAlias.${column}"
+
   override def select(columns: String*): TFunc[DataFrame] = (df: DataFrame) => df.selectExpr(columns: _*)
 
   override def transform(columns: (String, String)*): TFunc[DataFrame] =

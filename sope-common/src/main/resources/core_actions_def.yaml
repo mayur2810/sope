@@ -28,6 +28,20 @@ definitions:
         mapped_name: reorder_dataset
         is_dataset_ref: true
     expr: "SelectReorder(datasets.head)"
+  - id: select_aliased
+    params:
+      - name: originalDatasetAlias
+        type: String
+        is_required: true
+        mapped_name: original_dataset_alias
+        is_dataset_ref: true
+      - name: includeColumns
+        type: Option[Seq[String]]
+        mapped_name: include_columns
+      - name: excludeColumns
+        type: Option[Seq[String]]
+        mapped_name: skip_columns
+    expr: "SelectAliased(datasets.head, originalDatasetAlias, includeColumns.getOrElse(Nil), excludeColumns.getOrElse(Nil))"
   - id: rename
     params:
       - name: list

@@ -2,6 +2,7 @@ package com.sope.spark.sql
 
 import com.sope.common.sql.{SqlOps, Types}
 import com.sope.common.sql.Types._
+import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{Column, DataFrame}
 
 
@@ -13,6 +14,8 @@ object ColumnExprSqlOps extends SqlOps[DataFrame, Column, Column] {
   override def columns(dataset: DataFrame): Seq[Column] = dataset.columns.map(dataset.col)
 
   override def columnName(column: Column): String = column.toString
+
+  override def aliasedColumn(datasetAlias: String, column: Column): Column = col(s"$datasetAlias.${column}")
 
   override def select(columns: Column*): TFunc[DataFrame] = (df: DataFrame) => df.select(columns: _*)
 
@@ -38,8 +41,8 @@ object ColumnExprSqlOps extends SqlOps[DataFrame, Column, Column] {
 
   override def filter(condition: Column): TFunc[DataFrame] = (df: DataFrame) => df.filter(condition)
 
-  override def rename(columns: (String, Column)*): TFunc[DataFrame] = (df: DataFrame) =>
-    df.renameColumns(columns.map { case (newName, column) => (column.toString, newName) }.toMap)
+  override def rename(columns: (Column, String)*): TFunc[DataFrame] = (df: DataFrame) =>
+    df.renameColumns(columns.map { case (column, newName) => (column.toString, newName) }.toMap)
 
   override def drop(columns: Column*): TFunc[DataFrame] = (df: DataFrame) =>
     columns.foldLeft(df) {
@@ -68,6 +71,5 @@ object ColumnExprSqlOps extends SqlOps[DataFrame, Column, Column] {
 
 
   override def orderBy(columns: Column*): TFunc[DataFrame] = (df: DataFrame) => df.orderBy(columns: _*)
-
 
 }

@@ -19,25 +19,40 @@ trait DSL {
 
   }
 
+  /*
+      Select columns from a dataset which was joined using aliased dataset.
+      Useful if you want to get a structure of pre-joined dataframe and include some join columns from opposite side
+      of join.
+   */
   object SelectReorder {
     def apply[D, C, CF](reorderDataset: D)(implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] = (dataset: D) => {
       sqlOps.select(sqlOps.columns(reorderDataset) :_*)(dataset)
     }
   }
 
+  object SelectAliased {
+    def apply[D, C, CF](priorDataset: D, alias: String, includeColumns: Seq[C] = Nil, excludeColumns: Seq[C] = Nil)
+                       (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = {
+     val aliasedColumns =  sqlOps.columns(priorDataset)
+        .filterNot(excludeColumns.contains(_))
+        .map(column => sqlOps.aliasedColumn(alias, column))
+      (dataset: D) => sqlOps.select(aliasedColumns ++ includeColumns: _*)(dataset)
+    }
+  }
+
 
   object Rename {
-    def apply[D, C, CF](tuples: (String, C)*)(implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = sqlOps.rename(tuples: _*)
+    def apply[D, C, CF](tuples: (C, String)*)(implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = sqlOps.rename(tuples: _*)
   }
 
   object RenameAll {
 
     private def appendFunc[D, C, CF](prefix: Boolean, append: String, columns: Seq[C])(implicit sqlOps: SqlOps[D, C, CF]):
-    Seq[(String, C)] = {
+    Seq[(C, String)] = {
       if (prefix)
-        columns.map(column =>  s"$append${sqlOps.columnName(column)}" -> column)
+        columns.map(column =>   column -> s"$append${sqlOps.columnName(column)}")
       else
-        columns.map(column =>s"${sqlOps.columnName(column)}$append" ->  column)
+        columns.map(column => column -> s"${sqlOps.columnName(column)}$append")
     }
 
     def apply[D, C, CF](append: String, prefix: Boolean, columns: C*)
@@ -62,7 +77,7 @@ trait DSL {
       (dataset: D) => {
         val columnsToRename =  sqlOps.columns(dataset)
           .filter(column => sqlOps.columnName(column).matches(pattern))
-          .map(column => sqlOps.columnName(column).replaceAll(find, replace) -> column)
+          .map(column => column -> sqlOps.columnName(column).replaceAll(find, replace))
         sqlOps.rename(columnsToRename :_*)(dataset)
       }
     }
