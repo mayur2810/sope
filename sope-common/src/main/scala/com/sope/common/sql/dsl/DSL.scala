@@ -11,11 +11,62 @@ trait DSL {
 
   object Select {
     def apply[D, C, CF](columns: C*)(implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = sqlOps.select(columns: _*)
+
+    def apply[D, C, CF](pattern: String)(implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] = (dataset: D) => {
+      val columnsToSelect = sqlOps.columns(dataset).filter(column => sqlOps.columnName(column).matches(pattern))
+      sqlOps.select(columnsToSelect :_*)(dataset)
+    }
+
+  }
+
+  object SelectReorder {
+    def apply[D, C, CF](reorderDataset: D)(implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] = (dataset: D) => {
+      sqlOps.select(sqlOps.columns(reorderDataset) :_*)(dataset)
+    }
   }
 
 
   object Rename {
     def apply[D, C, CF](tuples: (String, C)*)(implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = sqlOps.rename(tuples: _*)
+  }
+
+  object RenameAll {
+
+    private def appendFunc[D, C, CF](prefix: Boolean, append: String, columns: Seq[C])(implicit sqlOps: SqlOps[D, C, CF]):
+    Seq[(String, C)] = {
+      if (prefix)
+        columns.map(column =>  s"$append${sqlOps.columnName(column)}" -> column)
+      else
+        columns.map(column =>s"${sqlOps.columnName(column)}$append" ->  column)
+    }
+
+    def apply[D, C, CF](append: String, prefix: Boolean, columns: C*)
+                       (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = {
+      (dataset: D) => {
+        val columnsToRename = if (columns.isEmpty) sqlOps.columns(dataset) else columns
+        sqlOps.rename(appendFunc(prefix, append, columnsToRename) :_*)(dataset)
+      }
+    }
+
+    def apply[D, C, CF](append: String, prefix: Boolean, pattern: String)
+                       (implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] = {
+      (dataset: D) => {
+        val columnsToRename =  sqlOps.columns(dataset)
+          .filter(column => sqlOps.columnName(column).matches(pattern))
+        sqlOps.rename(appendFunc(prefix, append, columnsToRename) :_*)(dataset)
+      }
+    }
+
+    def apply[D, C, CF](pattern: String, find: String, replace: String)
+                       (implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] = {
+      (dataset: D) => {
+        val columnsToRename =  sqlOps.columns(dataset)
+          .filter(column => sqlOps.columnName(column).matches(pattern))
+          .map(column => sqlOps.columnName(column).replaceAll(find, replace) -> column)
+        sqlOps.rename(columnsToRename :_*)(dataset)
+      }
+    }
+
   }
 
   object Drop {
@@ -34,37 +85,37 @@ trait DSL {
   object TransformAll {
     def apply[D, C, CF](singleArgFunction: ColFunc[CF], suffix: Option[String], columns: C*)
                        (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = (dataset: D) => {
-        val transformColumns = if(columns.isEmpty) sqlOps.columns(dataset) else columns
-        val columnMap =  transformColumns
-          .map(column => sqlOps.columnName(column) -> column)
-          .map { case (name, column) =>
-            val newName = suffix.fold(name)(someSuffix => name + "_" + someSuffix)
-            newName -> column
-          }
-        sqlOps.transformAll(singleArgFunction, columnMap :_*)(dataset)
-      }
-
-
-    def apply[D, C, CF](singleArgFunction: ColFunc[CF], suffix: Option[String], pattern: String)
-                       (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] =
-      (dataset: D) => {
-      val transformColumns = sqlOps.columns(dataset)
+      val transformColumns = if (columns.isEmpty) sqlOps.columns(dataset) else columns
+      val columnMap = transformColumns
         .map(column => sqlOps.columnName(column) -> column)
-        .filter{ case (name,_) => name.matches(pattern)}
-      val columnMap =  transformColumns
         .map { case (name, column) =>
           val newName = suffix.fold(name)(someSuffix => name + "_" + someSuffix)
           newName -> column
         }
-      sqlOps.transformAll(singleArgFunction, columnMap :_*)(dataset)
+      sqlOps.transformAll(singleArgFunction, columnMap: _*)(dataset)
     }
+
+
+    def apply[D, C, CF](singleArgFunction: ColFunc[CF], suffix: Option[String], pattern: String)
+                       (implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] =
+      (dataset: D) => {
+        val transformColumns = sqlOps.columns(dataset)
+          .map(column => sqlOps.columnName(column) -> column)
+          .filter { case (name, _) => name.matches(pattern) }
+        val columnMap = transformColumns
+          .map { case (name, column) =>
+            val newName = suffix.fold(name)(someSuffix => name + "_" + someSuffix)
+            newName -> column
+          }
+        sqlOps.transformAll(singleArgFunction, columnMap: _*)(dataset)
+      }
 
     def apply[D, C, CF](singleArgFunctionName: String, suffix: Option[String], columns: C*)
                        (implicit sqlOps: SqlOps[D, C, CF], colOps: SqlColumnOps[CF]): TFunc[D] =
-      apply(colOps.resolveSingleArgFunction(singleArgFunctionName), suffix, columns:_*)
+      apply(colOps.resolveSingleArgFunction(singleArgFunctionName), suffix, columns: _*)
 
     def apply[D, C, CF](singleArgFunctionName: String, suffix: Option[String], pattern: String)
-                       (implicit sqlOps: SqlOps[D, C, CF], colOps: SqlColumnOps[CF]): TFunc[D] =
+                       (implicit sqlOps: SqlOps[D, String, CF], colOps: SqlColumnOps[CF]): TFunc[D] =
       apply(colOps.resolveSingleArgFunction(singleArgFunctionName), suffix, pattern)
   }
 
@@ -133,8 +184,58 @@ trait DSL {
     def -->(dataset: D): D = using(dataset)
 
     def +(rightTFunc: TFunc[D]): TFunc[D] = tFunc andThen rightTFunc
+
+    def +(rightDFFuncSeq: Seq[TFunc[D]]): Seq[TFunc[D]] = rightDFFuncSeq.map(tFunc + _)
+
+    def +(rightDFFuncMap: Map[String, TFunc[D]]): Map[String, TFunc[D]] = rightDFFuncMap.map {
+      case (name, rightFunc) => name -> (tFunc + rightFunc)
+    }
+
+    def +(dfFuncMapSelectiveLeft: (String, Map[String, TFunc[D]])): Map[String, TFunc[D]] =
+      dfFuncMapSelectiveLeft match {
+        case (name, dfFuncMap) => dfFuncMap.map {
+          case (key, rightFunc) => if (name == key) key -> (tFunc + rightFunc) else key -> rightFunc
+        }
+      }
   }
 
+  implicit class SeqDFFuncImplicits[D](dfFuncSeq: Seq[TFunc[D]]) {
+
+    def using(df: D): Seq[D] = dfFuncSeq.map(_ using df)
+
+    def -->(df: D): Seq[D] = using(df)
+
+    def +(rightDFFunc: TFunc[D]): Seq[TFunc[D]] = dfFuncSeq.map(_ + rightDFFunc)
+
+    def +(rightDFFuncs: Seq[TFunc[D]]): Seq[TFunc[D]] = dfFuncSeq.flatMap(left => rightDFFuncs.map(left + _))
+  }
+
+  implicit class MapDFFuncImplicits[D](dfFuncMap: Map[String, TFunc[D]]) {
+
+    def using(df: D): Map[String, D] = dfFuncMap.mapValues(_ using df)
+
+    def -->(df: D): Map[String, D] = using(df)
+
+
+    def +(rightDFFunc: TFunc[D]): Map[String, TFunc[D]] = dfFuncMap.mapValues(_ + rightDFFunc)
+
+    def +(name: String, rightDFFunc: TFunc[D]): Map[String, TFunc[D]] = dfFuncMap.map {
+      case (key, func) => if (name == key) key -> (func + rightDFFunc) else key -> func
+    }
+
+    def +(rightDFFuncs: Map[String, TFunc[D]]): Map[String, TFunc[D]] = dfFuncMap.flatMap {
+      case (leftKey, leftFunc) =>
+        rightDFFuncs.map { case (rightKey, rightFunc) => (leftKey + rightKey) -> (leftFunc + rightFunc) }
+    }
+  }
+
+  implicit class MapDFFuncSelectiveImplicits[D](dfFuncMapSelective: (String, Map[String, TFunc[D]])) {
+    def +(rightDFFunc: TFunc[D]): Map[String, TFunc[D]] = dfFuncMapSelective match {
+      case (name, dfFuncMap) => dfFuncMap.map {
+        case (key, func) => if (name == key) key -> (func + rightDFFunc) else key -> func
+      }
+    }
+  }
 
   implicit class DSJoinFuncImplicits[D](dsJFunc: JFunc[D]) {
 

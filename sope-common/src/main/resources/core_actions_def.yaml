@@ -14,12 +14,61 @@ definitions:
         is_required: true
         is_sql_expr: true
     expr: "Select(columns :_*)"
+  - id: select_pattern
+    params:
+      - name: pattern
+        type: String
+        is_required: true
+    expr: "Select(pattern)"
+  - id: select_reorder
+    params:
+      - name: reorderDataset
+        type: String
+        is_required: true
+        mapped_name: reorder_dataset
+        is_dataset_ref: true
+    expr: "SelectReorder(datasets.head)"
   - id: rename
     params:
       - name: list
         type: Map[String, String]
         is_required: true
     expr: "Rename(list.toSeq :_*)"
+  - id: rename_all
+    params:
+      - name: append
+        type: String
+        is_required: true
+      - name: prefix
+        type: Boolean
+        is_required: true
+      - name: columns
+        type: Option[Seq[String]]
+    expr: "RenameAll(append, prefix, columns.getOrElse(Nil) :_*)"
+  - id: rename_all_pattern
+    params:
+      - name: append
+        type: String
+        is_required: true
+      - name: prefix
+        type: Boolean
+        is_required: true
+      - name: pattern
+        type: String
+        is_required: true
+    expr: "RenameAll(append, prefix, pattern)"
+  - id: rename_all_find_replace
+    params:
+      - name: pattern
+        type: String
+        is_required: true
+      - name: find
+        type: String
+        is_required: true
+      - name: replace
+        type: String
+        is_required: true
+    expr: "RenameAll(pattern, find, replace)"
   - id: filter
     params:
       - name: condition
@@ -63,7 +112,7 @@ definitions:
       - name: pattern
         type: String
         is_required: true
-    expr: "TransformAll[DataFrame, String, Column](singleArgFunctionName, suffix, pattern)"
+    expr: "TransformAll(singleArgFunctionName, suffix, pattern)"
   - id: transform_all_multi_arg
     params:
       - name: multiArgFunctionName
