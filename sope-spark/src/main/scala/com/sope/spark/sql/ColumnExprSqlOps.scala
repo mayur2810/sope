@@ -39,7 +39,7 @@ object ColumnExprSqlOps extends SqlOps[DataFrame, Column, Column] {
   override def filter(condition: Column): TFunc[DataFrame] = (df: DataFrame) => df.filter(condition)
 
   override def rename(columns: (String, Column)*): TFunc[DataFrame] = (df: DataFrame) =>
-    df.renameColumns(columns.map { case (newName, column) => (newName, column.toString) }.toMap)
+    df.renameColumns(columns.map { case (newName, column) => (column.toString, newName) }.toMap)
 
   override def drop(columns: Column*): TFunc[DataFrame] = (df: DataFrame) =>
     columns.foldLeft(df) {

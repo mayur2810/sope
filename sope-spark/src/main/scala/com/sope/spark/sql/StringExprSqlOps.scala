@@ -40,7 +40,7 @@ object StringExprSqlOps extends SqlOps[DataFrame, String, Column] {
 
   override def filter(condition: String): TFunc[DataFrame] = (df: DataFrame) => df.filter(condition)
 
-  override def rename(columns: (String, String)*): TFunc[DataFrame] = (df: DataFrame) => df.renameColumns(columns.toMap)
+  override def rename(columns: (String, String)*): TFunc[DataFrame] = (df: DataFrame) => df.renameColumns(columns.reverse.toMap)
 
   override def drop(columns: String*): TFunc[DataFrame] = (df: DataFrame) => df.drop(columns :_*)
 
