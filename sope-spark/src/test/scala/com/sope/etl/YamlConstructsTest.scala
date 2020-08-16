@@ -116,13 +116,14 @@ class YamlConstructsTest extends FlatSpec with Matchers {
   "rename_all_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("rename_all_test")
     transformedDF.show(false)
-    transformedDF.columns.forall(_.contains("_renamed"))
+    transformedDF.columns.forall(_.contains("_renamed")) should be(true)
   }
 
   "rename_find_replace_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("rename_find_replace_test")
     transformedDF.show(false)
-    transformedDF.columns.forall(_.contains("_replaced"))
+    transformedDF.columns.forall(_.contains("_replaced")) should be(true)
+
   }
 
   "custom_udf_call_test" should "generate the transformation Dataframe correctly" in {
@@ -172,7 +173,7 @@ class YamlConstructsTest extends FlatSpec with Matchers {
   "select_with_alias_test" should "generate the transformation Dataframe correctly" in {
     val transformedDF = transformedResult("select_with_alias_test")
     transformedDF.show
-    transformedDF.columns should contain allOf("product", "location")
+    transformedDF.columns should contain theSameElementsInOrderAs Seq("product", "location")
   }
 
   "select_with_reorder" should "generate the transformation Dataframe correctly" in {

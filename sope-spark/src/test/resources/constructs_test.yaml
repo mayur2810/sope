@@ -14,17 +14,18 @@ transformations :
         - {type: transform, list: {location: "lower(location)", trxn_id: "concat(trxn_id, location)", rank: "RANK() OVER (PARTITION BY location order by date desc)"}}
         - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
         - {type: join, with: "date", columns: ["date"], join_type: inner}
-        - {type: select_not, columns: ["location"]}
+        - {type: drop, columns: ["location"]}
     - input: "transactions"
       alias: "grp_by"
       actions:
-        - {type: "group_by", columns: ["product"], exprs: ["count(product) as p_cnt"]}
+        - {type: "group_by", columns: ["product"], exprs: {p_cnt: "count(product)"}}
         - {type: "order_by", columns: ["p_cnt:desc"]}
     - input: "transactions"
       alias: "grp_by_pivot"
       actions:
         - {type: "transform", list: {year: "year(date)"}}
-        - {type: "group_by", columns: ["product"], pivot_column: "year",  exprs: ["count(product) as p_cnt"]}
+        - {type: "group_by_pivot", columns: ["product"], pivot_column: "year",  exprs: {p_cnt: "count(product)"}}
+        # TODO: Error at last action stops/fails parsing and does not report all error?
     - input : "product"
       alias: "final_dim_out"
       actions:
@@ -32,7 +33,7 @@ transformations :
     - input: "final_dim_out"
       alias: "distinct_test"
       actions:
-         - {type: union, with: ["final_dim_out"]}
+         - {type: union, datasets: ["final_dim_out"]}
          - {type: distinct}
     - input: "transactions"
       alias: "drop_duplicate_test"
@@ -42,19 +43,19 @@ transformations :
     - input: "product_filtered"
       alias: "product_filtered1" # Create new reference with new alias
       actions:
-         - {type: select_not, columns: [] }
+         - {type: drop, columns: [] }
     - input: "product_filtered"
       alias: "aliasing_test"
       actions:
-          - {type: join, with: "product_filtered1",  columns: ["product_id"] , join_type: inner, broadcast_hint: "right"}
+          - {type: join, with: "product_filtered1",  columns: ["product_id"] , join_type: inner}
           - {type: select, columns: ["product_filtered1.product", "product_filtered.product"]}
     - input: "dim_product"
       alias: "na_test"
       actions:
           - {type: select, columns: ["product_id as pid"]}
           - {type: transform, list: {pid: "pow(pid, 2)"}}
-          - {type: join, with: "dim_product", condition: "product_id = pid", join_type: left, broadcast_hint: "left"}
-          - {type: na, default_numeric: -1, default_string: "N/A", columns:["product_key", "product_desc"]}
+          - {type: join_exprs, with: "dim_product", join_exprs: ["product_id = pid"], join_type: left}
+          - {type: na, default_numeric_value: -1, default_string_value: "N/A", columns:["product_key", "product_desc"]}
     - input: "dim_product"
       alias: "limit_test"
       actions:
@@ -69,33 +70,33 @@ transformations :
       alias: "intersect_test"
       actions:
           - {type: filter, condition: "product_id = -1 or product_id = 0"}
-          - {type: intersect, with: ["dim_product"]}
+          - {type: intersect, datasets: ["dim_product"]}
     - input: "dim_product"
       alias: "except_test"
       actions:
           - {type: filter, condition: "product_id = -1 or product_id = 0"}
-          - {type: except, with: ["dim_product"]}
+          - {type: except, datasets: ["dim_product"]}
     - alias: "transform_all_test"
       input: "transactions"
       actions:
-          - {type: transform_all, function: "upper", suffix: "_new", columns: ["loc", "product"]}
+          - {type: transform_all, single_arg_function: "upper", suffix: "_new", columns: ["loc", "product"]}
     - alias: "transform_whole_table_test"
       input: "transactions"
       actions:
-          - {type: transform_all, suffix: "_new", function: "upper"}
+        - {type: transform_all, suffix: "_new", single_arg_function: "upper"}
     - alias: "rename_all_test"
       input: "transactions"
       actions:
-          - {type: rename_all, append: "_renamed"}
+          - {type: rename_all, append: "_renamed", prefix: false}
     - alias: "rename_find_replace_test"
       input: "rename_all_test"
       actions:
-         - {type: rename_replace, pattern: ".*renamed", find: "renamed", replace: "replaced"}
+         - {type: rename_all_find_replace, pattern: ".*renamed", find: "renamed", replace: "replaced"}
     - alias: "aggregate_test"
       input: "transactions"
       actions:
           - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
-          - {type: aggregate, exprs: [max(id)]}
+          - {type: aggregate, exprs: {max_id: "max(id)"}}
     - alias: "custom_udf_call_test"
       input: "transactions"
       actions:
@@ -121,17 +122,17 @@ transformations :
     - input: product_filtered
       alias: select_with_alias_test
       actions:
-        - {type: join, with: product_filtered1,  condition: "product_filtered.product_id = product_filtered1.product_id" , join_type: inner, broadcast_hint: right}
+        - {type: join_exprs, with: product_filtered1,  join_exprs: ["product_filtered.product_id = product_filtered1.product_id"] , join_type: inner}
         - {type: transform, list: {location: "'pune'"}}
-        - {type: select_alias, alias: product_filtered, skip_columns:[product_id], include_columns: [location]}
+        - {type: select_aliased, original_dataset_alias: product_filtered, skip_columns:[product_id], include_columns: [location]}
     - input: product_filtered
       alias: select_with_reorder_test
       actions:
         - {type: select, columns: [product, product_id]}
-        - {type: select_reorder, alias: product_filtered}
+        - {type: select_reorder, reorder_dataset: product_filtered}
     - input: transactions
       alias: transform_multi_arg_test
       actions:
         - {type: filter, condition: "date='2018-01-01'"}
-        - {type: transform_multi_arg, function: concat , list: { c1: [upper(loc), product], c2: [product, upper(loc)]}}
+        - {type: transform_all_multi_arg, multi_arg_function: concat , columns: { c1: [upper(loc), product], c2: [product, upper(loc)]}}
 outputs: []

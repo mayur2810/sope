@@ -11,7 +11,9 @@ import org.scalatest.{FlatSpec, Matchers}
   *
   * @author mbadgujar
   */
+// TODO: Old Test: REMOVE
 class DSLTest extends FlatSpec with Matchers {
+/*
 
   private val sqlContext = getSQlContext
 
@@ -148,5 +150,6 @@ class DSLTest extends FlatSpec with Matchers {
         df.count should be(1)
     }
   }
+*/
 
 }

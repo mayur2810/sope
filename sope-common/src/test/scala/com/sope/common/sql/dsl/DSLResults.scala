@@ -76,7 +76,7 @@ trait DSLResults[D, CF] {
 
   def transformAllColumnResult(upperCaseFnName: String = "upper"): Unit = {
     val resultDataset =
-      TransformAll(upperCaseFnName, "first_name_upper" -> FirstName, LastName -> LastName) +
+      TransformAll(upperCaseFnName, None, FirstName, LastName) +
         Filter(s"$FirstName = 'Sherlock'") --> testDatasets(CustomerDataset)
     getDatasetRecordCntFunc(resultDataset) should be(1)
     getDatasetColsFunc(resultDataset) should
@@ -87,7 +87,7 @@ trait DSLResults[D, CF] {
 
   def transformAllColumnNoColumnsProvidedResult(upperCaseFnName: String = "upper"): Unit = {
     val resultDataset =
-      TransformAll(upperCaseFnName) + Filter(s"$FirstName = 'Sherlock'") --> testDatasets(CustomerDataset)
+      TransformAll(upperCaseFnName, None) + Filter(s"$FirstName = 'Sherlock'") --> testDatasets(CustomerDataset)
     getDatasetRecordCntFunc(resultDataset) should be(1)
     getDatasetColsFunc(resultDataset) should
       contain theSameElementsAs CustomerFields
