@@ -19,17 +19,18 @@ trait DSL {
 
   }
 
-  /*
-      Select columns from a dataset which was joined using aliased dataset.
-      Useful if you want to get a structure of pre-joined dataframe and include some join columns from opposite side
-      of join.
-   */
+
   object SelectReorder {
     def apply[D, C, CF](reorderDataset: D)(implicit sqlOps: SqlOps[D, String, CF]): TFunc[D] = (dataset: D) => {
       sqlOps.select(sqlOps.columns(reorderDataset) :_*)(dataset)
     }
   }
 
+  /*
+      Select columns from a dataset which was joined using aliased dataset.
+      Useful if you want to get a structure of pre-joined dataframe and include some join columns from opposite side
+      of join.
+   */
   object SelectAliased {
     def apply[D, C, CF](priorDataset: D, alias: String, includeColumns: Seq[C] = Nil, excludeColumns: Seq[C] = Nil)
                        (implicit sqlOps: SqlOps[D, C, CF]): TFunc[D] = {

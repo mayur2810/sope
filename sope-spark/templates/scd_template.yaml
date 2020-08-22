@@ -20,7 +20,7 @@ inputs: ["scd_input", "dimension"]
 transformations :
     - input : "scd_input"
       alias: "scd_product"
-      persist: "memory_only"
+      options: {persist: "memory_only"}
       actions:
         - {type: "dim_change_set", dim_table: "dimension", sk_column: ${sk_key} , natural_keys: ${natural_keys} , derived_columns: ${derived_cols} , meta_columns: ${meta_cols}}
     #Filter insert/updates and adds 'last_updated_date' column, Note: Update the name of the column is required

@@ -2,7 +2,7 @@ package com.sope.spark.sql
 
 import com.sope.common.transform.exception.TransformException
 import com.sope.common.transform.model.TransformModel
-import com.sope.spark.etl.SopeETLConfig
+import com.sope.spark.etl.{SopeETLConfig, TransformationOptions}
 import com.sope.spark.sql.dsl._
 import com.sope.spark.transform.model.actions.SparkActions.JoinAction
 import com.sope.common.utils.Logging
@@ -23,8 +23,10 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
   private case class InputSource(name: String, isUsedForJoin: Boolean, joinColumns: Option[Seq[String]])
 
   private val autoPersistSetting = SopeETLConfig.AutoPersistConfig
-  private var sourceDFMap: Map[String, DataFrame] = inputMap
   private val transformations = model.transformations.data
+
+  /* This map is updated after application of each action list */
+  private var sourceDFMap: Map[String, DataFrame] = inputMap
 
   // Generate the input sources for the transformation
   private lazy val inputSources = transformations.flatMap { transform =>
@@ -58,9 +60,9 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
   val autoPersistList: Seq[String] = inputSources
     .filter(_ => autoPersistSetting)
     .map(_.name -> 1)
-    .groupBy(_._1)
+    .groupBy { case (name, _) => name }
     .map { case (k, v) => (k, v.size) }
-    .filter(_._2 > 1).keys
+    .filter { case (_, cnt) => cnt > 1 }.keys
     .toSeq
 
   // gets dataframe from provided alias
@@ -100,30 +102,19 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
 
     inputMap.toSeq ++ transformations.flatMap(dfTransform => {
       val transformAliases = dfTransform.getAliases
+      val transformationOptions = dfTransform.options.getOrElse(Map.empty)
       logInfo(s"Applying transformation: ${transformAliases.mkString(",")}")
       val actions = dfTransform.actionList
       val sourceDF = getDF(dfTransform.source)
       // if sql transform apply sql or perform provided action transformation
-      val transformedDF = Try {
-        (dfTransform.isSQLTransform, dfTransform.isMultiOutputTransform) match {
-          case (true, _) =>
-            Nil :+ sourceDF.sqlContext.sql(dfTransform.sql.get)
-          case (_, true) =>
-            // TODO currently considers multi action as last, can be anywhere?
-            val multiOutAction = actions.last
-            val transformedSingleAction = actions
-              .take(actions.size - 1)
-              .foldLeft(NoOp()) {
-                (transformed, transformAction) => transformed + transformAction.runtimeModifier(transformAction
-                  .inputAliases.map(getDF): _*).head
-              }
-            multiOutAction
-              .apply(multiOutAction.inputAliases.map(getDF): _*)
-              .map(action => transformedSingleAction + action --> sourceDF)
-          case (_, _) =>
-            Nil :+ actions.foldLeft(NoOp()) {
-              (transformed, transformAction) =>
-                transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*).head
+      val transformedDFs = Try {
+        if (dfTransform.isSQLTransform)
+          Nil :+ sourceDF.sqlContext.sql(dfTransform.sql.get)
+        else {
+          actions
+            .foldLeft(Seq(NoOp())) {
+              case (transformed, transformAction) =>
+                transformed + transformAction.runtimeModifier(transformAction.inputAliases.map(getDF): _*)
             } --> sourceDF
         }
       } match {
@@ -133,9 +124,9 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
           throw e
       }
       // Add alias to dataframe
-      dfTransform.persistLevel.fold(transformedDF)(level => {
+      transformationOptions.get(TransformationOptions.PersistLevel).fold(transformedDFs)(level => {
         logInfo(s"Transformation ${transformAliases.mkString(",")} is configured to be persisted at level: $level")
-        transformedDF.map(_.persist(StorageLevel.fromString(level.toUpperCase)))
+        transformedDFs.map(_.persist(StorageLevel.fromString(level.toString.toUpperCase)))
       })
         .zip(transformAliases)
         .foreach { case (df, alias) =>

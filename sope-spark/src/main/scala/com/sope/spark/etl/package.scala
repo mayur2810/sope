@@ -32,6 +32,11 @@ package object etl extends Logging {
 
   val TestingDataFractionProperty = "sope.testing.data.fraction"
 
+
+  object TransformationOptions {
+    final val PersistLevel = "persist"
+  }
+
   /**
     * Get Scala 'Object' instance from class name
     *

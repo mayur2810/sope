@@ -52,7 +52,7 @@ package object model {
      *
      * @return Seq[DFTransformation]
      */
-    def transformations: MList[_<: Transformation[D]]
+    def transformations: MList[_ <: Transformation[D]]
 
     /**
      * Output Targets
@@ -89,17 +89,17 @@ package object model {
   /**
    * Class represents a transformation entity.
    *
-   * @param source       input source name
-   * @param alias        alias for the transformation
-   * @param persistLevel Persistence level for this transformation
-   * @param description  Description for this transformation
-   * @param actions      Actions to performed on source. Either 'actions' or 'sql' should be provided
-   * @param sql          Transformation provided as sql query. Either 'sql' or 'actions' should be provided
+   * @param source      input source name
+   * @param alias       alias for the transformation
+   * @param options     Transformation options
+   * @param description Description for this transformation
+   * @param actions     Actions to performed on source. Either 'actions' or 'sql' should be provided
+   * @param sql         Transformation provided as sql query. Either 'sql' or 'actions' should be provided
    */
   case class Transformation[D](@JsonProperty(required = true, value = "input") source: String,
                                alias: Option[String],
                                aliases: Option[Seq[String]],
-                               @JsonProperty(value = "persist") persistLevel: Option[String],
+                               options: Option[Map[String, Any]],
                                description: Option[String],
                                @JsonDeserialize(using = classOf[ActionDeserializer[D]]) actions: MList[TransformActionRoot[D]],
                                @SqlExpr sql: Option[String]) {
@@ -120,13 +120,11 @@ package object model {
     if (alias.isEmpty && aliases.isEmpty)
       throw new TransformException("Please provide either 'alias' or 'aliases' option")
 
-    if (aliases.isDefined && !(actionList.nonEmpty && actionList.last.isInstanceOf[MultiOutputTransform[D]]))
-      throw new TransformException("Transformation returning multiple aliases cannot have single " +
-        "output transformation as it last action")
-
-    if (aliases.isDefined && aliases.get.isEmpty)
+    if (aliases.isDefined && (aliases.get.isEmpty || aliases.get.exists(_.isEmpty)))
       throw new TransformException("aliases option cannot be empty")
 
+    if (alias.isDefined && alias.get.isEmpty)
+      throw new TransformException("alias option cannot be empty")
 
     val isSQLTransform: Boolean = sql.isDefined
 
@@ -141,10 +139,10 @@ package object model {
   }
 
 
-  // Model for YAML without source target information
-  case class TransformModelWithoutSourceTarget[D](@JsonProperty(required = true, value = "inputs") vSources: Seq[String],
-                                                  @JsonDeserialize(using = classOf[TransformationDeserializer[D]])
-                                                  @JsonProperty(required = true) transformations: MList[Transformation[D]])
+  // Model for YAML without target information. Sources are virtual aliases
+  case class TransformModelWithoutTarget[D](@JsonProperty(required = true, value = "inputs") vSources: Seq[String],
+                                            @JsonDeserialize(using = classOf[TransformationDeserializer[D]])
+                                            @JsonProperty(required = true) transformations: MList[Transformation[D]])
     extends TransformModel[D] {
 
     override def sources: MList[String] = MList(vSources)
@@ -156,14 +154,14 @@ package object model {
 
   // Model for YAML with source target information
   case class TransformModelWithSourceTarget[CTX, D](@JsonDeserialize(using = classOf[InputDeserializer[CTX, D]])
-                                               @JsonProperty(required = true, value = "inputs") sources: MList[SourceTypeRoot[CTX,D]],
-                                               @JsonDeserialize(using = classOf[TransformationDeserializer[D]])
-                                               @JsonProperty(required = true) transformations: MList[Transformation[D]],
-                                               @JsonDeserialize(using = classOf[TargetDeserializer[D]])
-                                               @JsonProperty(required = true, value = "outputs") targets: MList[TargetTypeRoot[D]],
-                                               configs: Option[Map[String, String]],
-                                               udfs: Option[Map[String, String]],
-                                               @JsonProperty(value = "udf_files") udfFiles: Option[Seq[String]])
+                                                    @JsonProperty(required = true, value = "inputs") sources: MList[SourceTypeRoot[CTX, D]],
+                                                    @JsonDeserialize(using = classOf[TransformationDeserializer[D]])
+                                                    @JsonProperty(required = true) transformations: MList[Transformation[D]],
+                                                    @JsonDeserialize(using = classOf[TargetDeserializer[D]])
+                                                    @JsonProperty(required = true, value = "outputs") targets: MList[TargetTypeRoot[D]],
+                                                    configs: Option[Map[String, String]],
+                                                    udfs: Option[Map[String, String]],
+                                                    @JsonProperty(value = "udf_files") udfFiles: Option[Seq[String]])
     extends TransformModel[D] {
     checkFailure()
   }
