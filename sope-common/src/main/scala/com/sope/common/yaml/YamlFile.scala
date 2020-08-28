@@ -61,20 +61,8 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
     */
   private def getText: String = substitutions.fold(readYamlFile(yamlPath))(_ => updatePlaceHolders())
 
-  /**
-    * Deserialize the YAML to provided Type
-    *
-    * @return T
-    */
-  def deserialize: T = Try {
-    val yamlStr = text
-    logInfo(s"Parsing $getYamlFileName YAML file :-\n $redactedText")
-    getModule.fold(parseYAML(yamlStr, modelClass)){
-      module => parseYAML(yamlStr, modelClass, module)
-    }
-  } match {
-    case Success(t) => logInfo(s"Successfully parsed $getYamlFileName YAML File"); t
-    case Failure(e) => e match {
+  private def logFailures(exception: Throwable): Throwable = {
+    exception match {
       case e: JsonMappingException =>
         Option(e.getLocation) match {
           case Some(location) =>
@@ -87,12 +75,35 @@ abstract class YamlFile[T](yamlPath: String, substitutions: Option[Map[String, A
                   val errorMessage = getParseErrorMessage(line, index)
                   logError(errorMessage + s"\n$msg")
               }
-            case _ =>
           }
         }
-        throw e
-      case _ => throw e
+      case TransformException(_, failures) =>
+        failures.foreach {
+          case Failed(msg, line, index) =>
+            val errorMessage = getParseErrorMessage(line, index)
+            logError(errorMessage + s"\n$msg")
+        }
+      case _ =>
     }
+    exception
+  }
+
+  /**
+   * Deserialize the YAML to provided Type
+   *
+   * @return T
+   */
+  def deserialize: T = Try {
+    val yamlStr = text
+    logInfo(s"Parsing $getYamlFileName YAML file :-\n $redactedText")
+    getModule.fold(parseYAML(yamlStr, modelClass)) {
+      module => parseYAML(yamlStr, modelClass, module)
+    }
+  } match {
+    case Success(obj) =>
+      logInfo(s"Successfully parsed $getYamlFileName YAML File")
+      obj
+    case Failure(e) => throw logFailures(e)
   }
 
 }

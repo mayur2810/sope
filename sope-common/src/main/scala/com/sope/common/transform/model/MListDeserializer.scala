@@ -15,7 +15,8 @@ import scala.reflect.runtime.universe._
 
 /**
  * [[MList]] Deserializer. This does a best effort to record failures during deserialization of the provided type.
- * The Goal is to not fail the deserialization process but to record the failures, which may then be used to report all of them at once.
+ * The Goal is to not fail the deserialization process but to record the failures, which may then be used to report
+ * all of them at once.
  *
  * @author mbadgujar
  */
@@ -25,6 +26,7 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
     val mirror = runtimeMirror(this.getClass.getClassLoader)
     val data = mutable.MutableList[T]()
     val failures = mutable.MutableList[Failed]()
+    val sqlExprs = mutable.MutableList[SqlExpression]()
 
     /*
        In case the token does not start array, return failure straight away
@@ -48,7 +50,10 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
             case m: MethodSymbol if m.isCaseAccessor && m.annotations.exists(_.tree.tpe =:= typeOf[SqlExpr]) =>
               val expr = objMirror.reflectField(m).get
               if (m.name.toString.trim == "sql") (expr, true) else (expr, false)
-          }.foreach { case (expr, isSql) => /*  TODO Inject SQL Checking dynamically? checkSQL(expr, isSql) OR Store the expr in MList Datastruture and can be verified if need be by corresponding implementation*/ }
+          }.foreach {
+            case (None, _) =>
+            case (expr, isSql) => sqlExprs += SqlExpression(expr, isSql, location.getLineNr, location.getColumnNr)
+          }
           log.trace(s"Successfully Parsed element of type $clz :- $validElem")
           data += validElem
         }
@@ -68,7 +73,7 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
         }
       }
     }
-    MList(data, failures)
+    MList(data, failures, sqlExprs)
   }
 
   override def getNullValue(ctxt: DeserializationContext): MList[T] = MList[T](Nil)

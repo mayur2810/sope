@@ -2,10 +2,11 @@ package com.sope.spark.yaml
 
 import com.fasterxml.jackson.databind.Module
 import com.sope.common.transform.exception.TransformException
-import com.sope.common.transform.model.{TransformModelWithoutTarget, TransformationTypeRegistration}
+import com.sope.common.transform.model.TransformationTypeRegistration
 import com.sope.common.yaml.YamlFile
-import com.sope.spark.sql.Transformer
 import com.sope.spark.etl._
+import com.sope.spark.sql.Transformer
+import com.sope.spark.transform.model.SparkTransformModelWithoutTarget
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -17,7 +18,7 @@ import org.apache.spark.sql.DataFrame
   * @author mbadgujar
   */
 case class IntermediateYaml(yamlPath: String, substitutions: Option[Map[String, Any]] = None)
-  extends YamlFile(yamlPath, substitutions, classOf[TransformModelWithoutTarget[DataFrame]]) {
+  extends YamlFile(yamlPath, substitutions, classOf[SparkTransformModelWithoutTarget]) {
 
 
   /**
