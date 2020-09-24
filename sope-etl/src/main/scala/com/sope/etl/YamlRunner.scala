@@ -30,7 +30,9 @@ object YamlRunner extends Logging {
 
       opt[String](SubstitutionsOption)
         .optional()
-        .action((value, config) => config.copy(substitutionsFromCmdLine = parseYAML(value, classOf[Map[String, Any]])))
+        .unbounded()
+        .action((value, config) => config.copy(substitutionsFromCmdLine = config.substitutionsFromCmdLine ++
+          parseYAML(value, classOf[Map[String, Any]])))
         .text("Substitutions")
 
       opt[String](SubstitutionFilesOption)
