@@ -41,16 +41,15 @@ object YamlParserUtil {
     * @return String
     */
   def readYamlFile(yamlFile: String): String = {
-    val fileURL = this.getClass.getClassLoader.getResource(s"./$yamlFile")
-    val yamlFilePath = Option(fileURL)
+    val ins = this.getClass.getClassLoader.getResourceAsStream(yamlFile)
+    val reader = Option(ins)
       .fold(throw new YamlDataTransformException(s"Yaml File $yamlFile not found in driver classpath")) {
-        url => url.getPath
+        _ => Source.fromInputStream(ins)
       }
-    val file = Source.fromFile(yamlFilePath)
     try {
-      file.getLines.mkString("\n")
+      reader.getLines.mkString("\n")
     } finally {
-      file.close()
+      reader.close()
     }
   }
 
