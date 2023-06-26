@@ -11,7 +11,7 @@ import org.apache.spark.sql.internal.SQLConf
 object SQLChecker {
 
   // parser with Dummy Conf
-  private val parser = new SparkSqlParser(new SQLConf)
+  private val parser = new SparkSqlParser()
 
   private val checkSQLExpr = (expr: String) => {
     // Skip check if expr has placeholders

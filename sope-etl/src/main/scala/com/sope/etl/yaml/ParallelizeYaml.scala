@@ -59,7 +59,7 @@ object ParallelizeYaml {
       // Gets the internal type of list structure
       case list: List[_] => list.headOption.fold(typeOf[Seq[String]])(elem => {
         val elemType = getType[Any](elem)
-        internal.typeRef(NoPrefix, mirror.staticClass("scala.List"), List(elemType))
+        internal.typeRef(NoPrefix, mirror.staticClass("scala.collection.immutable.List"), List(elemType))
       })
       case _ => base.selfType
     }
