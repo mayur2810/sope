@@ -6,14 +6,15 @@ import com.sope.spark.utils.etl.DimensionTable
 import org.apache.spark.SparkException
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Unit Tests for Dimension SCD
   *
   * @author mbadgujar
   */
-class SCDTest extends FlatSpec with Matchers {
+class SCDTest extends AnyFlatSpec with Matchers {
 
   private val sqlContext = getSQlContext
 

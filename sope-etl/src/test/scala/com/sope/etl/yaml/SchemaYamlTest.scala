@@ -1,10 +1,11 @@
 package com.sope.etl.yaml
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 /**
   *
   * @author mbadgujar
   */
-class SchemaYamlTest extends FlatSpec with Matchers {
+class SchemaYamlTest extends AnyFlatSpec with Matchers {
 
   "Schema Yaml Parse " should "should generate the Spark schema corretcly" in {
     val yamlFile = SchemaYaml("schema.yaml")

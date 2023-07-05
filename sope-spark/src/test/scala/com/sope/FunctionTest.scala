@@ -5,14 +5,15 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import com.sope.spark.sql._
 import com.sope.TestContext.getSQlContext
-import org.apache.spark.sql.types.{StringType, IntegerType}
-import org.scalatest.{FlatSpec, Matchers}
+import org.apache.spark.sql.types.{IntegerType, StringType}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   *
   * @author mbadgujar
   */
-class FunctionTest extends FlatSpec with Matchers {
+class FunctionTest extends AnyFlatSpec with Matchers {
 
   private val sqlContext = getSQlContext
 

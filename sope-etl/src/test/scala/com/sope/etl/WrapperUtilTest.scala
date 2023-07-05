@@ -1,12 +1,13 @@
 package com.sope.etl
 
 import com.sope.etl.utils.WrapperUtil
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * @author mbadgujar
   */
-class WrapperUtilTest extends FlatSpec with Matchers {
+class WrapperUtilTest extends AnyFlatSpec with Matchers {
 
   "WrapperUtil" should "parse and generate the Spark options correctly" in {
     val args = Array("--yaml_folders=.", "--main_yaml_file=demo.yaml", "--cluster_mode=false",
