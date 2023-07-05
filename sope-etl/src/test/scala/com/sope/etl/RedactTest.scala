@@ -1,12 +1,13 @@
 package com.sope.etl
 
 import com.sope.etl.utils.RedactUtil
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * @author mbadgujar
   */
-class RedactTest extends FlatSpec with Matchers {
+class RedactTest extends AnyFlatSpec with Matchers {
 
   "Redact Utility" should "generate the redaction correctly" in {
     val data = Map("user" -> "user123", "url" -> "https://resrd", "username" -> "user123", "USERNAME" -> "user134",

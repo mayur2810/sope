@@ -27,7 +27,7 @@
     <properties>
         <typesafe-logging.version>2.1.2</typesafe-logging.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <scalatest.version>3.0.0</scalatest.version>
+        <scalatest.version>3.2.16</scalatest.version>
         <jackson.yaml.version>2.6.5</jackson.yaml.version>
         <project.ver>${project.version}</project.ver>
         <maven.shade.version>3.0.0</maven.shade.version>
