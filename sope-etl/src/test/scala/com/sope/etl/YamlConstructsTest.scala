@@ -2,14 +2,15 @@ package com.sope.etl
 
 import com.sope.etl.TestContext._
 import com.sope.etl.yaml.End2EndYaml
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Yaml Transformer Constructs Unit tests
   *
   * @author mbadgujar
   */
-class YamlConstructsTest extends FlatSpec with Matchers {
+class YamlConstructsTest extends AnyFlatSpec with Matchers {
 
   private val transformedResult = End2EndYaml("constructs_test.yaml").getTransformedDFs(getSQlContext)
 

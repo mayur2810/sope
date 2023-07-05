@@ -2,14 +2,15 @@ package com.sope.etl
 
 import com.sope.etl.TestContext.getSQlContext
 import com.sope.etl.yaml.{IntermediateYaml, ParallelizeYaml}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Data Quality Template Test
   *
   * @author mbadgujar
   */
-class DQTest extends FlatSpec with Matchers {
+class DQTest extends AnyFlatSpec with Matchers {
 
   private val sqlContext = getSQlContext
   private val transactionData = ParallelizeYaml("data/transactions_dq.yaml").parallelize(sqlContext)
