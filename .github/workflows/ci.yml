@@ -1,0 +1,116 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: ["**", "!update/**", "!pr/**"]
+  push:
+    branches: ["**", "!update/**", "!pr/**"]
+    tags: [v*]
+
+env:
+  PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  SONATYPE_CREDENTIAL_HOST: ${{ secrets.SONATYPE_CREDENTIAL_HOST }}
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  PGP_SECRET: ${{ secrets.PGP_SECRET }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: Build and Test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        scala: [2.12.18, 2.13.11]
+        distribution: [temurin]
+        java: ["8", "11"]
+        spark: [2.4.8, 3.0.3, 3.1.3, 3.2.4, 3.3.1, 3.4.1]
+        exclude:
+          - spark: 2.4.8
+            scala: 2.13.11
+          - spark: 3.0.3
+            scala: 2.13.11
+          - spark: 3.1.3
+            scala: 2.13.11
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java (${{matrix.distribution}}@${{ matrix.java }})
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ matrix.distribution }}
+          java-version: ${{ matrix.java }}
+      - uses: jodersky/setup-mill@master
+        with:
+          mill-version: 0.11.1
+      - name: Cache mill
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.mill
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: ${{ runner.os }}-mill-cache-v3-${{ hashFiles('build.sc') }}
+
+      - name: Test
+        run: mill _.test
+
+  publish:
+    name: Publish Artifacts
+    needs: [build]
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        scala: [2.12.18]
+        distribution: [temurin]
+        java: ["8"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java (${{matrix.distribution}}@${{ matrix.java }})
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ matrix.distribution }}
+          java-version: ${{ matrix.java }}
+
+      - name: Cache mill
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.mill
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: ${{ runner.os }}-mill-cache-v3-${{ hashFiles('build.sc') }}
+
+      - name: Import signing key
+        if: env.PGP_SECRET != '' && env.PGP_PASSPHRASE == ''
+        run: echo $PGP_SECRET | base64 -di | gpg --import
+
+      - name: Import signing key and strip passphrase
+        if: env.PGP_SECRET != '' && env.PGP_PASSPHRASE != ''
+        run: |
+          echo "$PGP_SECRET" | base64 -di > /tmp/signing-key.gpg
+          echo "$PGP_PASSPHRASE" | gpg --pinentry-mode loopback --passphrase-fd 0 --import /tmp/signing-key.gpg
+          (echo "$PGP_PASSPHRASE"; echo; echo) | gpg --command-fd 0 --pinentry-mode loopback --change-passphrase $(gpg --list-secret-keys --with-colons 2> /dev/null | grep '^sec:' | cut --delimiter ':' --fields 5 | tail -n 1)
+
+      - uses: jodersky/setup-mill@master
+        with:
+          mill-version: 0.11.1
+      - name: Publish
+        run: mill -i io.kipp.mill.ci.release.ReleaseModule/publishAll
