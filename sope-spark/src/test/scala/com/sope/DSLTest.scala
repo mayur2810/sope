@@ -5,13 +5,14 @@ import com.sope.model.{Class, Student}
 import com.sope.spark.sql._
 import com.sope.spark.sql.dsl._
 import org.apache.spark.sql.functions._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   *
   * @author mbadgujar
   */
-class DSLTest extends FlatSpec with Matchers {
+class DSLTest extends AnyFlatSpec with Matchers {
 
   private val sqlContext = getSQlContext
 

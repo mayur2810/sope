@@ -1,12 +1,13 @@
 package com.sope.etl.yaml
 
 import com.sope.etl.TestContext
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * @author mbadgujar
   */
-class ParallelizeYamlTest extends FlatSpec with Matchers {
+class ParallelizeYamlTest extends AnyFlatSpec with Matchers {
 
   "ParallelizeYaml" should "should parallelize the local yaml to Dataframe correctly" in {
     val context = TestContext.getSQlContext
