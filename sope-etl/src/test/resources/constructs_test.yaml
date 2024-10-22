@@ -15,6 +15,7 @@ transformations :
         - {type: join, with: "product_filtered",  columns: ["product"] , join_type: inner}
         - {type: join, with: "date", columns: ["date"], join_type: inner}
         - {type: select_not, columns: ["location"]}
+        - {type: transform, list: { product: ["upper(product)", "lower(product)", "upper(product)", "lower(product)"]}}
     - input: "transactions"
       alias: "grp_by"
       actions:
