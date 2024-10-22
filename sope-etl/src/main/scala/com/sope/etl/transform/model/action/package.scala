@@ -17,10 +17,10 @@ import scala.collection.mutable
 import scala.reflect.runtime.universe._
 
 /**
-  * Package contains YAML Transformer Action (transform) construct mappings and definitions
-  *
-  * @author mbadgujar
-  */
+ * Package contains YAML Transformer Action (transform) construct mappings and definitions
+ *
+ * @author mbadgujar
+ */
 package object action {
 
   /*
@@ -66,10 +66,10 @@ package object action {
   }
 
   /**
-    * Root Class for Transform Action. To be extended by each Actions.
-    *
-    * @param id Action Id
-    */
+   * Root Class for Transform Action. To be extended by each Actions.
+   *
+   * @param id Action Id
+   */
   @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
@@ -119,11 +119,11 @@ package object action {
     def inputAliases: Seq[String] = Nil
 
     /**
-      * Modifies any SQL expression which have placeholders at Runtime.
-      * Internally converts to Yaml and reconstructs the action instance
-      *
-      * @return [[TransformActionRoot]]
-      */
+     * Modifies any SQL expression which have placeholders at Runtime.
+     * Internally converts to Yaml and reconstructs the action instance
+     *
+     * @return [[TransformActionRoot]]
+     */
     def runtimeModifier: TransformActionRoot = {
       import YamlParserUtil._
       val mirror = runtimeMirror(this.getClass.getClassLoader)
@@ -152,40 +152,40 @@ package object action {
     }
 
     /**
-      * Get the Multi arg function that is registered in Spark Function registry
-      *
-      * @param name Function name
-      * @return [[MultiColFunc]]
-      */
+     * Get the Multi arg function that is registered in Spark Function registry
+     *
+     * @param name Function name
+     * @return [[MultiColFunc]]
+     */
     protected def getMultiArgFunction(name: String): MultiColFunc = (columns: Seq[Column]) => callUDF(name, columns: _*)
 
 
     /**
-      * Applies know arguments to MultiArg Function in order provided and returns
-      * a single arg function to which the actual column can be provided
-      *
-      * @param multiArgFunc Multi Argument Column Function
-      * @param columns      Columns to be applied
-      * @return [[ColFunc]]
-      */
+     * Applies know arguments to MultiArg Function in order provided and returns
+     * a single arg function to which the actual column can be provided
+     *
+     * @param multiArgFunc Multi Argument Column Function
+     * @param columns      Columns to be applied
+     * @return [[ColFunc]]
+     */
     protected def multiArgToSingleArgFunc(multiArgFunc: MultiColFunc, columns: Seq[Column]): ColFunc =
       (column: Column) => multiArgFunc(column +: columns)
 
     /**
-      * Get the Single Arg Function that is registered in Spark Function registry
-      *
-      * @param name Function name
-      * @return [[ColFunc]]
-      */
+     * Get the Single Arg Function that is registered in Spark Function registry
+     *
+     * @param name Function name
+     * @return [[ColFunc]]
+     */
     protected def getSingleArgFunction(name: String): ColFunc = callUDF(name, _)
 
   }
 
   /**
-    * Class representing Transformation with single output
-    *
-    * @param id Action Id
-    */
+   * Class representing Transformation with single output
+   *
+   * @param id Action Id
+   */
   abstract class SingleOutputTransform(id: String) extends TransformActionRoot(id) {
     def transformFunction(dataframes: DataFrame*): DFFunc
 
@@ -194,10 +194,10 @@ package object action {
 
 
   /**
-    * Class representing Transformation with multiple output
-    *
-    * @param id Action Id
-    */
+   * Class representing Transformation with multiple output
+   *
+   * @param id Action Id
+   */
   abstract class MultiOutputTransform(id: String) extends TransformActionRoot(id) {
 
     def transformFunctions(dataframes: DataFrame*): Seq[DFFunc]
@@ -268,9 +268,14 @@ package object action {
   /*
      Column Transform
    */
-  case class TransformAction(@SqlExpr @JsonProperty(required = true) list: Map[String, String])
+  case class TransformAction(@SqlExpr @JsonProperty(required = true) list: Map[String, Any])
     extends SingleOutputTransform(Actions.Transform) {
-    override def transformFunction(dataframes: DataFrame*): DFFunc = Transform(list.toSeq: _*)
+    override def transformFunction(dataframes: DataFrame*): DFFunc = Transform(
+      list.toSeq.flatMap {
+        case (col, expression: String) => Some(col -> expression)
+        case (col, expressions: Seq[_]) => expressions.map(col -> _.toString)
+        case _ => throw new IllegalArgumentException("list values should be a string or list of strings")
+      }: _*)
   }
 
 
@@ -300,7 +305,7 @@ package object action {
     extends SingleOutputTransform(Actions.TransformMultiArg) {
     override def transformFunction(dataframes: DataFrame*): DFFunc = {
       val transformFunc = getMultiArgFunction(function)
-      Transform(transformFunc, list.toSeq : _*)
+      Transform(transformFunc, list.toSeq: _*)
     }
   }
 
@@ -346,7 +351,7 @@ package object action {
                          @JsonProperty(value = "pivot_column") pivotColumn: Option[String])
     extends SingleOutputTransform(Actions.GroupBy) {
     override def transformFunction(dataframes: DataFrame*): DFFunc =
-      GroupByAndPivot(groupColumns.map(expr): _*)(pivotColumn).agg(groupExprs :_*)
+      GroupByAndPivot(groupColumns.map(expr): _*)(pivotColumn).agg(groupExprs: _*)
   }
 
   /*
