@@ -223,7 +223,7 @@ package object dsl {
      * @param tuples column name and string expressions tuple
      * @return [[DFFunc]]
      */
-    def apply(tuples: (String, String)*): DFFunc = (df: DataFrame) => df.applyStringExpressions(tuples.toMap)
+    def apply(tuples: (String, String)*): DFFunc = (df: DataFrame) => df.applyStringExpressions(tuples)
 
     /**
      * Apply Column Expressions Transformations
@@ -231,7 +231,7 @@ package object dsl {
      * @param tuples column name and column expressions tuple
      * @return [[DFFunc]]
      */
-    def apply[T: ClassTag](tuples: (String, Column)*): DFFunc = (df: DataFrame) => df.applyColumnExpressions(tuples.toMap)
+    def apply[T: ClassTag](tuples: (String, Column)*): DFFunc = (df: DataFrame) => df.applyColumnExpressions(tuples)
 
     /**
       * Apply a column expression to provided columns
