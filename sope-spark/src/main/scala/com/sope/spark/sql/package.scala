@@ -145,6 +145,20 @@ package object sql {
       }
     }
 
+
+    /**
+     * Applies the sql string expression to provided columns. If the column is existing, it will be replaced with expression output,
+     * else a new column will be created
+     *
+     * @param exprTuples [[Seq[String, String]] name -> string expression sequence
+     * @return [[DataFrame]] with expressions applied to columns
+     */
+    def applyStringExpressions(exprTuples: Seq[(String, String)]): DataFrame = {
+      exprTuples.foldLeft(dataframe) {
+        case (df, (name, expression)) => df.withColumn(name, expr(expression))
+      }
+    }
+
     /**
       * Applies the column expression to provided columns. If the column is existing, it will be replaced with expression output,
       * else a new column will be created
@@ -155,6 +169,19 @@ package object sql {
     def applyColumnExpressions(exprMap: Map[String, Column]): DataFrame = {
       exprMap.keys.foldLeft(dataframe) {
         (df, key) => df.withColumn(key, exprMap(key))
+      }
+    }
+
+    /**
+     * Applies the column expression to provided columns. If the column is existing, it will be replaced with expression output,
+     * else a new column will be created
+     *
+     * @param exprTuples [[Seq[String, Column]] name -> column expression sequence
+     * @return [[DataFrame]] with expressions applied to columns
+     */
+    def applyColumnExpressions(exprTuples: Seq[(String, Column)]): DataFrame = {
+      exprTuples.foldLeft(dataframe) {
+        case (df, (name, expression)) => df.withColumn(name, expression)
       }
     }
 
