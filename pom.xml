@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mayurb</groupId>
     <artifactId>sope</artifactId>
-    <version>1.8</version>
+    <version>2.0</version>
     <modules>
         <module>sope-spark</module>
         <module>sope-etl</module>
@@ -25,6 +25,7 @@
     </profiles>
 
     <properties>
+        <revision>2.0</revision>
         <typesafe-logging.version>2.1.2</typesafe-logging.version>
         <slf4j.version>1.7.7</slf4j.version>
         <scalatest.version>3.2.16</scalatest.version>
@@ -110,6 +111,31 @@
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
