@@ -7,8 +7,8 @@ import mill.scalalib._
 import mill.scalalib.publish._
 
 trait SopeModule extends GitVersionedPublishModule with SbtModule with ScoverageModule {
-  override def scalaVersion = "2.12.18"
-  def sparkVersion = "3.1.3"
+  override def scalaVersion = "2.13.17"
+  def sparkVersion = "4.1.2"
   def scalaTestVersion = "3.2.16"
   def jacksonYamlVersion = "2.6.5"
   def bigqueryConnectorVersion = "hadoop3-0.13.11"
