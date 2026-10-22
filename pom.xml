@@ -151,7 +151,7 @@
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <args>
-                        <arg>-release</arg>
+                        <arg>-releddase</arg>
                         <arg>20</arg>
                     </args>
                 </configuration>
