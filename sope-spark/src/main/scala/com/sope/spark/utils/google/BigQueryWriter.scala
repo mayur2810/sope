@@ -7,7 +7,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 /**
   * Dataframe to BigQuery writer
@@ -19,7 +19,7 @@ class BigQueryWriter(sourceDF: DataFrame, targetBQTable: String, overwriteTable:
   import BigQueryWriter._
 
   private val sourceColumns = sourceDF.columns
-  private val sqlContext = sourceDF.sqlContext
+  private val sqlContext = sourceDF.sparkSession
   private val hadoopConf = sqlContext.sparkContext.hadoopConfiguration
 
   /**
@@ -38,7 +38,7 @@ class BigQueryWriter(sourceDF: DataFrame, targetBQTable: String, overwriteTable:
       bqField.setName(cname)
       bqField.setType(bqType)
       bqField
-    }.toList
+    }.toList.asJava
     val bqTable = new BigQueryTableSchema()
     bqTable.setFields(bqFields)
   }
