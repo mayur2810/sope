@@ -105,7 +105,7 @@ class Transformer(file: String, inputMap: Map[String, DataFrame], model: Transfo
       val transformedDF = Try {
         (dfTransform.isSQLTransform, dfTransform.isMultiOutputTransform) match {
           case (true, _) =>
-            Nil :+ sourceDF.sqlContext.sql(dfTransform.sql.get)
+            Nil :+ sourceDF.sparkSession.sqlContext.sql(dfTransform.sql.get)
           case (_, true) =>
             // TODO currently considers multi action as last, can be anywhere?
             val multiOutAction = actions.last

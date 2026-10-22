@@ -52,7 +52,7 @@ object WrapperUtil {
   class WrapperConfigParser extends scopt.OptionParser[WrapperConfig]("Sope-ETL Spark Wrapper") {
     val UnknownOptionMsg = "Unknown option"
     val UnknownArgMsg = "Unknown argument"
-    private val unknownOptions = mutable.MutableList[String]()
+    private val unknownOptions = mutable.ListBuffer[String]()
 
     head("Sope-ETL")
 
@@ -125,7 +125,7 @@ object WrapperUtil {
       }
     }
 
-    def getUnknownOptions: Seq[String] = unknownOptions
+    def getUnknownOptions: Seq[String] = unknownOptions.toSeq
   }
 
   def main(args: Array[String]): Unit = {
