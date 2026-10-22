@@ -125,7 +125,7 @@
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <args>
-                        <arg>-target:jvm-1.8</arg>
+                        <arg>-target:jvm-20</arg>
                     </args>
                 </configuration>
             </plugin>
