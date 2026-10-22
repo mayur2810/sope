@@ -15,7 +15,7 @@ object SQLChecker {
 
   private val checkSQLExpr = (expr: String) => {
     // Skip check if expr has placeholders
-    if (".*\\$\\{.*?\\}.*".r.findAllIn(expr).nonEmpty) Unit else parser.parseExpression(expr)
+    if (".*\\$\\{.*?\\}.*".r.findAllIn(expr).nonEmpty) () else parser.parseExpression(expr)
   }
 
   /**

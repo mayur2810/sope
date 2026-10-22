@@ -93,7 +93,7 @@ object ParallelizeYaml {
     * @param map Map
     * @return StructFields
     */
-  def mapToStruct(map: Map[String, _]): Array[StructField] = {
+  def mapToStruct(map: Map[String, Any]): Array[StructField] = {
     map.map {
       case (column, value: Map[_, _]) =>
         val structFields = mapToStruct(value.asInstanceOf[Map[String, _]])

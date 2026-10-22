@@ -97,7 +97,7 @@ package object output {
       if (saveAsTableFlag)
         getWriter(df).saveAsTable(targetTable)
       else {
-        val targetTableDF = df.sqlContext.table(targetTable)
+        val targetTableDF = df.sparkSession.sqlContext.table(targetTable)
         // reorder the columns as per table schema before inserting into table
         getWriter(df.select(targetTableDF.getColumns: _*)).insertInto(targetTable)
       }

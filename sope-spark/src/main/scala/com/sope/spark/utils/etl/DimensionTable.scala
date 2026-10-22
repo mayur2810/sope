@@ -23,7 +23,7 @@ case class DimensionTable(dimensionDF: DataFrame,
                      metaColumns: Seq[String] = Seq()) extends Logging {
 
   import DimensionTable._
-  import dimensionDF.sqlContext.implicits._
+  import dimensionDF.sparkSession.implicits._
 
 
   // Columns to skip for MD5 calculation

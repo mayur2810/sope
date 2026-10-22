@@ -29,7 +29,7 @@ case class IntermediateYaml(yamlPath: String, substitutions: Option[Map[String, 
       throw new YamlDataTransformException("Invalid Dataframes provided or incorrect yaml config")
     val sqlContext = dataFrames.headOption.getOrElse {
       throw new YamlDataTransformException("Empty Dataframe List")
-    }.sqlContext
+    }.sparkSession.sqlContext
     performRegistrations(sqlContext)
     val sourceDFMap = sources.zip(dataFrames).map {
       case (source, df) => (source, {

@@ -1,7 +1,6 @@
 package com.sope
 
-import org.apache.spark.sql.SQLContext
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{SQLContext, SparkSession}
 
 /**
   * Context for Unit test cases
@@ -11,10 +10,13 @@ import org.apache.spark.{SparkConf, SparkContext}
 //noinspection ScalaDeprecation
 object TestContext {
 
-  private val sparkContext = new SparkContext(new SparkConf().setMaster("local[*]").setAppName("UnitTest")
-    .set("spark.driver.allowMultipleContexts", "true"))
+  private val sparkSession = SparkSession.builder()
+    .master("local[*]")
+    .appName("UnitTest")
+    .config("spark.driver.allowMultipleContexts", "true")
+    .create()
 
-  private val sqlContext = new SQLContext(sparkContext)
+  private val sqlContext = sparkSession.sqlContext
   def getSQlContext: SQLContext = sqlContext
 
 }

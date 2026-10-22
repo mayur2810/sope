@@ -29,7 +29,7 @@ package object sql {
 
   implicit class DataFrameImplicits(dataframe: DataFrame) extends Logging {
 
-    import dataframe.sqlContext.implicits._
+    import dataframe.sparkSession.implicits._
 
     /**
       * Get Spark [[DataType]] given the string name of Type
@@ -239,7 +239,7 @@ package object sql {
             val tempOutputPath = temporaryResultDir + "/" + fType
             logInfo(s"Saving transformation results $fType to temporary location :- $tempOutputPath")
             result.write.format(format).mode(SaveMode.Overwrite).save(tempOutputPath)
-            result.sqlContext.read.format(format).load(tempOutputPath)
+            result.sparkSession.read.format(format).load(tempOutputPath)
           }
         }.toSeq
       applyDFTransformations[DataFrame](functionList)((df: DataFrame) => df)
@@ -329,7 +329,7 @@ package object sql {
             StructType(StructField(seqColName, LongType, nullable = false) +: dataframe.schema.fields))
       }
       // Convert back to dataframe
-      dataframe.sqlContext.createDataFrame(rankedRows, schema)
+      dataframe.sparkSession.createDataFrame(rankedRows, schema)
     }
 
 
