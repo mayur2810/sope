@@ -2,7 +2,6 @@ package com.sope.etl.register
 
 import java.io.File
 import java.net.URLClassLoader
-
 import com.sope.etl.getObjectInstance
 import com.sope.etl.transform.exception.YamlDataTransformException
 import com.sope.etl.utils.JarUtils
@@ -12,6 +11,7 @@ import org.apache.spark.sql.expressions.UserDefinedFunction
 
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.IMain
+import scala.tools.nsc.interpreter.shell.ReplReporterImpl
 
 object  UDFBuilder extends Logging {
 
@@ -46,7 +46,8 @@ object  UDFBuilder extends Logging {
     val builderClassPath = (systemClasspath ++ contextClasspath).distinct.mkString(File.pathSeparator)
     logDebug(s"UDF Builder Classpath :- $builderClassPath")
     settings.classpath.value = builderClassPath
-    val eval = new IMain(settings)
+    val reporter = new ReplReporterImpl(settings)
+    val eval = new IMain(settings, reporter)
     val udfMap = udfCodeMap.map {
       case (udfName, udfCode) =>
         val objectCode = objectString(udfName, udfCode)
