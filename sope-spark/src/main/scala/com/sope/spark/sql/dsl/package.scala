@@ -941,7 +941,7 @@ package object dsl {
      * @param df dataframe
      * @return Map of identifier as key and [[DataFrame]] as value
      */
-    def using(df: DataFrame): Map[String, DataFrame] = dfFuncMap.mapValues(_ using df)
+    def using(df: DataFrame): Map[String, DataFrame] = dfFuncMap.view.mapValues(_ using df).toMap
 
     /**
      * Apply all transformations in the [[DFFuncMap]] to passed [[DataFrame]]
@@ -957,7 +957,7 @@ package object dsl {
      * @param rightDFFunc [[DFFunc]] transformation
      * @return [[DFFunc]]
      */
-    def +(rightDFFunc: DFFunc): DFFuncMap = dfFuncMap.mapValues(_ + rightDFFunc)
+    def +(rightDFFunc: DFFunc): DFFuncMap = dfFuncMap.view.mapValues(_ + rightDFFunc).toMap
 
     /**
      * Compose [[DFFunc]] transformations on provided identifier
