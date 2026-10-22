@@ -24,8 +24,8 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
 
   override def deserialize(p: JsonParser, ctxt: DeserializationContext): MList[T] = {
     val mirror = runtimeMirror(this.getClass.getClassLoader)
-    val data = mutable.MutableList[T]()
-    val failures = mutable.MutableList[Failed]()
+    val data = mutable.ListBuffer[T]()
+    val failures = mutable.ListBuffer[Failed]()
 
     /*
        In case the token does not start array, return failure straight away
@@ -34,7 +34,7 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
       val location = p.getCurrentLocation
       log.error(s"Invalid list definition for ${p.getCurrentName} tag")
       failures += Failed("Invalid yaml list definition", location.getLineNr, location.getColumnNr)
-      return MList(data, failures)
+      return MList(data.toList, failures.toList)
     }
 
     while (p.nextToken() != JsonToken.END_ARRAY) {
@@ -68,7 +68,7 @@ class MListDeserializer[T: ClassTag](clz: Class[T]) extends StdDeserializer[MLis
         }
       }
     }
-    MList(data, failures)
+    MList(data.toList, failures.toList)
   }
 
   override def getNullValue: MList[T] = MList[T](Nil)
