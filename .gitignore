@@ -7,3 +7,4 @@ target
 dependency-reduced-pom.xml
 spark-warehouse
 /out/
+.flattened-pom.xml
